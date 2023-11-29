@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Usage:
+# ./scripts/publish.sh <major|minor|patch>
+
 set -e
 
 if [[ $(git branch --show-current) != "main" ]]; then
