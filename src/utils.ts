@@ -37,6 +37,13 @@ function fastRelativeChildPath(fromPath: string, toPath: string): string | undef
   }
 }
 
+function findLastIndex<T>(array: T[], predicate: (value: T, index: number, array: T[]) => unknown): number {
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (predicate(array[i], i, array)) return i;
+  }
+  return -1;
+}
+
 function getCachePath(rootPath: string): string {
   //TODO: Maybe always put the cache file in "node_modules", even if it doesn't exist
   const nodeModulesPaths = path.join(rootPath, "node_modules");
@@ -489,6 +496,7 @@ export {
   fastJoinedPath,
   fastRelativePath,
   fastRelativeChildPath,
+  findLastIndex,
   getCachePath,
   getFolderChildrenPaths,
   getFoldersChildrenPaths,

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import * as EditorConfig from "tiny-editorconfig";
 import Known from "./known.js";
-import { fastJoinedPath, memoize, zipObject } from "./utils.js";
+import { fastJoinedPath, findLastIndex, memoize, zipObject } from "./utils.js";
 import type { Config, ConfigWithOverrides } from "tiny-editorconfig";
 import type { FormatOptions } from "./types.js";
 
@@ -29,7 +29,7 @@ const getEditorConfigsUp = memoize(async (folderPath: string): Promise<ConfigWit
   const folderPathUp = path.dirname(folderPath);
   const configsUp = folderPath !== folderPathUp ? await getEditorConfigsUp(folderPathUp) : [];
   const configs = config ? [...configsUp, config] : configsUp;
-  const lastRootIndex = configs.findLastIndex((config) => config.root);
+  const lastRootIndex = findLastIndex(configs, (config) => config.root);
   return lastRootIndex > 0 ? configs.slice(lastRootIndex) : configs;
 });
 
