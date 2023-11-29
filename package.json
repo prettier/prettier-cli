@@ -16,7 +16,8 @@
     "clean": "rm -rf dist",
     "compile": "tsc --outDir dist",
     "compile:watch": "tsc --outDir dist --watch",
-    "prepublishOnly": "npm run compile"
+    "prepublishOnly": "npm run compile",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "atomically": "^2.0.2",
