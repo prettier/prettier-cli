@@ -10,7 +10,10 @@
     "prettier-next": "dist/bin.js"
   },
   "main": "dist/index.js",
-  "exports": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./bin": "./dist/bin.js"
+  },
   "types": "./dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
