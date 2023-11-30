@@ -89,13 +89,12 @@ class Cache {
     }
   }
 
-  set(filePath: string, filePathHash: string, fileFormatted: boolean, fileContentExpected?: string): void {
+  set(filePath: string, filePathHash: string, fileFormatted: boolean, fileContentExpected: string): void {
     try {
-      const fileContent = fileContentExpected ?? fs.readFileSync(filePath);
       const version = (this.store[this.version] ||= {});
       const files = (version.files ||= {});
       //TODO: Skip the following hash if the expected content we got is the same one that we had
-      const hash = sha1base64(fileContent);
+      const hash = sha1base64(fileContentExpected);
       version.modified = Date.now();
       files[filePathHash] = [hash, fileFormatted];
       this.dirty = true;
