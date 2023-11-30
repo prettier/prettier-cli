@@ -1,6 +1,5 @@
 {
-  "prettier.prettierPath": "./node_modules/prettier-internal",
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
