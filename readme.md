@@ -15,11 +15,11 @@ npm install prettier@next
 It should be largely backwards compatible:
 
 ```sh
-prettier src --check # Like before, but faster
+prettier . --check # Like before, but faster
 ```
 
 You can also try it via `npx`, though `npx` itself is pretty slow:
 
 ```sh
-npx prettier@next src --check
+npx prettier@next . --check
 ```
