@@ -60,6 +60,7 @@ const getPrettierConfig = memoize(async (folderPath: string): Promise<PrettierCo
       try {
         const config = await loader(filePath);
         if (!config) continue;
+        if (!isObject(config)) continue;
         return normalizePrettierOptions(config, folderPath);
       } catch {
         continue;
