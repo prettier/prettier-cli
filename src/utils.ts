@@ -45,7 +45,6 @@ function findLastIndex<T>(array: T[], predicate: (value: T, index: number, array
 }
 
 function getCachePath(rootPath: string): string {
-  //TODO: Maybe always put the cache file in "node_modules", even if it doesn't exist
   const nodeModulesPaths = path.join(rootPath, "node_modules");
   const cachePath = path.join(nodeModulesPaths, ".cache", "prettier", ".prettier-caches");
   return cachePath;
