@@ -9,8 +9,7 @@ If you find any bugs, missing features, or unexpected slowness, please open an i
 ## Installation
 
 ```sh
-npm uninstall prettier
-npm install @prettier/next
+npm install prettier@next
 ```
 
 It should be largely backwards compatible:
@@ -22,5 +21,5 @@ prettier src --check # Like before, but faster
 You can also try it via `npx`, though `npx` itself is pretty slow:
 
 ```sh
-npx prettier-next src --check
+npx prettier@next src --check
 ```
