@@ -1,18 +1,18 @@
 import { readFile, writeFile } from "atomically";
-import prettier from "prettier/standalone";
-import prettierAcorn from "prettier/plugins/acorn";
-import prettierAngular from "prettier/plugins/angular";
-import prettierBabel from "prettier/plugins/babel";
-import prettierEstree from "prettier/plugins/estree";
-import prettierFlow from "prettier/plugins/flow";
-import prettierGlimmer from "prettier/plugins/glimmer";
-import prettierGraphql from "prettier/plugins/graphql";
-import prettierHtml from "prettier/plugins/html";
-import prettierMarkdown from "prettier/plugins/markdown";
-import prettierMeriyah from "prettier/plugins/meriyah";
-import prettierPostcss from "prettier/plugins/postcss";
-import prettierTypescript from "prettier/plugins/typescript";
-import prettierYaml from "prettier/plugins/yaml";
+import prettier from "prettier-internal/standalone";
+import prettierAcorn from "prettier-internal/plugins/acorn";
+import prettierAngular from "prettier-internal/plugins/angular";
+import prettierBabel from "prettier-internal/plugins/babel";
+import prettierEstree from "prettier-internal/plugins/estree";
+import prettierFlow from "prettier-internal/plugins/flow";
+import prettierGlimmer from "prettier-internal/plugins/glimmer";
+import prettierGraphql from "prettier-internal/plugins/graphql";
+import prettierHtml from "prettier-internal/plugins/html";
+import prettierMarkdown from "prettier-internal/plugins/markdown";
+import prettierMeriyah from "prettier-internal/plugins/meriyah";
+import prettierPostcss from "prettier-internal/plugins/postcss";
+import prettierTypescript from "prettier-internal/plugins/typescript";
+import prettierYaml from "prettier-internal/plugins/yaml";
 import type { FormatOptions } from "./types.js";
 
 //TODO: Avoid loading plugins until they are actually needed

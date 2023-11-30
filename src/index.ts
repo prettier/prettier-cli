@@ -33,7 +33,7 @@ async function run(options: Options): Promise<void> {
   Known.addFolders(foldersExtraPaths);
 
   const prettierVersion = "3.1.0"; //TODO: Hard-coding this is error-prone
-  const cliVersion = "0.1.0"; //TODO: Hard-coding this is error-prone
+  const cliVersion = "4.0.0-alpha.0"; //TODO: Hard-coding this is error-prone
   const pluginsVersions = ""; //TODO
   const editorConfigs = options.editorConfig ? await getEditorConfigsMap(foldersPathsTargets) : {};
   const ignoreContents = await getIgnoresContentMap(foldersPathsTargets);
