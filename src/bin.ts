@@ -174,7 +174,9 @@ bin("prettier", "Prettier is an opinionated code formatter")
   .option("--log-level <silent|error|warn|log|debug>", 'What level of logs to report\nDefaults to "log"', {
     enum: ["silent", "error", "warn", "log", "debug"],
   })
-  .option("--parallel", 'Process files in parallel\nDefaults to "false"')
+  .option("--no-parallel", 'Process files in parallel\nDefaults to "true"', {
+    default: true,
+  })
   .option("--parallel-workers <int>", 'Number of parallel workers to use\nDefaults to "0"')
   .option(
     "--require-pragma",
