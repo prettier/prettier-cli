@@ -1,5 +1,5 @@
 {
-  "name": "@prettier/next",
+  "name": "@prettier/cli",
   "repository": "github:prettier/prettier-cli",
   "description": "A faster CLI for Prettier.",
   "license": "MIT",
