@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { getCachePath, isObject, sha1hex, sha1base64 } from "./utils.js";
+import { getCachePath, isArray, isBoolean, isObject, isString, sha1hex, sha1base64 } from "./utils.js";
 import type Logger from "./logger.js";
 import type { Options } from "./types.js";
 
@@ -23,7 +23,6 @@ type FileData = {
 
 //TODO: Maybe remember thrown errors also, if they are under a certain size
 //TODO: Use some kind of relative path as the file key, if in CI enviornments parts of the path can be kinda random, or if the cache file is committed
-//TODO: Validate cached values as they are being read, for better safety
 
 class Cache {
   private version: string;
@@ -77,8 +76,9 @@ class Cache {
     const save = this.set.bind(this, filePath, filePathHash);
     try {
       const file = this.store[this.version]?.files?.[filePathHash];
-      if (!file) return { save };
+      if (!file || !isArray(file) || file.length !== 2) return { save };
       const [hash, formatted] = file;
+      if (!isString(hash) || !isBoolean(formatted)) return { save };
       const content = fs.readFileSync(filePath);
       const fileHash = sha1base64(content);
       if (hash !== fileHash) return { content, save };
