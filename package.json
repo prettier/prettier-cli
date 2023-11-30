@@ -1,10 +1,17 @@
 {
-  "name": "prettier",
+  "name": "@prettier/next",
   "repository": "github:prettier/prettier-cli",
   "description": "A faster CLI for Prettier.",
   "license": "MIT",
-  "version": "4.0.0-alpha.0",
+  "version": "0.1.1",
   "type": "module",
+  "bin": {
+    "prettier": "dist/bin.js",
+    "prettier-next": "dist/bin.js"
+  },
+  "main": "dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "compile": "tsc --outDir dist",
@@ -12,144 +19,13 @@
     "prepublishOnly": "npm run compile",
     "typecheck": "tsc --noEmit"
   },
-  "bin": "dist/bin.js",
-  "main": "./node_modules/prettier-internal/index.cjs",
-  "browser": "./node_modules/prettier-internal/standalone.js",
-  "unpkg": "./node_modules/prettier-internal/standalone.js",
-  "exports": {
-    ".": {
-      "types": "./node_modules/prettier-internal/index.d.ts",
-      "require": "./node_modules/prettier-internal/index.cjs",
-      "browser": {
-        "import": "./node_modules/prettier-internal/standalone.mjs",
-        "default": "./node_modules/prettier-internal/standalone.js"
-      },
-      "default": "./node_modules/prettier-internal/index.mjs"
-    },
-    "./*": "./node_modules/prettier-internal/*",
-    "./doc": {
-      "types": "./node_modules/prettier-internal/doc.d.ts",
-      "require": "./node_modules/prettier-internal/doc.js",
-      "default": "./node_modules/prettier-internal/doc.mjs"
-    },
-    "./standalone": {
-      "types": "./node_modules/prettier-internal/standalone.d.ts",
-      "require": "./node_modules/prettier-internal/standalone.js",
-      "default": "./node_modules/prettier-internal/standalone.mjs"
-    },
-    "./plugins/estree": {
-      "types": "./node_modules/prettier-internal/plugins/estree.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/estree.js",
-      "default": "./node_modules/prettier-internal/plugins/estree.mjs"
-    },
-    "./plugins/babel": {
-      "types": "./node_modules/prettier-internal/plugins/babel.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/babel.js",
-      "default": "./node_modules/prettier-internal/plugins/babel.mjs"
-    },
-    "./plugins/flow": {
-      "types": "./node_modules/prettier-internal/plugins/flow.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/flow.js",
-      "default": "./node_modules/prettier-internal/plugins/flow.mjs"
-    },
-    "./plugins/typescript": {
-      "types": "./node_modules/prettier-internal/plugins/typescript.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/typescript.js",
-      "default": "./node_modules/prettier-internal/plugins/typescript.mjs"
-    },
-    "./plugins/acorn": {
-      "types": "./node_modules/prettier-internal/plugins/acorn.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/acorn.js",
-      "default": "./node_modules/prettier-internal/plugins/acorn.mjs"
-    },
-    "./plugins/meriyah": {
-      "types": "./node_modules/prettier-internal/plugins/meriyah.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/meriyah.js",
-      "default": "./node_modules/prettier-internal/plugins/meriyah.mjs"
-    },
-    "./plugins/angular": {
-      "types": "./node_modules/prettier-internal/plugins/angular.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/angular.js",
-      "default": "./node_modules/prettier-internal/plugins/angular.mjs"
-    },
-    "./plugins/postcss": {
-      "types": "./node_modules/prettier-internal/plugins/postcss.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/postcss.js",
-      "default": "./node_modules/prettier-internal/plugins/postcss.mjs"
-    },
-    "./plugins/graphql": {
-      "types": "./node_modules/prettier-internal/plugins/graphql.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/graphql.js",
-      "default": "./node_modules/prettier-internal/plugins/graphql.mjs"
-    },
-    "./plugins/markdown": {
-      "types": "./node_modules/prettier-internal/plugins/markdown.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/markdown.js",
-      "default": "./node_modules/prettier-internal/plugins/markdown.mjs"
-    },
-    "./plugins/glimmer": {
-      "types": "./node_modules/prettier-internal/plugins/glimmer.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/glimmer.js",
-      "default": "./node_modules/prettier-internal/plugins/glimmer.mjs"
-    },
-    "./plugins/html": {
-      "types": "./node_modules/prettier-internal/plugins/html.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/html.js",
-      "default": "./node_modules/prettier-internal/plugins/html.mjs"
-    },
-    "./plugins/yaml": {
-      "types": "./node_modules/prettier-internal/plugins/yaml.d.ts",
-      "require": "./node_modules/prettier-internal/plugins/yaml.js",
-      "default": "./node_modules/prettier-internal/plugins/yaml.mjs"
-    },
-    "./esm/standalone.mjs": "./node_modules/prettier-internal/standalone.mjs",
-    "./parser-babel": "./node_modules/prettier-internal/plugins/babel.js",
-    "./parser-babel.js": "./node_modules/prettier-internal/plugins/babel.js",
-    "./esm/parser-babel.mjs": "./node_modules/prettier-internal/plugins/babel.mjs",
-    "./parser-flow": "./node_modules/prettier-internal/plugins/flow.js",
-    "./parser-flow.js": "./node_modules/prettier-internal/plugins/flow.js",
-    "./esm/parser-flow.mjs": "./node_modules/prettier-internal/plugins/flow.mjs",
-    "./parser-typescript": "./node_modules/prettier-internal/plugins/typescript.js",
-    "./parser-typescript.js": "./node_modules/prettier-internal/plugins/typescript.js",
-    "./esm/parser-typescript.mjs": "./node_modules/prettier-internal/plugins/typescript.mjs",
-    "./parser-espree": "./node_modules/prettier-internal/plugins/acorn.js",
-    "./parser-espree.js": "./node_modules/prettier-internal/plugins/acorn.js",
-    "./esm/parser-espree.mjs": "./node_modules/prettier-internal/plugins/acorn.mjs",
-    "./parser-meriyah": "./node_modules/prettier-internal/plugins/meriyah.js",
-    "./parser-meriyah.js": "./node_modules/prettier-internal/plugins/meriyah.js",
-    "./esm/parser-meriyah.mjs": "./node_modules/prettier-internal/plugins/meriyah.mjs",
-    "./parser-angular": "./node_modules/prettier-internal/plugins/angular.js",
-    "./parser-angular.js": "./node_modules/prettier-internal/plugins/angular.js",
-    "./esm/parser-angular.mjs": "./node_modules/prettier-internal/plugins/angular.mjs",
-    "./parser-postcss": "./node_modules/prettier-internal/plugins/postcss.js",
-    "./parser-postcss.js": "./node_modules/prettier-internal/plugins/postcss.js",
-    "./esm/parser-postcss.mjs": "./node_modules/prettier-internal/plugins/postcss.mjs",
-    "./parser-graphql": "./node_modules/prettier-internal/plugins/graphql.js",
-    "./parser-graphql.js": "./node_modules/prettier-internal/plugins/graphql.js",
-    "./esm/parser-graphql.mjs": "./node_modules/prettier-internal/plugins/graphql.mjs",
-    "./parser-markdown": "./node_modules/prettier-internal/plugins/markdown.js",
-    "./parser-markdown.js": "./node_modules/prettier-internal/plugins/markdown.js",
-    "./esm/parser-markdown.mjs": "./node_modules/prettier-internal/plugins/markdown.mjs",
-    "./parser-glimmer": "./node_modules/prettier-internal/plugins/glimmer.js",
-    "./parser-glimmer.js": "./node_modules/prettier-internal/plugins/glimmer.js",
-    "./esm/parser-glimmer.mjs": "./node_modules/prettier-internal/plugins/glimmer.mjs",
-    "./parser-html": "./node_modules/prettier-internal/plugins/html.js",
-    "./parser-html.js": "./node_modules/prettier-internal/plugins/html.js",
-    "./esm/parser-html.mjs": "./node_modules/prettier-internal/plugins/html.mjs",
-    "./parser-yaml": "./node_modules/prettier-internal/plugins/yaml.js",
-    "./parser-yaml.js": "./node_modules/prettier-internal/plugins/yaml.js",
-    "./esm/parser-yaml.mjs": "./node_modules/prettier-internal/plugins/yaml.mjs"
-  },
-  "engines": {
-    "node": ">=14"
-  },
   "dependencies": {
     "atomically": "^2.0.2",
     "ignore": "^5.3.0",
     "js-yaml": "^4.1.0",
     "json-sorted-stringify": "^1.0.0",
     "pioppo": "^1.1.0",
-    "prettier-internal": "npm:prettier@3.1.0",
+    "prettier": "3.1.0",
     "specialist": "^1.3.0",
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",

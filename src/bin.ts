@@ -11,7 +11,7 @@ bin("prettier", "Prettier is an opinionated code formatter")
   .autoExit(true)
   .autoUpdateNotifier(false)
   .colors(true)
-  .package("prettier", "4.0.0-alpha.0")
+  .package("prettier", "3.1.0")
   /* USAGES */
   .usage(`${color.cyan("prettier")} ${color.yellow("[file/dir/glob...]")} ${color.green("[options]")}`)
   .usage(
