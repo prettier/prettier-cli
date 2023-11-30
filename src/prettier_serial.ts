@@ -13,23 +13,24 @@ import prettierMeriyah from "prettier-internal/plugins/meriyah";
 import prettierPostcss from "prettier-internal/plugins/postcss";
 import prettierTypescript from "prettier-internal/plugins/typescript";
 import prettierYaml from "prettier-internal/plugins/yaml";
-import type { FormatOptions } from "./types.js";
+import { resolve } from "./utils.js";
+import type { LazyFormatOptions } from "./types.js";
 
 //TODO: Avoid loading plugins until they are actually needed
 
-async function check(filePath: string, fileContent: string, formatOptions: FormatOptions): Promise<boolean> {
+async function check(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<boolean> {
   const fileContentFormatted = await format(filePath, fileContent, formatOptions);
   return fileContent === fileContentFormatted;
 }
 
-async function checkWithPath(filePath: string, formatOptions: FormatOptions): Promise<boolean> {
+async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<boolean> {
   const fileContent = await readFile(filePath, "utf8");
   return check(filePath, fileContent, formatOptions);
 }
 
-async function format(filePath: string, fileContent: string, formatOptions: FormatOptions): Promise<string> {
+async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<string> {
   return prettier.format(fileContent, {
-    ...formatOptions,
+    ...(await resolve(formatOptions)),
     filepath: filePath,
     plugins: [
       prettierAcorn,
@@ -49,19 +50,19 @@ async function format(filePath: string, fileContent: string, formatOptions: Form
   });
 }
 
-async function formatWithPath(filePath: string, formatOptions: FormatOptions): Promise<string> {
+async function formatWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<string> {
   const fileContent = await readFile(filePath, "utf8");
   return format(filePath, fileContent, formatOptions);
 }
 
-async function write(filePath: string, fileContent: string, formatOptions: FormatOptions): Promise<boolean> {
+async function write(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<boolean> {
   const fileContentFormatted = await format(filePath, fileContent, formatOptions);
   if (fileContent === fileContentFormatted) return true;
   await writeFile(filePath, fileContentFormatted, "utf8");
   return false;
 }
 
-async function writeWithPath(filePath: string, formatOptions: FormatOptions): Promise<boolean> {
+async function writeWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<boolean> {
   const fileContent = await readFile(filePath, "utf8");
   return write(filePath, fileContent, formatOptions);
 }

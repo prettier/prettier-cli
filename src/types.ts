@@ -25,6 +25,8 @@ type FunctionMaybe<T> = T | (() => T);
 
 type Ignore = (filePath: string) => boolean;
 
+type LazyFormatOptions = FunctionMaybe<PromiseMaybe<FormatOptions>>;
+
 type LogLevel = "error" | "warn" | "log" | "debug" | "silent";
 
 type Options = {
@@ -68,6 +70,7 @@ export type {
   FormatOptions,
   FunctionMaybe,
   Ignore,
+  LazyFormatOptions,
   LogLevel,
   Options,
   Prettier,

@@ -9,7 +9,7 @@ import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { getExpandedFoldersPaths, getFoldersChildrenPaths, getProjectPath, getTargetsPaths } from "./utils.js";
 import { fastRelativePath, isString, isUndefined, pluralize } from "./utils.js";
-import type { Options } from "./types.js";
+import type { FormatOptions, Options } from "./types.js";
 
 async function run(options: Options): Promise<void> {
   const logger = new Logger(options.logLevel);
@@ -51,16 +51,18 @@ async function run(options: Options): Promise<void> {
     filesPathsTargets.map(async (filePath) => {
       const ignored = await getIgnoreResolved(filePath);
       if (ignored) return;
-      //TODO: Avoid always generating options for cached files, as they won't be needed
-      const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath)) : {}; // prettier-ignore
-      const prettierConfig = options.config ? await getPrettierConfigResolved(filePath) : {};
-      const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
+      const getFormatOptions = async (): Promise<FormatOptions> => {
+        const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath)) : {}; // prettier-ignore
+        const prettierConfig = options.config ? await getPrettierConfigResolved(filePath) : {};
+        const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
+        return formatOptions;
+      };
       if (options.check || options.list) {
-        return prettier.checkWithPath(filePath, formatOptions);
+        return prettier.checkWithPath(filePath, getFormatOptions);
       } else if (options.write) {
-        return prettier.writeWithPath(filePath, formatOptions);
+        return prettier.writeWithPath(filePath, getFormatOptions);
       } else {
-        return prettier.formatWithPath(filePath, formatOptions);
+        return prettier.formatWithPath(filePath, getFormatOptions);
       }
     }),
   );
