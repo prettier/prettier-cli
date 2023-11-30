@@ -14,6 +14,7 @@ import prettierPostcss from "prettier/plugins/postcss";
 import prettierTypescript from "prettier/plugins/typescript";
 import prettierYaml from "prettier/plugins/yaml";
 import type { FormatOptions } from "./types.js";
+import { resolve } from "./utils.js";
 
 //TODO: Avoid loading plugins until they are actually needed
 
