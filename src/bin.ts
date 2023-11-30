@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { bin, color } from "specialist";
+import { PRETTIER_VERSION } from "./constants.js";
 import { normalizeOptions } from "./utils.js";
 import { run } from "./index.js";
 
@@ -11,7 +12,7 @@ bin("prettier", "Prettier is an opinionated code formatter")
   .autoExit(true)
   .autoUpdateNotifier(false)
   .colors(true)
-  .package("prettier", "3.1.0")
+  .package("prettier", PRETTIER_VERSION)
   /* USAGES */
   .usage(`${color.cyan("prettier")} ${color.yellow("[file/dir/glob...]")} ${color.green("[options]")}`)
   .usage(

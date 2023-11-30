@@ -4,6 +4,7 @@ import Cache from "./cache.js";
 import { getEditorConfigsMap, getEditorConfigResolved, getEditorConfigFormatOptions } from "./config_editorconfig.js";
 import { getIgnoresContentMap, getIgnoreResolved } from "./config_ignore.js";
 import { getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
+import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
@@ -32,8 +33,8 @@ async function run(options: Options): Promise<void> {
   Known.addFolders(foldersFoundPaths);
   Known.addFolders(foldersExtraPaths);
 
-  const prettierVersion = "3.1.0"; //TODO: Hard-coding this is error-prone
-  const cliVersion = "0.1.0"; //TODO: Hard-coding this is error-prone
+  const prettierVersion = PRETTIER_VERSION;
+  const cliVersion = CLI_VERSION;
   const pluginsVersions = ""; //TODO
   const editorConfigs = options.editorConfig ? await getEditorConfigsMap(foldersPathsTargets) : {};
   const ignoreContents = await getIgnoresContentMap(foldersPathsTargets);
