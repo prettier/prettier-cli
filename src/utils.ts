@@ -118,12 +118,14 @@ function getProjectPath(rootPath: string): string {
 
 async function getTargetsPaths(rootPath: string, globs: string[]) {
   const targetFiles: string[] = [];
+  const targetFilesNames: string[] = [];
   const targetGlobs: string[] = [];
 
   for (const glob of globs) {
     const filePath = path.resolve(rootPath, glob);
     if (isFile(filePath)) {
       targetFiles.push(filePath);
+      targetFilesNames.push(path.basename(filePath));
     } else {
       targetGlobs.push(glob);
     }
@@ -131,9 +133,10 @@ async function getTargetsPaths(rootPath: string, globs: string[]) {
 
   const result = await getGlobPaths(rootPath, targetGlobs);
   const filesPaths = [...targetFiles, ...result.files];
+  const filesNames = [...targetFilesNames, ...result.filesFoundNames];
   const filesFoundPaths = result.filesFound;
   const foldersFoundPaths = [rootPath, ...result.directoriesFound];
-  return [filesPaths, filesFoundPaths, foldersFoundPaths];
+  return [filesPaths, filesNames, filesFoundPaths, foldersFoundPaths];
 }
 
 function isArray(value: unknown): value is unknown[] {

@@ -55,8 +55,10 @@ const getPrettierConfig = memoize(async (folderPath: string): Promise<PrettierCo
   for (let li = 0, ll = loaders.length; li < ll; li++) {
     const { files, loader } = loaders[li];
     for (let fi = 0, fl = files.length; fi < fl; fi++) {
-      const filePath = fastJoinedPath(folderPath, files[fi]);
-      if (!Known.hasFile(filePath)) continue;
+      const fileName = files[fi];
+      if (!Known.hasFileName(fileName)) continue;
+      const filePath = fastJoinedPath(folderPath, fileName);
+      if (!Known.hasFilePath(filePath)) continue;
       try {
         const config = await loader(filePath);
         if (!config) continue;

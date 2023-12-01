@@ -7,8 +7,9 @@ import type { Config, ConfigWithOverrides } from "tiny-editorconfig";
 import type { FormatOptions } from "./types.js";
 
 const getEditorConfig = memoize(async (folderPath: string): Promise<ConfigWithOverrides | undefined> => {
+  if (!Known.hasFileName(".editorconfig")) return;
   const filePath = fastJoinedPath(folderPath, ".editorconfig");
-  if (!Known.hasFile(filePath)) return;
+  if (!Known.hasFilePath(filePath)) return;
   try {
     const fileContent = await fs.readFile(filePath, "utf8");
     const config = EditorConfig.parse(fileContent);

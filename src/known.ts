@@ -1,40 +1,40 @@
 //FIXME: This shouldn't be a singleton, but passing it through the whole CLI is a bit of a pain right now
 
 class Known {
-  private files: Set<string> = new Set();
-  private folders: Set<string> = new Set();
+  private filesPaths: Set<string> = new Set();
+  private filesNames: Set<string> = new Set();
 
-  addFiles(filesPaths: Array<string> | Set<string>): void {
-    if (!this.files.size) {
-      this.files = new Set(filesPaths);
+  addFilesPaths(filesPaths: Array<string> | Set<string>): void {
+    if (!this.filesPaths.size) {
+      this.filesPaths = new Set(filesPaths);
     } else {
       for (const filePath of filesPaths) {
-        this.files.add(filePath);
+        this.filesPaths.add(filePath);
       }
     }
   }
 
-  addFolders(folderPaths: Array<string> | Set<string>): void {
-    if (!this.folders.size) {
-      this.folders = new Set(folderPaths);
+  addFilesNames(filesNames: Array<string> | Set<string>): void {
+    if (!this.filesNames.size) {
+      this.filesNames = new Set(filesNames);
     } else {
-      for (const folderPath of folderPaths) {
-        this.folders.add(folderPath);
+      for (const fileName of filesNames) {
+        this.filesNames.add(fileName);
       }
     }
   }
 
-  hasFile(filePath: string): boolean {
-    return this.files.has(filePath);
+  hasFilePath(filePath: string): boolean {
+    return this.filesPaths.has(filePath);
   }
 
-  hasFolder(folderPath: string): boolean {
-    return this.folders.has(folderPath);
+  hasFileName(fileName: string): boolean {
+    return this.filesNames.has(fileName);
   }
 
   reset(): void {
-    this.files = new Set();
-    this.folders = new Set();
+    this.filesPaths = new Set();
+    this.filesNames = new Set();
   }
 }
 

@@ -1,5 +1,6 @@
 import isBinaryPath from "is-binary-path";
 import stringify from "json-sorted-stringify";
+import path from "node:path";
 import process from "node:process";
 import Cache from "./cache.js";
 import { getEditorConfigsMap, getEditorConfigResolved, getEditorConfigFormatOptions } from "./config_editorconfig.js";
@@ -21,17 +22,18 @@ async function run(options: Options): Promise<void> {
 
   const rootPath = process.cwd();
   const projectPath = getProjectPath(rootPath);
-  const [filesPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, options.globs);
+  const [filesPaths, filesNames, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, options.globs);
   const filesPathsTargets = filesPaths.filter(negate(isBinaryPath)).sort();
   const [foldersPathsTargetsUnsorted, foldersExtraPaths] = getExpandedFoldersPaths(foldersFoundPaths, projectPath);
   const foldersPathsTargets = [...foldersPathsTargetsUnsorted, rootPath, ...foldersExtraPaths];
   const filesExtraPaths = await getFoldersChildrenPaths([rootPath, ...foldersExtraPaths]);
+  const filesExtraNames = filesExtraPaths.map((filePath) => path.basename(filePath));
 
-  Known.addFiles(filesFoundPaths);
-  Known.addFiles(filesExtraPaths);
+  Known.addFilesPaths(filesFoundPaths);
+  Known.addFilesPaths(filesExtraPaths);
 
-  Known.addFolders(foldersFoundPaths);
-  Known.addFolders(foldersExtraPaths);
+  Known.addFilesNames(filesNames);
+  Known.addFilesNames(filesExtraNames);
 
   const prettierVersion = PRETTIER_VERSION;
   const cliVersion = CLI_VERSION;

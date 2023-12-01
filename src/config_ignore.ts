@@ -6,8 +6,9 @@ import { fastJoinedPath, fastRelativeChildPath, memoize, someOf, zipObject } fro
 import type { Ignore } from "./types.js";
 
 const getIgnoreContentBy = async (folderPath: string, fileName: string): Promise<string | undefined> => {
+  if (!Known.hasFileName(fileName)) return;
   const filePath = fastJoinedPath(folderPath, fileName);
-  if (!Known.hasFile(filePath)) return;
+  if (!Known.hasFilePath(filePath)) return;
   try {
     return await fs.readFile(filePath, "utf8");
   } catch {
