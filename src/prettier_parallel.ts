@@ -8,6 +8,7 @@ function makeParallel(options: Options): Prettier {
     name: "prettier",
     size: options.parallelWorkers || Math.max(1, os.cpus().length - 1),
     methods: new URL("./prettier_serial.js", import.meta.url),
+    warmup: true,
   });
 
   return {
