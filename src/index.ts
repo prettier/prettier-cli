@@ -22,7 +22,7 @@ async function run(options: Options): Promise<void> {
 
   const rootPath = process.cwd();
   const projectPath = getProjectPath(rootPath);
-  const [filesPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(projectPath, options.globs);
+  const [filesPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, options.globs);
   const filesPathsTargets = filesPaths.filter(negate(isBinaryPath)).sort();
   const [foldersPathsTargetsUnsorted, foldersExtraPaths] = getExpandedFoldersPaths(foldersFoundPaths, projectPath);
   const foldersPathsTargets = [...foldersPathsTargetsUnsorted, rootPath, ...foldersExtraPaths];
