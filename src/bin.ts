@@ -118,11 +118,6 @@ bin("prettier", "Prettier is an opinionated code formatter")
     section: "Config",
     default: true,
   })
-  // .option(
-  //   "--config-precedence <cli-override|file-override|prefer-file>",
-  //   'Define in which order config files and CLI options should be evaluated.\nDefaults to "cli-override"',
-  //   { section: "Config" },
-  // )
   .option("--no-editorconfig", "Don't take .editorconfig into account when parsing configuration", {
     section: "Config",
     default: true,
