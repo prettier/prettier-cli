@@ -24,6 +24,7 @@
   "dependencies": {
     "atomically": "^2.0.2",
     "ignore": "^5.3.0",
+    "is-binary-path": "^2.1.0",
     "js-yaml": "^4.1.0",
     "json-sorted-stringify": "^1.0.0",
     "pioppo": "^1.1.0",

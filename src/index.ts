@@ -1,3 +1,4 @@
+import isBinaryPath from "is-binary-path";
 import stringify from "json-sorted-stringify";
 import process from "node:process";
 import Cache from "./cache.js";
@@ -9,7 +10,7 @@ import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { getExpandedFoldersPaths, getFoldersChildrenPaths, getProjectPath, getTargetsPaths } from "./utils.js";
-import { fastRelativePath, isString, isUndefined, pluralize } from "./utils.js";
+import { fastRelativePath, isString, isUndefined, negate, pluralize } from "./utils.js";
 import type { FormatOptions, Options } from "./types.js";
 
 async function run(options: Options): Promise<void> {
@@ -22,7 +23,7 @@ async function run(options: Options): Promise<void> {
   const rootPath = process.cwd();
   const projectPath = getProjectPath(rootPath);
   const [filesPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(projectPath, options.globs);
-  const filesPathsTargets = filesPaths.sort();
+  const filesPathsTargets = filesPaths.filter(negate(isBinaryPath)).sort();
   const [foldersPathsTargetsUnsorted, foldersExtraPaths] = getExpandedFoldersPaths(foldersFoundPaths, projectPath);
   const foldersPathsTargets = [...foldersPathsTargetsUnsorted, rootPath, ...foldersExtraPaths];
   const filesExtraPaths = await getFoldersChildrenPaths([rootPath, ...foldersExtraPaths]);
