@@ -263,6 +263,13 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
 
   const formatOptions: FormatOptions = {};
 
+  if ("experimentalTernaries" in options) {
+    const value = options.experimentalTernaries;
+    if (isBoolean(value)) {
+      formatOptions.experimentalTernaries = value;
+    }
+  }
+
   if ("arrowParens" in options) {
     const value = options.arrowParens;
     if (value === "avoid" || value === "always") {

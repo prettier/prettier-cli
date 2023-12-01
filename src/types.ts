@@ -1,4 +1,5 @@
 type FormatOptions = {
+  experimentalTernaries?: boolean;
   arrowParens?: "avoid" | "always";
   bracketSameLine?: boolean;
   bracketSpacing?: boolean;

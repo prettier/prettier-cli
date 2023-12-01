@@ -41,6 +41,11 @@ bin("prettier", "Prettier is an opinionated code formatter")
   .option("--write, -w", "Edit files in-place (Beware!)", { section: "Output" })
   /* FORMAT OPTIONS */
   .option(
+    "--experimental-ternaries",
+    'Use curious ternaries, with the question mark after the condition\nDefaults to "false"',
+    { section: "Format" },
+  )
+  .option(
     "--arrow-parens <always|avoid>",
     'Include parentheses around a sole arrow function parameter\nDefaults to "always"',
     { section: "Format", enum: ["always", "avoid"] },
