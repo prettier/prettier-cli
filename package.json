@@ -35,6 +35,7 @@
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",
     "tiny-readdir-glob": "^1.0.4",
+    "tiny-spinner": "^2.0.3",
     "worktank": "^2.5.2",
     "zeptomatch": "^1.2.2"
   },

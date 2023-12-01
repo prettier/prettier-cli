@@ -15,10 +15,9 @@ import type { FormatOptions, Options } from "./types.js";
 
 async function run(options: Options): Promise<void> {
   const logger = new Logger(options.logLevel);
+  const spinner = options.check ? logger.spinner.log() : undefined;
 
-  if (options.check) {
-    logger.log("Checking formatting...");
-  }
+  spinner?.start("Checking formatting...");
 
   const rootPath = process.cwd();
   const projectPath = getProjectPath(rootPath);
@@ -59,15 +58,21 @@ async function run(options: Options): Promise<void> {
         const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
         return formatOptions;
       };
-      if (options.check || options.list) {
-        return prettier.checkWithPath(filePath, getFormatOptions);
-      } else if (options.write) {
-        return prettier.writeWithPath(filePath, getFormatOptions);
-      } else {
-        return prettier.formatWithPath(filePath, getFormatOptions);
+      try {
+        if (options.check || options.list) {
+          return await prettier.checkWithPath(filePath, getFormatOptions);
+        } else if (options.write) {
+          return await prettier.writeWithPath(filePath, getFormatOptions);
+        } else {
+          return await prettier.formatWithPath(filePath, getFormatOptions);
+        }
+      } finally {
+        spinner?.update(fastRelativePath(rootPath, filePath));
       }
     }),
   );
+
+  spinner?.stop("Checking formatting...");
 
   let totalFound = filesResults.length;
   let totalFormatted = 0;

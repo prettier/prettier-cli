@@ -1,5 +1,6 @@
 import Pioppo from "pioppo";
 import { color } from "specialist";
+import Spinner from "tiny-spinner";
 import { resolve } from "./utils.js";
 import type { FunctionMaybe, LogLevel } from "./types.js";
 
@@ -78,6 +79,37 @@ class Logger {
 
     always: (message: FunctionMaybe<string>): void => {
       this.absract(message, Infinity);
+    },
+  };
+
+  spinner = {
+    abstract: (strength: number): Spinner | undefined => {
+      if (strength < this.strength) return;
+      return new Spinner();
+    },
+
+    silent: (): Spinner | undefined => {
+      return this.spinner.abstract(0);
+    },
+
+    debug: (): Spinner | undefined => {
+      return this.spinner.abstract(1);
+    },
+
+    log: (): Spinner | undefined => {
+      return this.spinner.abstract(2);
+    },
+
+    warn: (): Spinner | undefined => {
+      return this.spinner.abstract(3);
+    },
+
+    error: (): Spinner | undefined => {
+      return this.spinner.abstract(4);
+    },
+
+    always: (): Spinner | undefined => {
+      return this.spinner.abstract(Infinity);
     },
   };
 }
