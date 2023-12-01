@@ -15,52 +15,26 @@ bin("prettier", "Prettier is an opinionated code formatter")
   .package("prettier", PRETTIER_VERSION)
   /* USAGES */
   .usage(`${color.cyan("prettier")} ${color.yellow("[file/dir/glob...]")} ${color.green("[options]")}`)
-  .usage(
-    `${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--check")} ${color.green("--parallel")}`,
-  )
+  .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--check")} ${color.green("--parallel")}`)
   .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("-l")} ${color.green("--no-cache")}`)
-  .usage(
-    `${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--write")} ${color.green("--parallel")}`,
-  )
-  .usage(
-    `${color.cyan("prettier")} ${color.yellow("./path/to/target/file.js")} ${color.green(
-      "--cache-location",
-    )} ${color.blue("./path/to/cache/file.json")}`,
-  )
+  .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--write")} ${color.green("--parallel")}`)
+  .usage(`${color.cyan("prettier")} ${color.yellow("./path/to/target/file.js")} ${color.green("--cache-location")} ${color.blue("./path/to/cache/file.json")}`)
   /* OUTPUT OPTIONS */
-  .option(
-    "--check, -c",
-    "Check if the given files are formatted, print a human-friendly summary (see also --list-different)",
-    { section: "Output" },
-  )
-  .option(
-    "--list-different, -l",
-    "Print the names of files that are different from Prettier's formatting (see also --check)",
-    { section: "Output" },
-  )
+  .option("--check, -c", "Check if the given files are formatted, print a human-friendly summary (see also --list-different)", { section: "Output" })
+  .option("--list-different, -l", "Print the names of files that are different from Prettier's formatting (see also --check)", { section: "Output" })
   .option("--write, -w", "Edit files in-place (Beware!)", { section: "Output" })
   /* FORMAT OPTIONS */
-  .option(
-    "--experimental-ternaries",
-    'Use curious ternaries, with the question mark after the condition\nDefaults to "false"',
-    { section: "Format" },
-  )
-  .option(
-    "--arrow-parens <always|avoid>",
-    'Include parentheses around a sole arrow function parameter\nDefaults to "always"',
-    { section: "Format", enum: ["always", "avoid"] },
-  )
-  .option(
-    "--bracket-same-line",
-    'Put ">" of opening tags on the last line instead of on a new line\nDefaults to "false"',
-    { section: "Format" },
-  )
+  .option("--experimental-ternaries", 'Use curious ternaries, with the question mark after the condition\nDefaults to "false"', { section: "Format" })
+  .option("--arrow-parens <always|avoid>", 'Include parentheses around a sole arrow function parameter\nDefaults to "always"', {
+    section: "Format",
+    enum: ["always", "avoid"],
+  })
+  .option("--bracket-same-line", 'Put ">" of opening tags on the last line instead of on a new line\nDefaults to "false"', { section: "Format" })
   .option("--no-bracket-spacing", 'Do not print spaces between brackets\nDefaults to "true"', { section: "Format" })
-  .option(
-    "--embedded-language-formatting <auto|off>",
-    'Control how Prettier formats quoted code embedded in the file\nDefaults to "auto"',
-    { section: "Format", enum: ["auto", "off"] },
-  )
+  .option("--embedded-language-formatting <auto|off>", 'Control how Prettier formats quoted code embedded in the file\nDefaults to "auto"', {
+    section: "Format",
+    enum: ["auto", "off"],
+  })
   .option("--end-of-line <lf|crlf|cr|auto>", 'Which end of line characters to apply\nDefaults to "lf"', {
     section: "Format",
     enum: ["lf", "crlf", "cr", "auto"],
@@ -82,28 +56,18 @@ bin("prettier", "Prettier is an opinionated code formatter")
     section: "Format",
     enum: ["always", "never", "preserve"],
   })
-  .option(
-    "--quote-props <as-needed|consistent|preserve>",
-    'Change when properties in objects are quoted\nDefaults to "as-needed"',
-    { section: "Format", enum: ["as-needed", "consistent", "preserve"] },
-  )
-  .option(
-    "--no-semi",
-    'Do not print semicolons, except at the beginning of lines which may need them\nDefaults to "true"',
-    { section: "Format" },
-  )
-  .option(
-    "--single-attribute-per-line",
-    'Enforce single attribute per line in HTML, Vue and JSX\nDefaults to "false"',
-    { section: "Format" },
-  )
+  .option("--quote-props <as-needed|consistent|preserve>", 'Change when properties in objects are quoted\nDefaults to "as-needed"', {
+    section: "Format",
+    enum: ["as-needed", "consistent", "preserve"],
+  })
+  .option("--no-semi", 'Do not print semicolons, except at the beginning of lines which may need them\nDefaults to "true"', { section: "Format" })
+  .option("--single-attribute-per-line", 'Enforce single attribute per line in HTML, Vue and JSX\nDefaults to "false"', { section: "Format" })
   .option("--single-quote", 'Use single quotes instead of double quotes\nDefaults to "false"', { section: "Format" })
   .option("--tab-width <int>", 'Number of spaces per indentation level\nDefaults to "2"', { section: "Format" })
-  .option(
-    "--trailing-comma <all|es5|none>",
-    'Print trailing commas wherever possible when multi-line\nDefaults to "all"',
-    { section: "Format", enum: ["all", "es5", "none"] },
-  )
+  .option("--trailing-comma <all|es5|none>", 'Print trailing commas wherever possible when multi-line\nDefaults to "all"', {
+    section: "Format",
+    enum: ["all", "es5", "none"],
+  })
   .option("--use-tabs", 'Indent with tabs instead of spaces\nDefaults to "false"', { section: "Format" })
   .option("--vue-indent-script-and-style", 'Indent script and style tags in Vue files\nDefaults to "false"', {
     section: "Format",

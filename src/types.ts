@@ -67,15 +67,4 @@ type PrettierConfigWithOverrides = PrettierConfig & {
 
 type PromiseMaybe<T> = T | Promise<T>;
 
-export type {
-  FormatOptions,
-  FunctionMaybe,
-  Ignore,
-  LazyFormatOptions,
-  LogLevel,
-  Options,
-  Prettier,
-  PrettierConfig,
-  PrettierConfigWithOverrides,
-  PromiseMaybe,
-};
+export type { FormatOptions, FunctionMaybe, Ignore, LazyFormatOptions, LogLevel, Options, Prettier, PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe };

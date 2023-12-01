@@ -42,7 +42,7 @@ async function run(options: Options): Promise<void> {
   const ignoreContents = await getIgnoresContentMap(foldersPathsTargets);
   const prettierConfigs = options.config ? await getPrettierConfigsMap(foldersPathsTargets) : {};
   const cliConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliConfig }); // prettier-ignore
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliConfig });
 
   Known.reset();
 
@@ -55,7 +55,7 @@ async function run(options: Options): Promise<void> {
       const ignored = await getIgnoreResolved(filePath);
       if (ignored) return;
       const getFormatOptions = async (): Promise<FormatOptions> => {
-        const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath)) : {}; // prettier-ignore
+        const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath)) : {};
         const prettierConfig = options.config ? await getPrettierConfigResolved(filePath) : {};
         const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
         return formatOptions;
@@ -127,9 +127,7 @@ async function run(options: Options): Promise<void> {
 
   if (totalUnformatted) {
     if (options.check) {
-      logger.prefixed.warn(
-        `Code style issues found in ${totalUnformatted} ${pluralize("file", totalUnformatted)}. Run Prettier to fix.`,
-      );
+      logger.prefixed.warn(`Code style issues found in ${totalUnformatted} ${pluralize("file", totalUnformatted)}. Run Prettier to fix.`);
     }
   }
 
@@ -149,7 +147,7 @@ async function run(options: Options): Promise<void> {
 
   cache.write();
 
-  process.exitCode = (!totalFound && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0; // prettier-ignore
+  process.exitCode = (!totalFound && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
 }
 
 export { run };

@@ -59,10 +59,4 @@ const getEditorConfigFormatOptions = (config: Config): FormatOptions => {
   return formatOptions;
 };
 
-export {
-  getEditorConfig,
-  getEditorConfigsMap,
-  getEditorConfigsUp,
-  getEditorConfigResolved,
-  getEditorConfigFormatOptions,
-};
+export { getEditorConfig, getEditorConfigsMap, getEditorConfigsUp, getEditorConfigResolved, getEditorConfigFormatOptions };

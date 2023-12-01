@@ -214,7 +214,7 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   if (!isObject(options)) exit("Invalid options object");
 
   const targetsGlobs = targets.filter(isString);
-  const targetsStatic = "--" in options && Array.isArray(options["--"]) ? options["--"].filter(isString).map(zeptomatch.escape) : []; // prettier-ignore
+  const targetsStatic = "--" in options && Array.isArray(options["--"]) ? options["--"].filter(isString).map(zeptomatch.escape) : [];
   const globs = [...targetsGlobs, ...targetsStatic];
 
   if (!globs.length) exit("Expected at least one target file/dir/glob");
@@ -233,9 +233,9 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   const editorConfig = "editorconfig" in options ? !!options.editorconfig : true;
 
   const cache = "cache" in options ? !!options.cache : true;
-  const cacheLocation = "cacheLocation" in options && isString(options.cacheLocation) ? options.cacheLocation : undefined; // prettier-ignore
+  const cacheLocation = "cacheLocation" in options && isString(options.cacheLocation) ? options.cacheLocation : undefined;
   const errorOnUnmatchedPattern = "errorOnUnmatchedPattern" in options ? !!options.errorOnUnmatchedPattern : true;
-  const ignoreUnknown = "ignoreUnknown" in options && isBoolean(options.ignoreUnknown) ? !!options.ignoreUnknown : globs.some(isGlobStatic); // prettier-ignore
+  const ignoreUnknown = "ignoreUnknown" in options && isBoolean(options.ignoreUnknown) ? !!options.ignoreUnknown : globs.some(isGlobStatic);
 
   const logLevel = "logLevel" in options ? ((options.logLevel || "log") as LogLevel) : "log";
   const parallel = "parallel" in options && !!options.parallel;

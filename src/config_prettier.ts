@@ -41,7 +41,7 @@ const loaders = [
     },
   },
   {
-    files: [".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"], // prettier-ignore
+    files: [".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"],
     loader: async (filePath: string): Promise<unknown> => {
       const exists = sfs.existsSync(filePath);
       if (!exists) return;
