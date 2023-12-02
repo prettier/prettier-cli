@@ -4,7 +4,7 @@ import path from "node:path";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatch from "zeptomatch";
-import type { FormatOptions, FunctionMaybe, LogLevel, Options, PrettierConfigWithOverrides } from "./types.js";
+import type { FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
@@ -491,11 +491,24 @@ function someOf<T>(fns: ((arg: T) => unknown)[]): (arg: T) => boolean {
   };
 }
 
-function zipObject<T extends number | string | symbol, U>(keys: T[], values: U[]): Partial<Record<T, U>> {
+function zipObject<T extends Key, U>(keys: T[], values: U[]): Partial<Record<T, U>> {
   const map: Partial<Record<T, U>> = {};
 
   for (let i = 0, l = keys.length; i < l; i++) {
     map[keys[i]] = values[i];
+  }
+
+  return map;
+}
+
+function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (value: U) => boolean): Partial<Record<T, U>> {
+  const map: Partial<Record<T, U>> = {};
+
+  for (let i = 0, l = keys.length; i < l; i++) {
+    const value = values[i];
+    if (!unless(value)) {
+      map[keys[i]] = value;
+    }
   }
 
   return map;
@@ -537,4 +550,5 @@ export {
   sha1base64,
   someOf,
   zipObject,
+  zipObjectUnless,
 };

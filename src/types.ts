@@ -26,6 +26,8 @@ type FunctionMaybe<T> = T | (() => T);
 
 type Ignore = (filePath: string) => boolean;
 
+type Key = string | number | symbol;
+
 type LazyFormatOptions = FunctionMaybe<PromiseMaybe<FormatOptions>>;
 
 type LogLevel = "error" | "warn" | "log" | "debug" | "silent";
@@ -67,4 +69,16 @@ type PrettierConfigWithOverrides = PrettierConfig & {
 
 type PromiseMaybe<T> = T | Promise<T>;
 
-export type { FormatOptions, FunctionMaybe, Ignore, LazyFormatOptions, LogLevel, Options, Prettier, PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe };
+export type {
+  FormatOptions,
+  FunctionMaybe,
+  Ignore,
+  Key,
+  LazyFormatOptions,
+  LogLevel,
+  Options,
+  Prettier,
+  PrettierConfig,
+  PrettierConfigWithOverrides,
+  PromiseMaybe,
+};

@@ -2,11 +2,10 @@ import ignore from "ignore";
 import fs from "node:fs/promises";
 import path from "node:path";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath, isString, memoize, someOf, zipObject } from "./utils.js";
+import { fastJoinedPath, fastRelativeChildPath, isString, isUndefined, memoize, someOf, zipObjectUnless } from "./utils.js";
 import type { Ignore } from "./types.js";
 
 const getIgnoreContentBy = async (folderPath: string, fileName: string): Promise<string | undefined> => {
-  if (!Known.hasFileName(fileName)) return;
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!Known.hasFilePath(filePath)) return;
   try {
@@ -14,15 +13,16 @@ const getIgnoreContentBy = async (folderPath: string, fileName: string): Promise
   } catch {}
 };
 
-const getIgnoresContent = memoize(async (folderPath: string, filesNames: string[]): Promise<string[]> => {
+const getIgnoresContent = memoize(async (folderPath: string, filesNames: string[]): Promise<string[] | undefined> => {
   const contentsRaw = await Promise.all(filesNames.map((fileName) => getIgnoreContentBy(folderPath, fileName)));
   const contents = contentsRaw.filter(isString);
+  if (!contents.length) return;
   return contents;
 });
 
 const getIgnoresContentMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, string[]>>> => {
   const contents = await Promise.all(foldersPaths.map((folderPath) => getIgnoresContent(folderPath, filesNames)));
-  const map = zipObject(foldersPaths, contents);
+  const map = zipObjectUnless(foldersPaths, contents, isUndefined);
   return map;
 };
 
@@ -38,7 +38,7 @@ const getIgnoreBy = (folderPath: string, fileContent: string): Ignore => {
 
 const getIgnores = memoize(async (folderPath: string, filesNames: string[]): Promise<Ignore | undefined> => {
   const contents = await getIgnoresContent(folderPath, filesNames);
-  if (!contents.length) return;
+  if (!contents?.length) return;
   const ignores = contents.map((content) => getIgnoreBy(folderPath, content));
   const ignore = someOf(ignores);
   return ignore;

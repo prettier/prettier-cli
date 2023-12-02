@@ -6,7 +6,7 @@ import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath } from "./utils.js";
-import { isObject, memoize, normalizePrettierOptions, omit, zipObject } from "./utils.js";
+import { isObject, isUndefined, memoize, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides } from "./types.js";
 
 //TODO: Maybe completely drop support for JSON5, or implement it properly
@@ -62,7 +62,6 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
 const getPrettierConfig = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides | undefined> => {
   for (let i = 0, l = filesNames.length; i < l; i++) {
     const fileName = filesNames[i];
-    if (!Known.hasFileName(fileName)) continue;
     const filePath = fastJoinedPath(folderPath, fileName);
     if (!Known.hasFilePath(filePath)) continue;
     const loader = File2Loader[fileName];
@@ -78,7 +77,7 @@ const getPrettierConfig = memoize(async (folderPath: string, filesNames: string[
 
 const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, PrettierConfig>>> => {
   const configs = await Promise.all(foldersPaths.map((folderPath) => getPrettierConfig(folderPath, filesNames)));
-  const map = zipObject(foldersPaths, configs);
+  const map = zipObjectUnless(foldersPaths, configs, isUndefined);
   return map;
 };
 

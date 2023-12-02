@@ -2,14 +2,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import * as EditorConfig from "tiny-editorconfig";
 import Known from "./known.js";
-import { fastJoinedPath, findLastIndex, memoize, zipObject } from "./utils.js";
+import { fastJoinedPath, findLastIndex, isUndefined, memoize, zipObjectUnless } from "./utils.js";
 import type { Config, ConfigWithOverrides } from "tiny-editorconfig";
 import type { FormatOptions } from "./types.js";
 
 const getEditorConfig = memoize(async (folderPath: string, filesNames: string[]): Promise<ConfigWithOverrides | undefined> => {
   for (let i = 0, l = filesNames.length; i < l; i++) {
     const fileName = filesNames[i];
-    if (!Known.hasFileName(fileName)) return;
     const filePath = fastJoinedPath(folderPath, fileName);
     if (!Known.hasFilePath(filePath)) return;
     try {
@@ -22,7 +21,7 @@ const getEditorConfig = memoize(async (folderPath: string, filesNames: string[])
 
 const getEditorConfigsMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, ConfigWithOverrides>>> => {
   const configs = await Promise.all(foldersPaths.map((folderPath) => getEditorConfig(folderPath, filesNames)));
-  const map = zipObject(foldersPaths, configs);
+  const map = zipObjectUnless(foldersPaths, configs, isUndefined);
   return map;
 };
 
