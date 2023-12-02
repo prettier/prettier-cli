@@ -11,7 +11,6 @@ import type { PrettierConfig, PrettierConfigWithOverrides } from "./types.js";
 
 //TODO: Maybe completely drop support for JSON5, or implement it properly
 //TODO: Maybe add support for TOML
-//TODO: Check which of these file names have been found in the repo just once
 
 const Loaders = {
   js: async (filePath: string): Promise<unknown> => {

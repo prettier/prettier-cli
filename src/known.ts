@@ -4,7 +4,7 @@ class Known {
   private filesPaths: Set<string> = new Set();
   private filesNames: Set<string> = new Set();
 
-  addFilesPaths(filesPaths: Array<string> | Set<string>): void {
+  addFilesPaths = (filesPaths: Array<string> | Set<string>): void => {
     if (!this.filesPaths.size) {
       this.filesPaths = new Set(filesPaths);
     } else {
@@ -12,9 +12,9 @@ class Known {
         this.filesPaths.add(filePath);
       }
     }
-  }
+  };
 
-  addFilesNames(filesNames: Array<string> | Set<string>): void {
+  addFilesNames = (filesNames: Array<string> | Set<string>): void => {
     if (!this.filesNames.size) {
       this.filesNames = new Set(filesNames);
     } else {
@@ -22,20 +22,20 @@ class Known {
         this.filesNames.add(fileName);
       }
     }
-  }
+  };
 
-  hasFilePath(filePath: string): boolean {
+  hasFilePath = (filePath: string): boolean => {
     return this.filesPaths.has(filePath);
-  }
+  };
 
-  hasFileName(fileName: string): boolean {
+  hasFileName = (fileName: string): boolean => {
     return this.filesNames.has(fileName);
-  }
+  };
 
-  reset(): void {
+  reset = (): void => {
     this.filesPaths = new Set();
     this.filesNames = new Set();
-  }
+  };
 }
 
 export default new Known();

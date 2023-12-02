@@ -39,9 +39,9 @@ async function run(options: Options): Promise<void> {
   const cliVersion = CLI_VERSION;
   const pluginsVersions = ""; //TODO
 
-  const editorConfigNames = [".editorconfig"];
-  const ignoreNames = [".gitignore", ".prettierignore"];
-  const prettierConfigNames = ["package.json", ".prettierrc", ".prettierrc.yml", ".prettierrc.yaml", ".prettierrc.json", ".prettierrc.jsonc", ".prettierrc.json5", ".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"]; // prettier-ignore
+  const editorConfigNames = [".editorconfig"].filter(Known.hasFileName);
+  const ignoreNames = [".gitignore", ".prettierignore"].filter(Known.hasFileName);
+  const prettierConfigNames = ["package.json", ".prettierrc", ".prettierrc.yml", ".prettierrc.yaml", ".prettierrc.json", ".prettierrc.jsonc", ".prettierrc.json5", ".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"].filter(Known.hasFileName); // prettier-ignore
 
   const editorConfigs = options.editorConfig ? await getEditorConfigsMap(foldersPathsTargets, editorConfigNames) : {};
   const ignoreContents = await getIgnoresContentMap(foldersPathsTargets, ignoreNames);
