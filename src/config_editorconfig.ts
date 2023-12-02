@@ -10,7 +10,7 @@ const getEditorConfig = memoize(async (folderPath: string, filesNames: string[])
   for (let i = 0, l = filesNames.length; i < l; i++) {
     const fileName = filesNames[i];
     const filePath = fastJoinedPath(folderPath, fileName);
-    if (!Known.hasFilePath(filePath)) return;
+    if (!Known.hasFilePath(filePath)) continue;
     try {
       const fileContent = await fs.readFile(filePath, "utf8");
       const config = EditorConfig.parse(fileContent);
