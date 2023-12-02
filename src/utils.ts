@@ -191,13 +191,15 @@ function isUndefined(value: unknown): value is undefined {
   return typeof value === "undefined";
 }
 
-function memoize<T, Return>(fn: (arg: T) => Return): ((arg: T) => Return) & { cache: Map<T, Return> } {
-  const memoized = (arg: T): Return => {
+//FIXME: Ensure all arguments are actually taken into account
+function memoize<Args extends unknown[], Return>(fn: (...args: Args) => Return): ((...args: Args) => Return) & { cache: Map<Args[0], Return> } {
+  const memoized = (...args: Args): Return => {
     const { cache } = memoized;
-    const cached = cache.get(arg);
-    if (!isUndefined(cached) || cache.has(arg)) return cached;
-    const result = fn(arg);
-    cache.set(arg, result);
+    const id = args[0];
+    const cached = cache.get(id);
+    if (!isUndefined(cached) || cache.has(id)) return cached;
+    const result = fn(...args);
+    cache.set(id, result);
     return result;
   };
   memoized.cache = new Map();

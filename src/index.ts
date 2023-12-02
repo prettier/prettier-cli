@@ -38,9 +38,15 @@ async function run(options: Options): Promise<void> {
   const prettierVersion = PRETTIER_VERSION;
   const cliVersion = CLI_VERSION;
   const pluginsVersions = ""; //TODO
-  const editorConfigs = options.editorConfig ? await getEditorConfigsMap(foldersPathsTargets) : {};
-  const ignoreContents = await getIgnoresContentMap(foldersPathsTargets);
-  const prettierConfigs = options.config ? await getPrettierConfigsMap(foldersPathsTargets) : {};
+
+  const editorConfigNames = [".editorconfig"];
+  const ignoreNames = [".gitignore", ".prettierignore"];
+  const prettierConfigNames = ["package.json", ".prettierrc", ".prettierrc.yml", ".prettierrc.yaml", ".prettierrc.json", ".prettierrc.jsonc", ".prettierrc.json5", ".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"]; // prettier-ignore
+
+  const editorConfigs = options.editorConfig ? await getEditorConfigsMap(foldersPathsTargets, editorConfigNames) : {};
+  const ignoreContents = await getIgnoresContentMap(foldersPathsTargets, ignoreNames);
+  const prettierConfigs = options.config ? await getPrettierConfigsMap(foldersPathsTargets, prettierConfigNames) : {};
+
   const cliConfig = options.formatOptions;
   const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliConfig });
 
@@ -52,11 +58,11 @@ async function run(options: Options): Promise<void> {
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
   const filesResults = await Promise.allSettled(
     filesPathsTargets.map(async (filePath) => {
-      const ignored = await getIgnoreResolved(filePath);
+      const ignored = await getIgnoreResolved(filePath, ignoreNames);
       if (ignored) return;
       const getFormatOptions = async (): Promise<FormatOptions> => {
-        const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath)) : {};
-        const prettierConfig = options.config ? await getPrettierConfigResolved(filePath) : {};
+        const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
+        const prettierConfig = options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {};
         const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
         return formatOptions;
       };
@@ -133,9 +139,7 @@ async function run(options: Options): Promise<void> {
 
   // if (totalErrored) {
   //   if (options.check) {
-  //     logger.prefixed.error(
-  //       `Parsing issues found in ${totalErrored} ${pluralize("file", totalErrored)}. Check files to fix.`,
-  //     );
+  //     logger.prefixed.error(`Parsing issues found in ${totalErrored} ${pluralize("file", totalErrored)}. Check files to fix.`);
   //   }
   // }
 

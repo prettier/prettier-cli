@@ -6,37 +6,38 @@ import { fastJoinedPath, findLastIndex, memoize, zipObject } from "./utils.js";
 import type { Config, ConfigWithOverrides } from "tiny-editorconfig";
 import type { FormatOptions } from "./types.js";
 
-const getEditorConfig = memoize(async (folderPath: string): Promise<ConfigWithOverrides | undefined> => {
-  if (!Known.hasFileName(".editorconfig")) return;
-  const filePath = fastJoinedPath(folderPath, ".editorconfig");
-  if (!Known.hasFilePath(filePath)) return;
-  try {
-    const fileContent = await fs.readFile(filePath, "utf8");
-    const config = EditorConfig.parse(fileContent);
-    return config;
-  } catch {
-    return;
+const getEditorConfig = memoize(async (folderPath: string, filesNames: string[]): Promise<ConfigWithOverrides | undefined> => {
+  for (let i = 0, l = filesNames.length; i < l; i++) {
+    const fileName = filesNames[i];
+    if (!Known.hasFileName(fileName)) return;
+    const filePath = fastJoinedPath(folderPath, fileName);
+    if (!Known.hasFilePath(filePath)) return;
+    try {
+      const fileContent = await fs.readFile(filePath, "utf8");
+      const config = EditorConfig.parse(fileContent);
+      return config;
+    } catch {}
   }
 });
 
-const getEditorConfigsMap = async (foldersPaths: string[]): Promise<Partial<Record<string, ConfigWithOverrides>>> => {
-  const configs = await Promise.all(foldersPaths.map(getEditorConfig));
+const getEditorConfigsMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, ConfigWithOverrides>>> => {
+  const configs = await Promise.all(foldersPaths.map((folderPath) => getEditorConfig(folderPath, filesNames)));
   const map = zipObject(foldersPaths, configs);
   return map;
 };
 
-const getEditorConfigsUp = memoize(async (folderPath: string): Promise<ConfigWithOverrides[]> => {
-  const config = await getEditorConfig(folderPath);
+const getEditorConfigsUp = memoize(async (folderPath: string, filesNames: string[]): Promise<ConfigWithOverrides[]> => {
+  const config = await getEditorConfig(folderPath, filesNames);
   const folderPathUp = path.dirname(folderPath);
-  const configsUp = folderPath !== folderPathUp ? await getEditorConfigsUp(folderPathUp) : [];
+  const configsUp = folderPath !== folderPathUp ? await getEditorConfigsUp(folderPathUp, filesNames) : [];
   const configs = config ? [...configsUp, config] : configsUp;
   const lastRootIndex = findLastIndex(configs, (config) => config.root);
   return lastRootIndex > 0 ? configs.slice(lastRootIndex) : configs;
 });
 
-const getEditorConfigResolved = async (filePath: string): Promise<Config> => {
+const getEditorConfigResolved = async (filePath: string, filesNames: string[]): Promise<Config> => {
   const folderPath = path.dirname(filePath);
-  const configs = await getEditorConfigsUp(folderPath);
+  const configs = await getEditorConfigsUp(folderPath, filesNames);
   const config = EditorConfig.resolve(configs, filePath);
   return config;
 };
