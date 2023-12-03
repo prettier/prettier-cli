@@ -52,7 +52,8 @@ async function run(options: Options): Promise<void> {
 
   Known.reset();
 
-  const cache = new Cache(cacheVersion, projectPath, options, logger);
+  const shouldCache = isUndefined(cliConfig.cursorOffset);
+  const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, logger) : undefined;
   const prettier = await makePrettier(options, cache);
 
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
@@ -149,7 +150,7 @@ async function run(options: Options): Promise<void> {
     }
   }
 
-  cache.write();
+  cache?.write();
 
   process.exitCode = (!totalFound && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
 }

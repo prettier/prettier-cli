@@ -256,6 +256,10 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   const parallelWorkers = ("parallelWorkers" in options && Math.round(Number(options.parallelWorkers))) || 0;
 
   const formatOptions = normalizeFormatOptions(options);
+  const { cursorOffset, rangeStart, rangeEnd } = formatOptions;
+
+  if (isNumber(cursorOffset) && isNumber(rangeStart)) exit('The "--cursor-offset" and "--range-start" flags cannot be used together');
+  if (isNumber(cursorOffset) && isNumber(rangeEnd)) exit('The "--cursor-offset" and "--range-end" flags cannot be used together');
 
   return {
     globs,
@@ -305,6 +309,13 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     const value = options.bracketSpacing;
     if (isBoolean(value)) {
       formatOptions.bracketSpacing = value;
+    }
+  }
+
+  if ("cursorOffset" in options) {
+    const value = Number(options.cursorOffset);
+    if (isInteger(value) && value >= 0) {
+      formatOptions.cursorOffset = value;
     }
   }
 

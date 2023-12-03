@@ -3,6 +3,7 @@ type FormatOptions = {
   arrowParens?: "avoid" | "always";
   bracketSameLine?: boolean;
   bracketSpacing?: boolean;
+  cursorOffset?: number;
   embeddedLanguageFormatting?: "auto" | "off";
   endOfLine?: "lf" | "crlf" | "cr" | "auto";
   htmlWhitespaceSensitivity?: "css" | "strict" | "ignore";

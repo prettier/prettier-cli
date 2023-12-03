@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "atomically";
+import process from "node:process";
 import prettier from "prettier/standalone";
 import prettierAcorn from "prettier/plugins/acorn";
 import prettierAngular from "prettier/plugins/angular";
@@ -13,7 +14,7 @@ import prettierMeriyah from "prettier/plugins/meriyah";
 import prettierPostcss from "prettier/plugins/postcss";
 import prettierTypescript from "prettier/plugins/typescript";
 import prettierYaml from "prettier/plugins/yaml";
-import { resolve } from "./utils.js";
+import { isNumber, resolve } from "./utils.js";
 import type { LazyFormatOptions } from "./types.js";
 
 //TODO: Avoid loading plugins until they are actually needed
@@ -29,25 +30,27 @@ async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions)
 }
 
 async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<string> {
-  return prettier.format(fileContent, {
-    ...(await resolve(formatOptions)),
-    filepath: filePath,
-    plugins: [
-      prettierAcorn,
-      prettierAngular,
-      prettierBabel,
-      prettierEstree,
-      prettierFlow,
-      prettierGlimmer,
-      prettierGraphql,
-      prettierHtml,
-      prettierMarkdown,
-      prettierMeriyah,
-      prettierPostcss,
-      prettierTypescript,
-      prettierYaml,
-    ],
-  });
+  const options = await resolve(formatOptions);
+  const plugins = [prettierAcorn, prettierAngular, prettierBabel, prettierEstree, prettierFlow, prettierGlimmer, prettierGraphql, prettierHtml, prettierMarkdown, prettierMeriyah, prettierPostcss, prettierTypescript, prettierYaml]; // prettier-ignore
+
+  if (isNumber(options.cursorOffset)) {
+    const result = await prettier.formatWithCursor(fileContent, {
+      cursorOffset: 0,
+      ...options,
+      rangeEnd: undefined,
+      rangeStart: undefined,
+      filepath: filePath,
+      plugins,
+    });
+    process.stderr.write(`${result.cursorOffset}\n`); //TODO: This should be implemented differently, pretty ugly doing it like this
+    return result.formatted;
+  } else {
+    return prettier.format(fileContent, {
+      ...options,
+      filepath: filePath,
+      plugins,
+    });
+  }
 }
 
 async function formatWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<string> {

@@ -107,11 +107,11 @@ bin("prettier", "Prettier is an opinionated code formatter")
   //   { section: "Config" },
   // )
   /* EDITOR OPTIONS */
-  // .option(
-  //   "--cursor-offset <int>",
-  //   'Print (to stderr) where a cursor at the given position would move to after formatting\nThis option cannot be used with --range-start and --range-end\nDefaults to "-1"',
-  //   { section: "Editor" },
-  // )
+  .option(
+    "--cursor-offset <int>",
+    'Print (to stderr) where a cursor at the given position would move to after formatting\nThis option cannot be used with --range-start and --range-end\nDefaults to "-1"',
+    { section: "Editor" },
+  )
   .option(
     "--range-end <int>",
     'Format code ending at a given character offset (exclusive)\nThe range will extend forwards to the end of the selected statement\nThis option cannot be used with --cursor-offset\nDefaults to "Infinity"',
