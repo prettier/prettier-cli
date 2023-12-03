@@ -5,14 +5,14 @@ import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath, isString, isUndefined, memoize, noop, someOf, zipObjectUnless } from "./utils.js";
 import type { Ignore, PromiseMaybe } from "./types.js";
 
-const getIgnoreContentBy = (folderPath: string, fileName: string): PromiseMaybe<string | undefined> => {
+const getIgnoreContent = (folderPath: string, fileName: string): PromiseMaybe<string | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!Known.hasFilePath(filePath)) return;
   return fs.readFile(filePath, "utf8").catch(noop);
 };
 
 const getIgnoresContent = memoize(async (folderPath: string, filesNames: string[]): Promise<string[] | undefined> => {
-  const contentsRaw = await Promise.all(filesNames.map((fileName) => getIgnoreContentBy(folderPath, fileName)));
+  const contentsRaw = await Promise.all(filesNames.map((fileName) => getIgnoreContent(folderPath, fileName)));
   const contents = contentsRaw.filter(isString);
   if (!contents.length) return;
   return contents;

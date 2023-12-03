@@ -1,6 +1,5 @@
 import yaml from "js-yaml";
 import fs from "node:fs/promises";
-import sfs from "node:fs";
 import path from "node:path";
 import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
@@ -14,8 +13,6 @@ import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "
 
 const Loaders = {
   js: async (filePath: string): Promise<unknown> => {
-    const exists = sfs.existsSync(filePath);
-    if (!exists) return;
     const module = await import(filePath);
     return module.default || module.exports || module.config || module.prettier; //TODO: Streamline this
   },
