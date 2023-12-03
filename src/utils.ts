@@ -147,6 +147,10 @@ function isBoolean(value: unknown): value is boolean {
   return typeof value === "boolean";
 }
 
+function isFalsy<T>(value: T): value is Extract<T, 0 | -0 | 0n | -0n | "" | false | null | undefined | void> {
+  return !value;
+}
+
 function isFile(targetPath: string): boolean {
   try {
     const stats = fs.statSync(targetPath);
@@ -187,6 +191,10 @@ function isString(value: unknown): value is string {
   return typeof value === "string";
 }
 
+function isTruthy<T>(value: T): value is Exclude<T, 0 | -0 | 0n | -0n | "" | false | null | undefined | void> {
+  return !!value;
+}
+
 function isUndefined(value: unknown): value is undefined {
   return typeof value === "undefined";
 }
@@ -210,6 +218,10 @@ function negate<T extends unknown[]>(fn: (...args: T) => boolean) {
   return (...args: T): boolean => {
     return !fn(...args);
   };
+}
+
+function noop(): undefined {
+  return;
 }
 
 function normalizeOptions(options: unknown, targets: unknown[]): Options {
@@ -530,15 +542,18 @@ export {
   getTargetsPaths,
   isArray,
   isBoolean,
+  isFalsy,
   isFunction,
   isInteger,
   isNumber,
   isObject,
   isPromise,
   isString,
+  isTruthy,
   isUndefined,
   memoize,
   negate,
+  noop,
   normalizeOptions,
   normalizeFormatOptions,
   normalizePrettierOptions,

@@ -2,20 +2,16 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import * as EditorConfig from "tiny-editorconfig";
 import Known from "./known.js";
-import { fastJoinedPath, findLastIndex, isUndefined, memoize, zipObjectUnless } from "./utils.js";
+import { fastJoinedPath, findLastIndex, isUndefined, memoize, noop, zipObjectUnless } from "./utils.js";
 import type { Config, ConfigWithOverrides } from "tiny-editorconfig";
-import type { FormatOptions } from "./types.js";
+import type { FormatOptions, PromiseMaybe } from "./types.js";
 
-const getEditorConfig = memoize(async (folderPath: string, filesNames: string[]): Promise<ConfigWithOverrides | undefined> => {
+const getEditorConfig = memoize((folderPath: string, filesNames: string[]): PromiseMaybe<ConfigWithOverrides | undefined> => {
   for (let i = 0, l = filesNames.length; i < l; i++) {
     const fileName = filesNames[i];
     const filePath = fastJoinedPath(folderPath, fileName);
     if (!Known.hasFilePath(filePath)) continue;
-    try {
-      const fileContent = await fs.readFile(filePath, "utf8");
-      const config = EditorConfig.parse(fileContent);
-      return config;
-    } catch {}
+    return fs.readFile(filePath, "utf8").then(EditorConfig.parse).catch(noop);
   }
 });
 

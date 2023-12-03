@@ -6,8 +6,8 @@ import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath } from "./utils.js";
-import { isObject, isUndefined, memoize, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
-import type { PrettierConfig, PrettierConfigWithOverrides } from "./types.js";
+import { isObject, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
+import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
 //TODO: Maybe completely drop support for JSON5, or implement it properly
 //TODO: Maybe add support for TOML
@@ -44,6 +44,7 @@ const Loaders = {
 };
 
 const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
+  default: Loaders.yaml,
   "package.json": Loaders.package,
   ".prettierrc": Loaders.yaml,
   ".prettierrc.yml": Loaders.yaml,
@@ -59,30 +60,29 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   "prettier.config.mjs": Loaders.js,
 };
 
-const getPrettierConfig = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides | undefined> => {
-  for (let i = 0, l = filesNames.length; i < l; i++) {
-    const fileName = filesNames[i];
-    const filePath = fastJoinedPath(folderPath, fileName);
-    if (!Known.hasFilePath(filePath)) continue;
-    const loader = File2Loader[fileName];
-    if (!loader) continue;
-    try {
-      const config = await loader(filePath);
-      if (!config) continue;
-      if (!isObject(config)) continue;
-      return normalizePrettierOptions(config, folderPath);
-    } catch {}
-  }
+const getPrettierConfig = (folderPath: string, fileName: string): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
+  const filePath = fastJoinedPath(folderPath, fileName);
+  if (!Known.hasFilePath(filePath)) return;
+  const loader = File2Loader[fileName] || File2Loader["default"];
+  const normalize = (config: unknown) => (isObject(config) ? normalizePrettierOptions(config, folderPath) : undefined);
+  return loader(filePath).then(normalize).catch(noop);
+};
+
+const getPrettierConfigs = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[] | undefined> => {
+  const configsRaw = await Promise.all(filesNames.map((fileName) => getPrettierConfig(folderPath, fileName)));
+  const configs = configsRaw.filter(isTruthy);
+  if (!configs.length) return;
+  return configs;
 });
 
-const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, PrettierConfig>>> => {
-  const configs = await Promise.all(foldersPaths.map((folderPath) => getPrettierConfig(folderPath, filesNames)));
+const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, PrettierConfig[]>>> => {
+  const configs = await Promise.all(foldersPaths.map((folderPath) => getPrettierConfigs(folderPath, filesNames)));
   const map = zipObjectUnless(foldersPaths, configs, isUndefined);
   return map;
 };
 
 const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[]> => {
-  const config = await getPrettierConfig(folderPath, filesNames);
+  const config = (await getPrettierConfigs(folderPath, filesNames))?.[0];
   const folderPathUp = path.dirname(folderPath);
   const configsUp = folderPath !== folderPathUp ? await getPrettierConfigsUp(folderPathUp, filesNames) : [];
   const configs = config ? [...configsUp, config] : configsUp;

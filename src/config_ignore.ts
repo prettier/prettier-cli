@@ -2,15 +2,13 @@ import ignore from "ignore";
 import fs from "node:fs/promises";
 import path from "node:path";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath, isString, isUndefined, memoize, someOf, zipObjectUnless } from "./utils.js";
-import type { Ignore } from "./types.js";
+import { fastJoinedPath, fastRelativeChildPath, isString, isUndefined, memoize, noop, someOf, zipObjectUnless } from "./utils.js";
+import type { Ignore, PromiseMaybe } from "./types.js";
 
-const getIgnoreContentBy = async (folderPath: string, fileName: string): Promise<string | undefined> => {
+const getIgnoreContentBy = (folderPath: string, fileName: string): PromiseMaybe<string | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!Known.hasFilePath(filePath)) return;
-  try {
-    return await fs.readFile(filePath, "utf8");
-  } catch {}
+  return fs.readFile(filePath, "utf8").catch(noop);
 };
 
 const getIgnoresContent = memoize(async (folderPath: string, filesNames: string[]): Promise<string[] | undefined> => {
