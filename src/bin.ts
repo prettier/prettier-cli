@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { bin, color } from "specialist";
-import { PRETTIER_VERSION } from "./constants.js";
+import { PRETTIER_VERSION, IS_BUN } from "./constants.js";
 import { normalizeOptions } from "./utils.js";
 import { run } from "./index.js";
 
@@ -139,7 +139,7 @@ bin("prettier", "Prettier is an opinionated code formatter")
     enum: ["silent", "error", "warn", "log", "debug"],
   })
   .option("--no-parallel", 'Process files in parallel\nDefaults to "true"', {
-    default: true,
+    default: !IS_BUN, //TOOD: always set this to "true", once "worker_threads" work in Bun
   })
   .option("--parallel-workers <int>", 'Number of parallel workers to use\nDefaults to "0"')
   .option(
