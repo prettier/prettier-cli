@@ -372,6 +372,20 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     }
   }
 
+  if ("rangeEnd" in options) {
+    const value = Number(options.rangeEnd);
+    if (isInteger(value) && value >= 0) {
+      formatOptions.rangeEnd = value;
+    }
+  }
+
+  if ("rangeStart" in options) {
+    const value = Number(options.rangeStart);
+    if (isInteger(value) && value >= 0) {
+      formatOptions.rangeStart = value;
+    }
+  }
+
   if ("requirePragma" in options) {
     const value = options.requirePragma;
     if (isBoolean(value)) {

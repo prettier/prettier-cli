@@ -112,16 +112,16 @@ bin("prettier", "Prettier is an opinionated code formatter")
   //   'Print (to stderr) where a cursor at the given position would move to after formatting\nThis option cannot be used with --range-start and --range-end\nDefaults to "-1"',
   //   { section: "Editor" },
   // )
-  // .option(
-  //   "--range-end <int>",
-  //   'Format code ending at a given character offset (exclusive)\nThe range will extend forwards to the end of the selected statement\nThis option cannot be used with --cursor-offset\nDefaults to "Infinity"',
-  //   { section: "Editor" },
-  // )
-  // .option(
-  //   "--range-start <int>",
-  //   'Format code starting at a given character offset\nThe range will extend backwards to the start of the first line containing the selected statement\nThis option cannot be used with --cursor-offset\nDefaults to "0"',
-  //   { section: "Editor" },
-  // )
+  .option(
+    "--range-end <int>",
+    'Format code ending at a given character offset (exclusive)\nThe range will extend forwards to the end of the selected statement\nThis option cannot be used with --cursor-offset\nDefaults to "Infinity"',
+    { section: "Editor" },
+  )
+  .option(
+    "--range-start <int>",
+    'Format code starting at a given character offset\nThe range will extend backwards to the start of the first line containing the selected statement\nThis option cannot be used with --cursor-offset\nDefaults to "0"',
+    { section: "Editor" },
+  )
   /* OTHER OPTIONS */
   .option("--no-cache", "Do not use the built-in caching mechanism", {
     default: true,

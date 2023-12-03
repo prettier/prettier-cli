@@ -12,6 +12,8 @@ type FormatOptions = {
   printWidth?: number;
   proseWrap?: "always" | "never" | "preserve";
   quoteProps?: "as-needed" | "consistent" | "preserve";
+  rangeEnd?: number;
+  rangeStart?: number;
   requirePragma?: boolean;
   semi?: boolean;
   singleAttributePerLine?: boolean;
