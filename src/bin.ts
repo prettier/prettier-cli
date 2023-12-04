@@ -5,8 +5,6 @@ import { PRETTIER_VERSION, IS_BUN } from "./constants.js";
 import { normalizeOptions } from "./utils.js";
 import { run } from "./index.js";
 
-//TODO: --find-cache
-
 bin("prettier", "Prettier is an opinionated code formatter")
   /* OPTIONS */
   .autoExit(true)
@@ -86,11 +84,6 @@ bin("prettier", "Prettier is an opinionated code formatter")
     section: "Config",
     default: true,
   })
-  // .option(
-  //   "--find-config-path <path>",
-  //   "Find and print the path to a configuration file for the given input file",
-  //   { section: "Config" },
-  // )
   // .option(
   //   "--ignore-path <path...>",
   //   "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]",
