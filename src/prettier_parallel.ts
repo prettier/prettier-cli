@@ -12,23 +12,23 @@ function makeParallel(options: Options): Prettier {
   });
 
   return {
-    async check(filePath, fileContent, formatOptions) {
-      return pool.exec("check", [filePath, fileContent, await resolve(formatOptions)]);
+    async check(filePath, fileContent, formatOptions, contextOptions) {
+      return pool.exec("check", [filePath, fileContent, await resolve(formatOptions), contextOptions]);
     },
-    async checkWithPath(filePath, formatOptions) {
-      return pool.exec("checkWithPath", [filePath, await resolve(formatOptions)]);
+    async checkWithPath(filePath, formatOptions, contextOptions) {
+      return pool.exec("checkWithPath", [filePath, await resolve(formatOptions), contextOptions]);
     },
-    async format(filePath, fileContent, formatOptions) {
-      return pool.exec("format", [filePath, fileContent, await resolve(formatOptions)]);
+    async format(filePath, fileContent, formatOptions, contextOptions) {
+      return pool.exec("format", [filePath, fileContent, await resolve(formatOptions), contextOptions]);
     },
-    async formatWithPath(filePath, formatOptions) {
-      return pool.exec("formatWithPath", [filePath, await resolve(formatOptions)]);
+    async formatWithPath(filePath, formatOptions, contextOptions) {
+      return pool.exec("formatWithPath", [filePath, await resolve(formatOptions), contextOptions]);
     },
-    async write(filePath, fileContent, formatOptions) {
-      return pool.exec("write", [filePath, fileContent, await resolve(formatOptions)]);
+    async write(filePath, fileContent, formatOptions, contextOptions) {
+      return pool.exec("write", [filePath, fileContent, await resolve(formatOptions), contextOptions]);
     },
-    async writeWithPath(filePath, formatOptions) {
-      return pool.exec("writeWithPath", [filePath, await resolve(formatOptions)]);
+    async writeWithPath(filePath, formatOptions, contextOptions) {
+      return pool.exec("writeWithPath", [filePath, await resolve(formatOptions), contextOptions]);
     },
   };
 }

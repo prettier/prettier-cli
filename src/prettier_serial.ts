@@ -15,30 +15,26 @@ import prettierPostcss from "prettier/plugins/postcss";
 import prettierTypescript from "prettier/plugins/typescript";
 import prettierYaml from "prettier/plugins/yaml";
 import { isNumber, resolve } from "./utils.js";
-import type { LazyFormatOptions } from "./types.js";
+import type { ContextOptions, LazyFormatOptions } from "./types.js";
 
 //TODO: Avoid loading plugins until they are actually needed
 
-async function check(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<boolean> {
-  const fileContentFormatted = await format(filePath, fileContent, formatOptions);
+async function check(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<boolean> {
+  const fileContentFormatted = await format(filePath, fileContent, formatOptions, contextOptions);
   return fileContent === fileContentFormatted;
 }
 
-async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<boolean> {
+async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<boolean> {
   const fileContent = await readFile(filePath, "utf8");
-  return check(filePath, fileContent, formatOptions);
+  return check(filePath, fileContent, formatOptions, contextOptions);
 }
 
-async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<string> {
-  const options = await resolve(formatOptions);
-  const plugins = [prettierAcorn, prettierAngular, prettierBabel, prettierEstree, prettierFlow, prettierGlimmer, prettierGraphql, prettierHtml, prettierMarkdown, prettierMeriyah, prettierPostcss, prettierTypescript, prettierYaml]; // prettier-ignore
-
-  if (isNumber(options.cursorOffset)) {
+async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<string> {
+  const plugins = [prettierAcorn, prettierAngular, prettierBabel, prettierEstree, prettierFlow, prettierGlimmer, prettierGraphql, prettierHtml, prettierMarkdown, prettierMeriyah, prettierPostcss, prettierTypescript, prettierYaml] // prettier-ignore
+  if (isNumber(contextOptions.cursorOffset)) {
     const result = await prettier.formatWithCursor(fileContent, {
-      cursorOffset: 0,
-      ...options,
-      rangeEnd: undefined,
-      rangeStart: undefined,
+      ...(await resolve(formatOptions)),
+      cursorOffset: contextOptions.cursorOffset,
       filepath: filePath,
       plugins,
     });
@@ -46,28 +42,30 @@ async function format(filePath: string, fileContent: string, formatOptions: Lazy
     return result.formatted;
   } else {
     return prettier.format(fileContent, {
-      ...options,
+      ...(await resolve(formatOptions)),
+      rangeEnd: contextOptions.rangeEnd,
+      rangeStart: contextOptions.rangeStart,
       filepath: filePath,
       plugins,
     });
   }
 }
 
-async function formatWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<string> {
+async function formatWithPath(filePath: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<string> {
   const fileContent = await readFile(filePath, "utf8");
-  return format(filePath, fileContent, formatOptions);
+  return format(filePath, fileContent, formatOptions, contextOptions);
 }
 
-async function write(filePath: string, fileContent: string, formatOptions: LazyFormatOptions): Promise<boolean> {
-  const fileContentFormatted = await format(filePath, fileContent, formatOptions);
+async function write(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<boolean> {
+  const fileContentFormatted = await format(filePath, fileContent, formatOptions, contextOptions);
   if (fileContent === fileContentFormatted) return true;
   await writeFile(filePath, fileContentFormatted, "utf8");
   return false;
 }
 
-async function writeWithPath(filePath: string, formatOptions: LazyFormatOptions): Promise<boolean> {
+async function writeWithPath(filePath: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<boolean> {
   const fileContent = await readFile(filePath, "utf8");
-  return write(filePath, fileContent, formatOptions);
+  return write(filePath, fileContent, formatOptions, contextOptions);
 }
 
 export { check, checkWithPath, format, formatWithPath, write, writeWithPath };

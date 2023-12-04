@@ -1,9 +1,14 @@
+type ContextOptions = {
+  cursorOffset?: number;
+  rangeEnd?: number;
+  rangeStart?: number;
+};
+
 type FormatOptions = {
   experimentalTernaries?: boolean;
   arrowParens?: "avoid" | "always";
   bracketSameLine?: boolean;
   bracketSpacing?: boolean;
-  cursorOffset?: number;
   embeddedLanguageFormatting?: "auto" | "off";
   endOfLine?: "lf" | "crlf" | "cr" | "auto";
   htmlWhitespaceSensitivity?: "css" | "strict" | "ignore";
@@ -13,8 +18,6 @@ type FormatOptions = {
   printWidth?: number;
   proseWrap?: "always" | "never" | "preserve";
   quoteProps?: "as-needed" | "consistent" | "preserve";
-  rangeEnd?: number;
-  rangeStart?: number;
   requirePragma?: boolean;
   semi?: boolean;
   singleAttributePerLine?: boolean;
@@ -53,7 +56,9 @@ type Options = {
   logLevel: LogLevel;
   parallel: boolean;
   parallelWorkers: number;
-  /* FORMAT OTIONS */
+  /* CONTEXT OPTIONS */
+  contextOptions: ContextOptions;
+  /* FORMAT OPTIONS */
   formatOptions: FormatOptions;
 };
 
@@ -73,6 +78,7 @@ type PrettierConfigWithOverrides = PrettierConfig & {
 type PromiseMaybe<T> = T | Promise<T>;
 
 export type {
+  ContextOptions,
   FormatOptions,
   FunctionMaybe,
   Ignore,

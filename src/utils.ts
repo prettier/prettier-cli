@@ -4,7 +4,7 @@ import path from "node:path";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatch from "zeptomatch";
-import type { FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
+import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
@@ -255,11 +255,13 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   const parallel = "parallel" in options && !!options.parallel;
   const parallelWorkers = ("parallelWorkers" in options && Math.round(Number(options.parallelWorkers))) || 0;
 
-  const formatOptions = normalizeFormatOptions(options);
-  const { cursorOffset, rangeStart, rangeEnd } = formatOptions;
+  const contextOptions = normalizeContextOptions(options);
+  const { cursorOffset, rangeStart, rangeEnd } = contextOptions;
 
   if (isNumber(cursorOffset) && isNumber(rangeStart)) exit('The "--cursor-offset" and "--range-start" flags cannot be used together');
   if (isNumber(cursorOffset) && isNumber(rangeEnd)) exit('The "--cursor-offset" and "--range-end" flags cannot be used together');
+
+  const formatOptions = normalizeFormatOptions(options);
 
   return {
     globs,
@@ -275,8 +277,38 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
     logLevel,
     parallel,
     parallelWorkers,
+    contextOptions,
     formatOptions,
   };
+}
+
+function normalizeContextOptions(options: unknown): ContextOptions {
+  if (!isObject(options)) exit("Invalid options object");
+
+  const contextOptions: ContextOptions = {};
+
+  if ("cursorOffset" in options) {
+    const value = Number(options.cursorOffset);
+    if (isInteger(value) && value >= 0) {
+      contextOptions.cursorOffset = value;
+    }
+  }
+
+  if ("rangeEnd" in options) {
+    const value = Number(options.rangeEnd);
+    if (isInteger(value) && value >= 0) {
+      contextOptions.rangeEnd = value;
+    }
+  }
+
+  if ("rangeStart" in options) {
+    const value = Number(options.rangeStart);
+    if (isInteger(value) && value >= 0) {
+      contextOptions.rangeStart = value;
+    }
+  }
+
+  return contextOptions;
 }
 
 function normalizeFormatOptions(options: unknown): FormatOptions {
@@ -309,13 +341,6 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     const value = options.bracketSpacing;
     if (isBoolean(value)) {
       formatOptions.bracketSpacing = value;
-    }
-  }
-
-  if ("cursorOffset" in options) {
-    const value = Number(options.cursorOffset);
-    if (isInteger(value) && value >= 0) {
-      formatOptions.cursorOffset = value;
     }
   }
 
@@ -380,20 +405,6 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     const value = options.quoteProps;
     if (value === "as-needed" || value === "consistent" || value === "preserve") {
       formatOptions.quoteProps = value;
-    }
-  }
-
-  if ("rangeEnd" in options) {
-    const value = Number(options.rangeEnd);
-    if (isInteger(value) && value >= 0) {
-      formatOptions.rangeEnd = value;
-    }
-  }
-
-  if ("rangeStart" in options) {
-    const value = Number(options.rangeStart);
-    if (isInteger(value) && value >= 0) {
-      formatOptions.rangeStart = value;
     }
   }
 

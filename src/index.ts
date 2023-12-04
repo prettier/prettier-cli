@@ -47,12 +47,13 @@ async function run(options: Options): Promise<void> {
   const ignoreContents = await getIgnoresContentMap(foldersPathsTargets, ignoreNames);
   const prettierConfigs = options.config ? await getPrettierConfigsMap(foldersPathsTargets, prettierConfigNames) : {};
 
-  const cliConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliConfig });
+  const cliContextConfig = options.contextOptions;
+  const cliFormatConfig = options.formatOptions;
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliContextConfig, cliFormatConfig }); // prettier-ignore
 
   Known.reset();
 
-  const shouldCache = isUndefined(cliConfig.cursorOffset);
+  const shouldCache = isUndefined(cliContextConfig.cursorOffset);
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, logger) : undefined;
   const prettier = await makePrettier(options, cache);
 
@@ -69,11 +70,11 @@ async function run(options: Options): Promise<void> {
       };
       try {
         if (options.check || options.list) {
-          return await prettier.checkWithPath(filePath, getFormatOptions);
+          return await prettier.checkWithPath(filePath, getFormatOptions, cliContextConfig);
         } else if (options.write) {
-          return await prettier.writeWithPath(filePath, getFormatOptions);
+          return await prettier.writeWithPath(filePath, getFormatOptions, cliContextConfig);
         } else {
-          return await prettier.formatWithPath(filePath, getFormatOptions);
+          return await prettier.formatWithPath(filePath, getFormatOptions, cliContextConfig);
         }
       } finally {
         spinner?.update(fastRelativePath(rootPath, filePath));
@@ -93,7 +94,6 @@ async function run(options: Options): Promise<void> {
     if (fileResult.status === "fulfilled") {
       if (isUndefined(fileResult.value)) {
         totalFound -= 1;
-        continue;
       } else if (isString(fileResult.value)) {
         logger.always(fileResult.value);
       } else {
