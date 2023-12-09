@@ -1,4 +1,4 @@
-import ignore from "ignore";
+import fastIgnore from "fast-ignore";
 import fs from "node:fs/promises";
 import path from "node:path";
 import Known from "./known.js";
@@ -25,12 +25,10 @@ const getIgnoresContentMap = async (foldersPaths: string[], filesNames: string[]
 };
 
 const getIgnoreBy = (folderPath: string, fileContent: string): Ignore => {
-  //TODO: Optimize this massively, as it pops up while profiling a lot
-  const instance = ignore().add(fileContent);
-  const ignores = instance.ignores.bind(instance);
+  const ignore = fastIgnore(fileContent);
   return (filePath: string): boolean => {
     const fileRelativePath = fastRelativeChildPath(folderPath, filePath);
-    return !!fileRelativePath && ignores(fileRelativePath);
+    return !!fileRelativePath && ignore(fileRelativePath);
   };
 };
 
