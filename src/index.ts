@@ -49,7 +49,7 @@ async function run(options: Options): Promise<void> {
 
   const cliContextConfig = options.contextOptions;
   const cliFormatConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliContextConfig, cliFormatConfig }); // prettier-ignore
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig });
 
   Known.reset();
 
