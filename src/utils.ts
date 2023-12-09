@@ -256,11 +256,6 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   const parallelWorkers = ("parallelWorkers" in options && Math.round(Number(options.parallelWorkers))) || 0;
 
   const contextOptions = normalizeContextOptions(options);
-  const { cursorOffset, rangeStart, rangeEnd } = contextOptions;
-
-  if (isNumber(cursorOffset) && isNumber(rangeStart)) exit('The "--cursor-offset" and "--range-start" flags cannot be used together');
-  if (isNumber(cursorOffset) && isNumber(rangeEnd)) exit('The "--cursor-offset" and "--range-end" flags cannot be used together');
-
   const formatOptions = normalizeFormatOptions(options);
 
   return {
