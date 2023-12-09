@@ -24,8 +24,8 @@ const getIgnoresContentMap = async (foldersPaths: string[], filesNames: string[]
   return map;
 };
 
-const getIgnoreBy = (folderPath: string, fileContent: string): Ignore => {
-  const ignore = fastIgnore(fileContent);
+const getIgnoreBy = (folderPath: string, filesContents: string[]): Ignore => {
+  const ignore = fastIgnore(filesContents);
   return (filePath: string): boolean => {
     const fileRelativePath = fastRelativeChildPath(folderPath, filePath);
     return !!fileRelativePath && ignore(fileRelativePath);
@@ -35,8 +35,7 @@ const getIgnoreBy = (folderPath: string, fileContent: string): Ignore => {
 const getIgnores = memoize(async (folderPath: string, filesNames: string[]): Promise<Ignore | undefined> => {
   const contents = await getIgnoresContent(folderPath, filesNames);
   if (!contents?.length) return;
-  const ignores = contents.map((content) => getIgnoreBy(folderPath, content));
-  const ignore = someOf(ignores);
+  const ignore = getIgnoreBy(folderPath, contents);
   return ignore;
 });
 
