@@ -4,7 +4,7 @@ import path from "node:path";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatch from "zeptomatch";
-import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
+import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides } from "./types.js";
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
@@ -87,7 +87,7 @@ function getGlobPaths(rootPath: string, globs: string[]) {
   return readdir(globs, {
     cwd: rootPath,
     followSymlinks: false,
-    ignore: "**/{.git,.sl,.svn,.hg,node_modules}",
+    ignore: "**/{.git,.sl,.svn,.hg,node_modules,.DS_Store,Thumbs.db}",
   });
 }
 
