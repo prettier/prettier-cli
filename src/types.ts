@@ -15,6 +15,7 @@ type FormatOptions = {
   insertPragma?: boolean;
   jsxSingleQuote?: boolean;
   parser?: "flow" | "babel" | "babel-flow" | "babel-ts" | "typescript" | "acorn" | "espree" | "meriyah" | "css" | "less" | "scss" | "json" | "json5" | "json-stringify" | "graphql" | "markdown" | "mdx" | "vue" | "yaml" | "glimmer" | "html" | "angular" | "lwc"; // prettier-ignore
+  plugins?: string[];
   printWidth?: number;
   proseWrap?: "always" | "never" | "preserve";
   quoteProps?: "as-needed" | "consistent" | "preserve";
@@ -75,6 +76,8 @@ type PrettierConfigWithOverrides = PrettierConfig & {
   }[];
 };
 
+type PrettierPlugin = import("prettier").Plugin;
+
 type PromiseMaybe<T> = T | Promise<T>;
 
 export type {
@@ -89,5 +92,6 @@ export type {
   Prettier,
   PrettierConfig,
   PrettierConfigWithOverrides,
+  PrettierPlugin,
   PromiseMaybe,
 };

@@ -14,7 +14,7 @@ import prettierMeriyah from "prettier/plugins/meriyah";
 import prettierPostcss from "prettier/plugins/postcss";
 import prettierTypescript from "prettier/plugins/typescript";
 import prettierYaml from "prettier/plugins/yaml";
-import { resolve } from "./utils.js";
+import { getPlugins, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions } from "./types.js";
 
 //TODO: Avoid loading plugins until they are actually needed
@@ -30,8 +30,11 @@ async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions,
 }
 
 async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions): Promise<string> {
+  formatOptions = await resolve(formatOptions);
+  const plugins = await getPlugins(formatOptions.plugins || []);
+
   const options = {
-    ...(await resolve(formatOptions)),
+    ...formatOptions,
     ...contextOptions,
     filepath: filePath,
     plugins: [
@@ -48,6 +51,7 @@ async function format(filePath: string, fileContent: string, formatOptions: Lazy
       prettierPostcss,
       prettierTypescript,
       prettierYaml,
+      ...plugins,
     ],
   };
 

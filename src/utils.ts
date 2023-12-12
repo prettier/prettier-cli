@@ -1,10 +1,31 @@
+import findUp from "find-up-json";
+import { moduleResolve } from "import-meta-resolve";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import process from "node:process";
+import url from "node:url";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatch from "zeptomatch";
-import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides } from "./types.js";
+import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
+import type { PromiseMaybe } from "./types.js";
+
+//FIXME: Ensure all arguments are actually taken into account
+//TODO: Publish something like this as a standalone module, rather than manually hoisting this up
+function memoize<Args extends unknown[], Return>(fn: (...args: Args) => Return): ((...args: Args) => Return) & { cache: Map<Args[0], Return> } {
+  const memoized = (...args: Args): Return => {
+    const { cache } = memoized;
+    const id = args[0];
+    const cached = cache.get(id);
+    if (!isUndefined(cached) || cache.has(id)) return cached;
+    const result = fn(...args);
+    cache.set(id, result);
+    return result;
+  };
+  memoized.cache = new Map();
+  return memoized;
+}
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
@@ -89,6 +110,44 @@ function getGlobPaths(rootPath: string, globs: string[]) {
     followSymlinks: false,
     ignore: "**/{.git,.sl,.svn,.hg,node_modules,.DS_Store,Thumbs.db}",
   });
+}
+
+const getPlugin = memoize(async (name: string): Promise<PrettierPlugin> => {
+  const pluginPath = getPluginPath(name);
+  const pluginExports = await import(pluginPath);
+  const plugin = pluginExports.default || pluginExports;
+  return plugin;
+});
+
+function getPluginPath(name: string): string {
+  const rootPath = path.join(process.cwd(), "index.js");
+  const rootUrl = url.pathToFileURL(rootPath);
+  const pluginUrl = moduleResolve(name, rootUrl);
+  const pluginPath = url.fileURLToPath(pluginUrl);
+  return pluginPath;
+}
+
+function getPluginVersion(name: string): string {
+  const pluginPath = getPluginPath(name);
+  const parentPath = path.dirname(pluginPath);
+  const pkg = findUp("package.json", parentPath);
+  if (!pkg || !pkg.content.version) throw new Error(`Version not found for plugin: "${name}"`);
+  return pkg.content.version;
+}
+
+function getPlugins(names: string[]): PromiseMaybe<PrettierPlugin[]> {
+  if (!names.length) return [];
+  return Promise.all(names.map(getPlugin));
+}
+
+function getPluginsPaths(names: string[]): string[] {
+  const pluginsPaths = names.map(getPluginPath);
+  return pluginsPaths;
+}
+
+function getPluginsVersions(names: string[]): string[] {
+  const pluginsVersions = names.map(getPluginVersion);
+  return pluginsVersions;
 }
 
 function getProjectPath(rootPath: string): string {
@@ -197,21 +256,6 @@ function isTruthy<T>(value: T): value is Exclude<T, 0 | -0 | 0n | -0n | "" | fal
 
 function isUndefined(value: unknown): value is undefined {
   return typeof value === "undefined";
-}
-
-//FIXME: Ensure all arguments are actually taken into account
-function memoize<Args extends unknown[], Return>(fn: (...args: Args) => Return): ((...args: Args) => Return) & { cache: Map<Args[0], Return> } {
-  const memoized = (...args: Args): Return => {
-    const { cache } = memoized;
-    const id = args[0];
-    const cached = cache.get(id);
-    if (!isUndefined(cached) || cache.has(id)) return cached;
-    const result = fn(...args);
-    cache.set(id, result);
-    return result;
-  };
-  memoized.cache = new Map();
-  return memoized;
 }
 
 function negate<T extends unknown[]>(fn: (...args: T) => boolean) {
@@ -379,6 +423,18 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     // prettier-ignore
     if (value === "flow" || value === "babel" || value === "babel-flow" || value === "babel-ts" || value === "typescript" || value === "acorn" || value === "espree" || value === "meriyah" || value === "css" || value === "less" || value === "scss" || value === "json" || value === "json5" || value === "json-stringify" || value === "graphql" || value === "markdown" || value === "mdx" || value === "vue" || value === "yaml" || value === "glimmer" || value === "html" || value === "angular" || value === "lwc") {
       formatOptions.parser = value;
+    }
+  }
+
+  if ("plugin" in options) {
+    const value = options.plugin;
+    if (isArray(value) && value.every(isString)) {
+      formatOptions.plugins = value;
+    } else if (isString(value)) {
+      formatOptions.plugins = [value];
+    } else if (!isUndefined(value)) {
+      //TODO: Figure out what to do here, probably just bailing out of parallelization?
+      exit("Non-string plugin specifiers are not supported yet");
     }
   }
 
@@ -569,6 +625,12 @@ export {
   getFoldersChildrenPaths,
   getExpandedFoldersPaths,
   getGlobPaths,
+  getPlugin,
+  getPluginPath,
+  getPluginVersion,
+  getPlugins,
+  getPluginsPaths,
+  getPluginsVersions,
   getProjectPath,
   getTargetsPaths,
   isArray,

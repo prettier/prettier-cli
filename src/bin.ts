@@ -89,11 +89,7 @@ bin("prettier", "Prettier is an opinionated code formatter")
   //   "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]",
   //   { section: "Config", eager: true },
   // )
-  // .option(
-  //   "--plugin <path...>",
-  //   "Add a plugin\nMultiple plugins are accepted\nDefaults to []",
-  //   { section: "Config", eager: true },
-  // )
+  .option("--plugin <package...>", "Add a plugin\nMultiple plugins are accepted\nDefaults to []", { section: "Config" })
   // .option(
   //   "--with-node-modules",
   //   'Process files inside the "node_modules" directory',

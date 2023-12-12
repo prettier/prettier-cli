@@ -10,7 +10,7 @@ import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
-import { getExpandedFoldersPaths, getFoldersChildrenPaths, getProjectPath, getTargetsPaths } from "./utils.js";
+import { getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getTargetsPaths } from "./utils.js";
 import { fastRelativePath, isString, isUndefined, negate, pluralize } from "./utils.js";
 import type { FormatOptions, Options } from "./types.js";
 
@@ -37,7 +37,8 @@ async function run(options: Options): Promise<void> {
 
   const prettierVersion = PRETTIER_VERSION;
   const cliVersion = CLI_VERSION;
-  const pluginsVersions = ""; //TODO
+  const pluginsNames = options.formatOptions.plugins || [];
+  const pluginsVersions = getPluginsVersions(pluginsNames);
 
   const editorConfigNames = [".editorconfig"].filter(Known.hasFileName);
   const ignoreNames = [".gitignore", ".prettierignore"].filter(Known.hasFileName);
@@ -49,7 +50,7 @@ async function run(options: Options): Promise<void> {
 
   const cliContextConfig = options.contextOptions;
   const cliFormatConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig });
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig }); // prettier-ignore
 
   Known.reset();
 
