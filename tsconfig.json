@@ -41,7 +41,7 @@
     "useDefineForClassFields": false,
     "useUnknownInCatchVariables": true,
     "verbatimModuleSyntax": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noUncheckedIndexedAccess": false
   }
 }

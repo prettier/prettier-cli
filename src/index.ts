@@ -12,9 +12,9 @@ import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getTargetsPaths } from "./utils.js";
 import { fastRelativePath, isString, isUndefined, negate, pluralize } from "./utils.js";
-import type { FormatOptions, Options } from "./types.js";
+import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
-async function run(options: Options): Promise<void> {
+async function run(options: Options, pluginsOptions: PluginsOptions): Promise<void> {
   const logger = new Logger(options.logLevel);
   const spinner = options.check ? logger.spinner.log() : undefined;
 
@@ -50,7 +50,7 @@ async function run(options: Options): Promise<void> {
 
   const cliContextConfig = options.contextOptions;
   const cliFormatConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig }); // prettier-ignore
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig, pluginsOptions }); // prettier-ignore
 
   Known.reset();
 
@@ -71,11 +71,11 @@ async function run(options: Options): Promise<void> {
       };
       try {
         if (options.check || options.list) {
-          return await prettier.checkWithPath(filePath, getFormatOptions, cliContextConfig);
+          return await prettier.checkWithPath(filePath, getFormatOptions, cliContextConfig, pluginsOptions);
         } else if (options.write) {
-          return await prettier.writeWithPath(filePath, getFormatOptions, cliContextConfig);
+          return await prettier.writeWithPath(filePath, getFormatOptions, cliContextConfig, pluginsOptions);
         } else {
-          return await prettier.formatWithPath(filePath, getFormatOptions, cliContextConfig);
+          return await prettier.formatWithPath(filePath, getFormatOptions, cliContextConfig, pluginsOptions);
         }
       } finally {
         spinner?.update(fastRelativePath(rootPath, filePath));

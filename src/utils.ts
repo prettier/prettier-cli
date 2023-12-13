@@ -9,7 +9,7 @@ import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatch from "zeptomatch";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
-import type { PromiseMaybe } from "./types.js";
+import type { PluginsOptions, PromiseMaybe } from "./types.js";
 
 //FIXME: Ensure all arguments are actually taken into account
 //TODO: Publish something like this as a standalone module, rather than manually hoisting this up
@@ -518,6 +518,21 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
   return formatOptions;
 }
 
+function normalizePluginOptions(options: unknown, names: string[]): PluginsOptions {
+  if (!isObject(options)) exit("Invalid options object");
+
+  const config: PluginsOptions = {};
+
+  for (let i = 0, l = names.length; i < l; i++) {
+    const name = names[i];
+    const value = options[name];
+    if (isUndefined(value)) continue;
+    config[name] = value;
+  }
+
+  return config;
+}
+
 function normalizePrettierOptions(options: unknown, folderPath: string): PrettierConfigWithOverrides {
   if (!isObject(options)) exit("Invalid options object");
 
@@ -649,6 +664,7 @@ export {
   noop,
   normalizeOptions,
   normalizeFormatOptions,
+  normalizePluginOptions,
   normalizePrettierOptions,
   omit,
   once,

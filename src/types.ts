@@ -1,3 +1,5 @@
+type Bin = ReturnType<typeof import("tiny-bin").default>;
+
 type ContextOptions = {
   cursorOffset?: number;
   rangeEnd?: number;
@@ -63,6 +65,10 @@ type Options = {
   formatOptions: FormatOptions;
 };
 
+type PluginsOptions = {
+  [option: string]: unknown;
+};
+
 type Prettier = typeof import("./prettier_serial.js");
 
 type PrettierConfig = FormatOptions;
@@ -81,6 +87,7 @@ type PrettierPlugin = import("prettier").Plugin;
 type PromiseMaybe<T> = T | Promise<T>;
 
 export type {
+  Bin,
   ContextOptions,
   FormatOptions,
   FunctionMaybe,
@@ -89,6 +96,7 @@ export type {
   LazyFormatOptions,
   LogLevel,
   Options,
+  PluginsOptions,
   Prettier,
   PrettierConfig,
   PrettierConfigWithOverrides,
