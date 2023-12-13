@@ -5,7 +5,7 @@ import { bin, color, parseArgv } from "specialist";
 import { PRETTIER_VERSION, IS_BUN } from "./constants.js";
 import { getPlugin, isNumber, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import { run } from "./index.js";
-import type { Bin } from "./types.js";
+import type { Bin, PluginsOptions } from "./types.js";
 
 const makeBin = (): Bin => {
   return (
@@ -147,18 +147,20 @@ const makeBin = (): Bin => {
       /* DEFAULT COMMAND */
       .argument("[file/dir/glob...]", "Files, directories or globs to format")
       .action((options, files) => {
-        return run(normalizeOptions(options, files), {});
+        const baseOptions = normalizeOptions(options, files);
+        const pluginsOptions = {};
+        return run(baseOptions, pluginsOptions);
       })
   );
 };
 
 const makePluggableBin = async (): Promise<Bin> => {
-  //TODO: handle defaultOptions
   let bin = makeBin();
 
   const argv = process.argv.slice(2);
   const args = parseArgv(argv);
   const formatOptions = normalizeFormatOptions(args);
+  const pluginsStaticOptions: PluginsOptions = {};
   const pluginsNames = formatOptions.plugins || [];
   const optionsNames: string[] = [];
 
@@ -168,6 +170,7 @@ const makePluggableBin = async (): Promise<Bin> => {
 
     for (const option in plugin.options) {
       optionsNames.push(option);
+      Object.assign(pluginsStaticOptions, plugin.defaultOptions);
 
       const schema = plugin.options[option];
       const type = schema.type;
@@ -206,7 +209,10 @@ const makePluggableBin = async (): Promise<Bin> => {
   }
 
   bin = bin.action((options, files) => {
-    return run(normalizeOptions(options, files), normalizePluginOptions(options, optionsNames));
+    const baseOptions = normalizeOptions(options, files);
+    const pluginsDynamicOptions = normalizePluginOptions(options, optionsNames);
+    const pluginsOptions = { ...pluginsStaticOptions, ...pluginsDynamicOptions };
+    return run(baseOptions, pluginsOptions);
   });
 
   return bin;
