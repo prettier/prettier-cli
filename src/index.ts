@@ -85,7 +85,8 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
 
   spinner?.stop("Checking formatting...");
 
-  let totalFound = filesResults.length;
+  let totalMatched = filesResults.length;
+  let totalIgnored = 0;
   let totalFormatted = 0;
   let totalUnformatted = 0;
   let totalErrored = 0;
@@ -94,7 +95,8 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
     const fileResult = filesResults[i];
     if (fileResult.status === "fulfilled") {
       if (isUndefined(fileResult.value)) {
-        totalFound -= 1;
+        totalMatched -= 1;
+        totalIgnored += 1;
       } else if (isString(fileResult.value)) {
         logger.always(fileResult.value);
       } else {
@@ -127,7 +129,14 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
     }
   }
 
-  if (!totalFound) {
+  logger.prefixed.debug(`Files found: ${totalMatched + totalIgnored}`);
+  logger.prefixed.debug(`Files matched: ${totalMatched}`);
+  logger.prefixed.debug(`Files ignored: ${totalIgnored}`);
+  logger.prefixed.debug(`Files formatted: ${totalFormatted}`);
+  logger.prefixed.debug(`Files unformatted: ${totalUnformatted}`);
+  logger.prefixed.debug(`Files errored: ${totalErrored}`);
+
+  if (!totalMatched) {
     if (options.errorOnUnmatchedPattern) {
       logger.prefixed.error(`No files matching the given patterns were found`);
     }
@@ -153,7 +162,7 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
 
   cache?.write();
 
-  process.exitCode = (!totalFound && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
+  process.exitCode = (!totalMatched && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
 }
 
 export { run };
