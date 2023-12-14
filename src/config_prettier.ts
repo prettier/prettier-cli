@@ -1,5 +1,5 @@
 import yaml from "js-yaml";
-import fs from "node:fs/promises";
+import fs from "node:fs";
 import path from "node:path";
 import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
@@ -17,23 +17,23 @@ const Loaders = {
     return module.default || module.exports || module.config || module.prettier; //TODO: Streamline this
   },
   json: async (filePath: string): Promise<unknown> => {
-    const fileContent = await fs.readFile(filePath, "utf8");
+    const fileContent = fs.readFileSync(filePath, "utf8");
     const config = JSON.parse(fileContent);
     return config;
   },
   jsonc: async (filePath: string): Promise<unknown> => {
-    const fileContent = await fs.readFile(filePath, "utf8");
+    const fileContent = fs.readFileSync(filePath, "utf8");
     const config = JSONC.parse(fileContent);
     return config;
   },
   package: async (filePath: string): Promise<unknown> => {
-    const fileContent = await fs.readFile(filePath, "utf8");
+    const fileContent = fs.readFileSync(filePath, "utf8");
     const pkg = JSON.parse(fileContent);
     const config = isObject(pkg) && "prettier" in pkg ? pkg.prettier : undefined;
     return config;
   },
   yaml: async (filePath: string): Promise<unknown> => {
-    const fileContent = await fs.readFile(filePath, "utf8");
+    const fileContent = fs.readFileSync(filePath, "utf8");
     return yaml.load(fileContent, {
       schema: yaml.JSON_SCHEMA,
     });
