@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { getCachePath, isArray, isBoolean, isObject, isString, sha1hex, sha1base64 } from "./utils.js";
+import { fastRelativePath, getCachePath, isArray, isBoolean, isObject, isString, sha1hex, sha1base64 } from "./utils.js";
 import type Logger from "./logger.js";
 import type { Options } from "./types.js";
 
@@ -22,10 +22,10 @@ type FileData = {
 };
 
 //TODO: Maybe remember thrown errors also, if they are under a certain size
-//TODO: Use some kind of relative path as the file key, if in CI enviornments parts of the path can be kinda random, or if the cache file is committed
 
 class Cache {
   private version: string;
+  private rootPath: string;
   private storePath: string;
   private store: Store;
   private logger: Logger;
@@ -34,6 +34,7 @@ class Cache {
   constructor(version: string, rootPath: string, options: Options, logger: Logger) {
     this.version = sha1hex(version);
     this.logger = logger;
+    this.rootPath = rootPath;
     this.storePath = options.cacheLocation || path.join(getCachePath(rootPath), `${sha1hex(rootPath)}.json`);
     this.store = this.read();
     this.dirty = false;
@@ -72,10 +73,11 @@ class Cache {
   }
 
   get(filePath: string): FileData {
-    const filePathHash = sha1base64(filePath);
-    const save = this.set.bind(this, filePath, filePathHash);
+    const fileRelativePath = fastRelativePath(this.rootPath, filePath);
+    const fileHashPath = sha1base64(fileRelativePath);
+    const save = this.set.bind(this, filePath, fileHashPath);
     try {
-      const file = this.store[this.version]?.files?.[filePathHash];
+      const file = this.store[this.version]?.files?.[fileHashPath];
       if (!file || !isArray(file) || file.length !== 2) return { save };
       const [hash, formatted] = file;
       if (!isString(hash) || !isBoolean(formatted)) return { save };
@@ -89,14 +91,14 @@ class Cache {
     }
   }
 
-  set(filePath: string, filePathHash: string, fileFormatted: boolean, fileContentExpected: string): void {
+  set(filePath: string, fileHashPath: string, fileFormatted: boolean, fileContentExpected: string): void {
     try {
       const version = (this.store[this.version] ||= {});
       const files = (version.files ||= {});
       //TODO: Skip the following hash if the expected content we got is the same one that we had
       const hash = sha1base64(fileContentExpected);
       version.modified = Date.now();
-      files[filePathHash] = [hash, fileFormatted];
+      files[fileHashPath] = [hash, fileFormatted];
       this.dirty = true;
     } catch (error: unknown) {
       this.logger.prefixed.debug(String(error));
