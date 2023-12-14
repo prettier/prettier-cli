@@ -52,8 +52,6 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   const cliFormatConfig = options.formatOptions;
   const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig, pluginsOptions }); // prettier-ignore
 
-  Known.reset();
-
   const shouldCache = isUndefined(cliContextConfig.cursorOffset);
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, logger) : undefined;
   const prettier = await makePrettier(options, cache);
