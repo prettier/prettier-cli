@@ -50,7 +50,7 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
 
   const cliContextConfig = options.contextOptions;
   const cliFormatConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, prettierConfigs, cliContextConfig, cliFormatConfig, pluginsOptions }); // prettier-ignore
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliContextConfig, cliFormatConfig, pluginsOptions }); // prettier-ignore
 
   const shouldCache = isUndefined(cliContextConfig.cursorOffset);
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, logger) : undefined;
@@ -59,7 +59,9 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
   const filesResults = await Promise.allSettled(
     filesPathsTargets.map(async (filePath) => {
-      const ignored = await getIgnoreResolved(filePath, ignoreNames);
+      const isIgnored = () => getIgnoreResolved(filePath, ignoreNames);
+      const isCacheable = () => cache?.has(filePath, isIgnored);
+      const ignored = cache ? !(await isCacheable()) : await isIgnored();
       if (ignored) return;
       const getFormatOptions = async (): Promise<FormatOptions> => {
         const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};

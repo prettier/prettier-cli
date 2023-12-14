@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fastRelativePath, getCachePath, isArray, isBoolean, isObject, isString, sha1hex, sha1base64 } from "./utils.js";
+import { fastRelativePath, getCachePath, isArray, isBoolean, isObject, isString, isUndefined, sha1hex, sha1base64 } from "./utils.js";
 import type Logger from "./logger.js";
-import type { Options } from "./types.js";
+import type { Options, PromiseMaybe } from "./types.js";
 
 type Store = Partial<{
   [version: string]: StoreVersion;
@@ -10,7 +10,7 @@ type Store = Partial<{
 
 type StoreVersion = Partial<{
   modified: number;
-  files: Partial<Record<string, StoreFile>>;
+  files: Partial<Record<string, StoreFile | false>>;
 }>;
 
 type StoreFile = [hash: string, formatted: boolean];
@@ -102,6 +102,26 @@ class Cache {
       this.dirty = true;
     } catch (error: unknown) {
       this.logger.prefixed.debug(String(error));
+    }
+  }
+
+  async has(filePath: string, isIgnored: () => PromiseMaybe<boolean>): Promise<boolean> {
+    const fileRelativePath = fastRelativePath(this.rootPath, filePath);
+    const fileHashPath = sha1base64(fileRelativePath);
+    const file = this.store[this.version]?.files?.[fileHashPath];
+    if (isUndefined(file)) {
+      const ignored = await isIgnored();
+      if (ignored) {
+        const version = (this.store[this.version] ||= {});
+        const files = (version.files ||= {});
+        files[fileHashPath] = false;
+        this.dirty = true;
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return !!file;
     }
   }
 }
