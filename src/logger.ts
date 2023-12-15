@@ -17,7 +17,9 @@ class Logger {
 
   absract = (message: FunctionMaybe<string>, strength: number): void => {
     if (strength < this.strength) return;
-    this.pioppo.info(resolve(message));
+    message = resolve(message);
+    if (!message) return;
+    this.pioppo.info(message);
   };
 
   silent = (message: FunctionMaybe<string>): void => {
@@ -47,7 +49,9 @@ class Logger {
   prefixed = {
     abstract: (prefix: string, message: FunctionMaybe<string>, strength: number): void => {
       if (strength < this.strength) return;
-      const lines = resolve(message).split(/\r?\n|\r/g);
+      message = resolve(message);
+      if (!message) return;
+      const lines = message.split(/\r?\n|\r/g);
       const linesPrefixed = lines.map((line) => `${prefix} ${line}`);
       this.pioppo.info(linesPrefixed.join("\n"));
     },
