@@ -175,16 +175,20 @@ function getProjectPath(rootPath: string): string {
   }
 }
 
-async function getTargetsPaths(rootPath: string, globs: string[]) {
+async function getTargetsPaths(rootPath: string, globs: string[]): Promise<[string[], string[], Record<string, string[]>, string[], string[]]> {
   const targetFiles: string[] = [];
   const targetFilesNames: string[] = [];
+  const targetFilesNamesToPaths: Record<string, string[]> = {};
   const targetGlobs: string[] = [];
 
   for (const glob of globs) {
     const filePath = path.resolve(rootPath, glob);
     if (isFile(filePath)) {
+      const fileName = path.basename(filePath);
       targetFiles.push(filePath);
-      targetFilesNames.push(path.basename(filePath));
+      targetFilesNames.push(fileName);
+      targetFilesNamesToPaths.propertyIsEnumerable(fileName) || (targetFilesNamesToPaths[fileName] = []);
+      targetFilesNamesToPaths[fileName].push(filePath);
     } else {
       targetGlobs.push(glob);
     }
@@ -193,9 +197,17 @@ async function getTargetsPaths(rootPath: string, globs: string[]) {
   const result = await getGlobPaths(rootPath, targetGlobs);
   const filesPaths = [...targetFiles, ...result.files];
   const filesNames = [...targetFilesNames, ...result.filesFoundNames];
+  const filesNamesToPaths = result.filesFoundNamesToPaths;
+
+  for (const fileName in targetFilesNamesToPaths) {
+    const prev = filesNamesToPaths[fileName];
+    const next = Array.isArray(prev) ? prev.concat(filesNamesToPaths[fileName]) : filesNamesToPaths[fileName];
+    filesNamesToPaths[fileName] = uniq(next);
+  }
+
   const filesFoundPaths = result.filesFound;
   const foldersFoundPaths = [rootPath, ...result.directoriesFound];
-  return [filesPaths, filesNames, filesFoundPaths, foldersFoundPaths];
+  return [filesPaths, filesNames, filesNamesToPaths, filesFoundPaths, foldersFoundPaths];
 }
 
 function isArray(value: unknown): value is unknown[] {
@@ -605,6 +617,11 @@ function someOf<T>(fns: ((arg: T) => unknown)[]): (arg: T) => boolean {
   };
 }
 
+function uniq<T>(values: T[]): T[] {
+  if (values.length < 2) return values;
+  return Array.from(new Set(values));
+}
+
 function zipObject<T extends Key, U>(keys: T[], values: U[]): Partial<Record<T, U>> {
   const map: Partial<Record<T, U>> = {};
 
@@ -673,6 +690,7 @@ export {
   sha1hex,
   sha1base64,
   someOf,
+  uniq,
   zipObject,
   zipObjectUnless,
 };
