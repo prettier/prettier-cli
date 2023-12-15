@@ -90,6 +90,7 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   let totalFormatted = 0;
   let totalUnformatted = 0;
   let totalErrored = 0;
+  let pathsErrored: string[] = [];
 
   for (let i = 0, l = filesResults.length; i < l; i++) {
     const fileResult = filesResults[i];
@@ -116,6 +117,7 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
     } else {
       const error = fileResult.reason;
       totalErrored += 1;
+      pathsErrored.push(filesPathsTargets[i]);
       if (error.name !== "UndefinedParserError" || !options.ignoreUnknown) {
         const filePath = filesPathsTargets[i];
         const fileRelativePath = fastRelativePath(rootPath, filePath);
@@ -135,6 +137,7 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   logger.prefixed.debug(`Files formatted: ${totalFormatted}`);
   logger.prefixed.debug(`Files unformatted: ${totalUnformatted}`);
   logger.prefixed.debug(`Files errored: ${totalErrored}`);
+  logger.prefixed.debug(() => pathsErrored.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
 
   if (!totalMatched) {
     if (options.errorOnUnmatchedPattern) {
