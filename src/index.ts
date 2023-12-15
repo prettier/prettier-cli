@@ -115,8 +115,8 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
       }
     } else {
       const error = fileResult.reason;
+      totalErrored += 1;
       if (error.name !== "UndefinedParserError" || !options.ignoreUnknown) {
-        totalErrored += 1;
         const filePath = filesPathsTargets[i];
         const fileRelativePath = fastRelativePath(rootPath, filePath);
         //TODO: Make sure the error is syntax-highlighted when possible
