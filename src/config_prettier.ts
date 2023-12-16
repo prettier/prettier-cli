@@ -32,7 +32,9 @@ const Loaders = {
     return config;
   },
   package: async (filePath: string): Promise<unknown> => {
-    const fileContent = fs.readFileSync(filePath, "utf8");
+    const fileBuffer = fs.readFileSync(filePath);
+    if (!fileBuffer.includes("prettier")) return; //FIXME: Technically this breaks support for escaped chars, but why would anybody do that though?
+    const fileContent = fileBuffer.toString("utf8");
     const pkg = JSON.parse(fileContent);
     if (isObject(pkg) && "prettier" in pkg) {
       const config = pkg.prettier;
