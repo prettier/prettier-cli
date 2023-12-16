@@ -7,6 +7,7 @@ type ContextOptions = {
 };
 
 type FormatOptions = {
+  [pluginOption: string]: unknown;
   experimentalTernaries?: boolean;
   arrowParens?: "avoid" | "always";
   bracketSameLine?: boolean;

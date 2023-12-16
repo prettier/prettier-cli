@@ -68,7 +68,7 @@ const getPrettierConfig = (folderPath: string, fileName: string): PromiseMaybe<P
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!Known.hasFilePath(filePath)) return;
   const loader = File2Loader[fileName] || File2Loader["default"];
-  const normalize = (config: unknown) => (isObject(config) ? normalizePrettierOptions(config, folderPath) : undefined);
+  const normalize = (config: unknown) => (isObject(config) ? { ...config, ...normalizePrettierOptions(config, folderPath) } : undefined);
   return loader(filePath).then(normalize).catch(noop);
 };
 
