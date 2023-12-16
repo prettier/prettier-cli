@@ -17,9 +17,9 @@ const makeBin = (): Bin => {
       .package("prettier", PRETTIER_VERSION)
       /* USAGES */
       .usage(`${color.cyan("prettier")} ${color.yellow("[file/dir/glob...]")} ${color.green("[options]")}`)
-      .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--check")} ${color.green("--parallel")}`)
+      .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--check")}`)
       .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("-l")} ${color.green("--no-cache")}`)
-      .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--write")} ${color.green("--parallel")}`)
+      .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--write")} ${color.green("--no-parallel")}`)
       .usage(
         `${color.cyan("prettier")} ${color.yellow("./path/to/target/file.js")} ${color.green("--cache-location")} ${color.blue("./path/to/cache/file.json")}`,
       )
