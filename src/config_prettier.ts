@@ -4,8 +4,8 @@ import path from "node:path";
 import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath } from "./utils.js";
-import { isObject, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
+import { fastJoinedPath, fastRelativeChildPath, getModule, getModulePath } from "./utils.js";
+import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
 //TODO: Maybe completely drop support for JSON5, or implement it properly
@@ -29,8 +29,15 @@ const Loaders = {
   package: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
     const pkg = JSON.parse(fileContent);
-    const config = isObject(pkg) && "prettier" in pkg ? pkg.prettier : undefined;
-    return config;
+    if (isObject(pkg) && "prettier" in pkg) {
+      const config = pkg.prettier;
+      if (isObject(config)) {
+        return config;
+      } else if (isString(config)) {
+        const modulePath = getModulePath(config, filePath);
+        return Loaders.js(modulePath);
+      }
+    }
   },
   yaml: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");

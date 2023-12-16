@@ -112,18 +112,28 @@ function getGlobPaths(rootPath: string, globs: string[]) {
   });
 }
 
-const getPlugin = memoize(async (name: string): Promise<PrettierPlugin> => {
+async function getModule<T = unknown>(modulePath: string): Promise<T> {
+  const moduleExports = await import(modulePath);
+  const module = moduleExports.default || moduleExports;
+  return module;
+}
+
+function getModulePath(name: string, rootPath: string): string {
+  const rootUrl = url.pathToFileURL(rootPath);
+  const moduleUrl = moduleResolve(name, rootUrl);
+  const modulePath = url.fileURLToPath(moduleUrl);
+  return modulePath;
+}
+
+const getPlugin = memoize((name: string): Promise<PrettierPlugin> => {
   const pluginPath = getPluginPath(name);
-  const pluginExports = await import(pluginPath);
-  const plugin = pluginExports.default || pluginExports;
+  const plugin = getModule<PrettierPlugin>(pluginPath);
   return plugin;
 });
 
 function getPluginPath(name: string): string {
   const rootPath = path.join(process.cwd(), "index.js");
-  const rootUrl = url.pathToFileURL(rootPath);
-  const pluginUrl = moduleResolve(name, rootUrl);
-  const pluginPath = url.fileURLToPath(pluginUrl);
+  const pluginPath = getModulePath(name, rootPath);
   return pluginPath;
 }
 
@@ -657,6 +667,8 @@ export {
   getFoldersChildrenPaths,
   getExpandedFoldersPaths,
   getGlobPaths,
+  getModule,
+  getModulePath,
   getPlugin,
   getPluginPath,
   getPluginVersion,
