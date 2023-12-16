@@ -52,6 +52,7 @@ type Options = {
   /* CONFIG OPTIONS */
   config: boolean;
   editorConfig: boolean;
+  withNodeModules: boolean;
   /* OTHER OPTIONS */
   cache: boolean;
   cacheLocation: string | undefined;

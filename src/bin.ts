@@ -96,11 +96,7 @@ const makeBin = (): Bin => {
       //   { section: "Config", eager: true },
       // )
       .option("--plugin <package...>", "Add a plugin\nMultiple plugins are accepted\nDefaults to []", { section: "Config" })
-      // .option(
-      //   "--with-node-modules",
-      //   'Process files inside the "node_modules" directory',
-      //   { section: "Config" },
-      // )
+      .option("--with-node-modules", 'Process files inside the "node_modules" directory', { section: "Config" })
       /* EDITOR OPTIONS */
       .option("--cursor-offset <int>", 'Print (to stderr) where a cursor at the given position would move to after formatting\nDefaults to "-1"', {
         section: "Editor",

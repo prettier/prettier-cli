@@ -104,11 +104,11 @@ async function getFoldersChildrenPaths(foldersPaths: string[]): Promise<string[]
   return childrenPaths;
 }
 
-function getGlobPaths(rootPath: string, globs: string[]) {
+function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
   return readdir(globs, {
     cwd: rootPath,
     followSymlinks: false,
-    ignore: "**/{.git,.sl,.svn,.hg,node_modules,.DS_Store,Thumbs.db}",
+    ignore: `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`,
   });
 }
 
@@ -185,7 +185,11 @@ function getProjectPath(rootPath: string): string {
   }
 }
 
-async function getTargetsPaths(rootPath: string, globs: string[]): Promise<[string[], string[], Record<string, string[]>, string[], string[]]> {
+async function getTargetsPaths(
+  rootPath: string,
+  globs: string[],
+  withNodeModules: boolean,
+): Promise<[string[], string[], Record<string, string[]>, string[], string[]]> {
   const targetFiles: string[] = [];
   const targetFilesNames: string[] = [];
   const targetFilesNamesToPaths: Record<string, string[]> = {};
@@ -204,7 +208,7 @@ async function getTargetsPaths(rootPath: string, globs: string[]): Promise<[stri
     }
   }
 
-  const result = await getGlobPaths(rootPath, targetGlobs);
+  const result = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
   const filesPaths = [...targetFiles, ...result.files];
   const filesNames = [...targetFilesNames, ...result.filesFoundNames];
   const filesNamesToPaths = result.filesFoundNamesToPaths;
@@ -311,6 +315,7 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
 
   const config = "config" in options ? !!options.config : true;
   const editorConfig = "editorconfig" in options ? !!options.editorconfig : true;
+  const withNodeModules = "withNodeModules" in options ? !!options.withNodeModules : false;
 
   const cache = "cache" in options ? !!options.cache : true;
   const cacheLocation = "cacheLocation" in options && isString(options.cacheLocation) ? options.cacheLocation : undefined;
@@ -331,6 +336,7 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
     write,
     config,
     editorConfig,
+    withNodeModules,
     cache,
     cacheLocation,
     errorOnUnmatchedPattern,
