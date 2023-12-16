@@ -448,8 +448,8 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     }
   }
 
-  if ("plugin" in options) {
-    const value = options.plugin;
+  if ("plugin" in options || "plugins" in options) {
+    const value = options["plugin"] || options["plugins"];
     if (isArray(value) && value.every(isString)) {
       formatOptions.plugins = value;
     } else if (isString(value)) {
