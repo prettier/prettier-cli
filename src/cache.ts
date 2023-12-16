@@ -74,10 +74,9 @@ class Cache {
 
   get(filePath: string): FileData {
     const fileRelativePath = fastRelativePath(this.rootPath, filePath);
-    const fileHashPath = sha1base64(fileRelativePath);
-    const save = this.set.bind(this, filePath, fileHashPath);
+    const save = this.set.bind(this, filePath, fileRelativePath);
     try {
-      const file = this.store[this.version]?.files?.[fileHashPath];
+      const file = this.store[this.version]?.files?.[fileRelativePath];
       if (!file || !isArray(file) || file.length !== 2) return { save };
       const [hash, formatted] = file;
       if (!isString(hash) || !isBoolean(formatted)) return { save };
@@ -91,14 +90,14 @@ class Cache {
     }
   }
 
-  set(filePath: string, fileHashPath: string, fileFormatted: boolean, fileContentExpected: string): void {
+  set(filePath: string, fileRelativePath: string, fileFormatted: boolean, fileContentExpected: string): void {
     try {
       const version = (this.store[this.version] ||= {});
       const files = (version.files ||= {});
       //TODO: Skip the following hash if the expected content we got is the same one that we had
       const hash = sha1base64(fileContentExpected);
       version.modified = Date.now();
-      files[fileHashPath] = [hash, fileFormatted];
+      files[fileRelativePath] = [hash, fileFormatted];
       this.dirty = true;
     } catch (error: unknown) {
       this.logger.prefixed.debug(String(error));
@@ -107,14 +106,13 @@ class Cache {
 
   async has(filePath: string, isIgnored: () => PromiseMaybe<boolean>): Promise<boolean> {
     const fileRelativePath = fastRelativePath(this.rootPath, filePath);
-    const fileHashPath = sha1base64(fileRelativePath);
-    const file = this.store[this.version]?.files?.[fileHashPath];
+    const file = this.store[this.version]?.files?.[fileRelativePath];
     if (isUndefined(file)) {
       const ignored = await isIgnored();
       if (ignored) {
         const version = (this.store[this.version] ||= {});
         const files = (version.files ||= {});
-        files[fileHashPath] = false;
+        files[fileRelativePath] = false;
         this.dirty = true;
         return false;
       } else {
