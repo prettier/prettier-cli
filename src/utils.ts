@@ -211,7 +211,7 @@ async function getTargetsPaths(rootPath: string, globs: string[]): Promise<[stri
 
   for (const fileName in targetFilesNamesToPaths) {
     const prev = filesNamesToPaths[fileName];
-    const next = Array.isArray(prev) ? prev.concat(filesNamesToPaths[fileName]) : filesNamesToPaths[fileName];
+    const next = Array.isArray(prev) ? prev.concat(targetFilesNamesToPaths[fileName]) : targetFilesNamesToPaths[fileName];
     filesNamesToPaths[fileName] = uniq(next);
   }
 
