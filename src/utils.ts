@@ -114,7 +114,7 @@ function getGlobPaths(rootPath: string, globs: string[]) {
 
 async function getModule<T = unknown>(modulePath: string): Promise<T> {
   const moduleExports = await import(modulePath);
-  const module = moduleExports.default || moduleExports;
+  const module = moduleExports.default || moduleExports.exports || moduleExports;
   return module;
 }
 

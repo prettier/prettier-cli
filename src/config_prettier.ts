@@ -14,7 +14,7 @@ import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "
 const Loaders = {
   js: async (filePath: string): Promise<unknown> => {
     const module = await import(filePath);
-    return module.default || module.exports || module.config || module.prettier; //TODO: Streamline this
+    return module.default || module.exports || module.prettier || module;
   },
   json: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
