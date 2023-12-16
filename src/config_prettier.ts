@@ -1,4 +1,5 @@
 import yaml from "js-yaml";
+import JSON5 from "json5";
 import fs from "node:fs";
 import path from "node:path";
 import JSONC from "tiny-jsonc";
@@ -8,7 +9,6 @@ import { fastJoinedPath, fastRelativeChildPath, getModule, getModulePath } from 
 import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
-//TODO: Maybe completely drop support for JSON5, or implement it properly
 //TODO: Maybe add support for TOML
 
 const Loaders = {
@@ -24,6 +24,11 @@ const Loaders = {
   jsonc: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
     const config = JSONC.parse(fileContent);
+    return config;
+  },
+  json5: async (filePath: string): Promise<unknown> => {
+    const fileContent = fs.readFileSync(filePath, "utf8");
+    const config = JSON5.parse(fileContent);
     return config;
   },
   package: async (filePath: string): Promise<unknown> => {
@@ -55,7 +60,7 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   ".prettierrc.yaml": Loaders.yaml,
   ".prettierrc.json": Loaders.json,
   ".prettierrc.jsonc": Loaders.jsonc,
-  ".prettierrc.json5": Loaders.jsonc,
+  ".prettierrc.json5": Loaders.json5,
   ".prettierrc.js": Loaders.js,
   ".prettierrc.cjs": Loaders.js,
   ".prettierrc.mjs": Loaders.js,
