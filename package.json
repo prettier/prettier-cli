@@ -3,7 +3,7 @@
   "repository": "github:prettier/prettier-cli",
   "description": "A faster CLI for Prettier.",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "bin": {
     "prettier-next": "dist/bin.js"
