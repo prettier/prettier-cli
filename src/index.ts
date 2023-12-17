@@ -22,7 +22,11 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
 
   const rootPath = process.cwd();
   const projectPath = getProjectPath(rootPath);
-  const [filesPaths, filesNames, filesNamesToPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, options.globs);
+  const [filesPaths, filesNames, filesNamesToPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(
+    rootPath,
+    options.globs,
+    /** withNodeModules **/ false,
+  );
   const filesPathsTargets = filesPaths.filter(negate(isBinaryPath)).sort();
   const [foldersPathsTargets, foldersExtraPaths] = getExpandedFoldersPaths(foldersFoundPaths, projectPath);
   const filesExtraPaths = await getFoldersChildrenPaths([rootPath, ...foldersExtraPaths]);
