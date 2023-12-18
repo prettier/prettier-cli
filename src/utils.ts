@@ -314,7 +314,9 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   if (list && write) exit('The "--list-different" and "--write" flags cannot be used together');
 
   const config = "config" in options ? !!options.config : true;
+  const configPath = "configPath" in options && isString(options.configPath) ? [options.configPath] : undefined;
   const editorConfig = "editorconfig" in options ? !!options.editorconfig : true;
+  const ignorePath = "ignorePath" in options && isArray(options.ignorePath) && options.ignorePath.every(isString) ? options.ignorePath : undefined;
   const withNodeModules = "withNodeModules" in options ? !!options.withNodeModules : false;
 
   const cache = "cache" in options ? !!options.cache : true;
@@ -335,7 +337,9 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
     list,
     write,
     config,
+    configPath,
     editorConfig,
+    ignorePath,
     withNodeModules,
     cache,
     cacheLocation,

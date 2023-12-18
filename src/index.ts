@@ -1,16 +1,17 @@
+import fs from "node:fs/promises";
 import isBinaryPath from "is-binary-path";
 import stringify from "json-sorted-stringify";
 import path from "node:path";
 import process from "node:process";
 import Cache from "./cache.js";
 import { getEditorConfigsMap, getEditorConfigResolved, getEditorConfigFormatOptions } from "./config_editorconfig.js";
-import { getIgnoresContentMap, getIgnoreResolved } from "./config_ignore.js";
-import { getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
+import { getIgnoresContentMap, getIgnoreBys, getIgnoreResolved } from "./config_ignore.js";
+import { Loaders, getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
 import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
-import { getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getTargetsPaths } from "./utils.js";
+import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getTargetsPaths } from "./utils.js";
 import { fastRelativePath, isString, isUndefined, negate, pluralize, uniq } from "./utils.js";
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
@@ -52,9 +53,21 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   const ignoreContents = await getIgnoresContentMap(ignorePaths, ignoreNames);
   const prettierConfigs = options.config ? await getPrettierConfigsMap(prettierConfigPaths, prettierConfigNames) : {};
 
+  const ignoreManualFilesNames = options.ignorePath || [];
+  const ignoreManualFilesPaths = ignoreManualFilesNames.map((fileName) => path.resolve(fileName));
+  const ignoreManualFilesContents = await Promise.all(ignoreManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8")));
+  const ignoreManualFoldersPaths = ignoreManualFilesPaths.map(path.dirname);
+  const ignoreManual = getIgnoreBys(ignoreManualFoldersPaths, ignoreManualFilesContents.map(castArray));
+
+  const prettierManualFilesNames = options.configPath || [];
+  const prettierManualFilesPaths = prettierManualFilesNames.map((fileName) => path.resolve(fileName));
+  const prettierManualFilesContents = await Promise.all(prettierManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8")));
+  const prettierManualConfigs = await Promise.all(prettierManualFilesPaths.map(Loaders.auto));
+  const prettierManualConfig = prettierManualConfigs.length ? Object.assign({}, ...prettierManualConfigs) : undefined;
+
   const cliContextConfig = options.contextOptions;
   const cliFormatConfig = options.formatOptions;
-  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, cliContextConfig, cliFormatConfig, pluginsOptions }); // prettier-ignore
+  const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, ignoreManualFilesPaths, ignoreManualFilesContents, prettierManualFilesPaths, prettierManualFilesContents, cliContextConfig, cliFormatConfig, pluginsOptions }); // prettier-ignore
 
   const shouldCache = isUndefined(cliContextConfig.cursorOffset);
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, logger) : undefined;
@@ -63,13 +76,13 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
   const filesResults = await Promise.allSettled(
     filesPathsTargets.map(async (filePath) => {
-      const isIgnored = () => getIgnoreResolved(filePath, ignoreNames);
+      const isIgnored = () => (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
       const isCacheable = () => cache?.has(filePath, isIgnored);
       const ignored = cache ? !(await isCacheable()) : await isIgnored();
       if (ignored) return;
       const getFormatOptions = async (): Promise<FormatOptions> => {
         const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
-        const prettierConfig = options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {};
+        const prettierConfig = prettierManualConfig || (options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {});
         const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
         return formatOptions;
       };

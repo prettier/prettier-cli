@@ -32,6 +32,13 @@ const getIgnoreBy = (folderPath: string, filesContents: string[]): Ignore => {
   };
 };
 
+const getIgnoreBys = (foldersPaths: string[], filesContents: string[][]): Ignore | undefined => {
+  if (!foldersPaths.length) return;
+  const ignores = foldersPaths.map((folderPath, index) => getIgnoreBy(folderPath, filesContents[index]));
+  const ignore = someOf(ignores);
+  return ignore;
+};
+
 const getIgnores = memoize(async (folderPath: string, filesNames: string[]): Promise<Ignore | undefined> => {
   const contents = await getIgnoresContent(folderPath, filesNames);
   if (!contents?.length) return;
@@ -56,4 +63,4 @@ const getIgnoreResolved = async (filePath: string, filesNames: string[]): Promis
   return ignored;
 };
 
-export { getIgnoreBy, getIgnores, getIgnoresContent, getIgnoresContentMap, getIgnoresUp, getIgnoreResolved };
+export { getIgnoresContent, getIgnoresContentMap, getIgnoreBy, getIgnoreBys, getIgnores, getIgnoresUp, getIgnoreResolved };

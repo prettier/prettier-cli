@@ -12,6 +12,12 @@ import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "
 //TODO: Maybe add support for TOML
 
 const Loaders = {
+  auto: (filePath: string): Promise<unknown> => {
+    const basename = path.basename(filePath);
+    const ext = path.extname(filePath).slice(1);
+    const loader = File2Loader[basename] || Ext2Loader[ext] || File2Loader["default"];
+    return loader(filePath);
+  },
   js: async (filePath: string): Promise<unknown> => {
     const module = await import(filePath);
     return module.default || module.exports || module.prettier || module;
@@ -71,6 +77,18 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   "prettier.config.mjs": Loaders.js,
 };
 
+const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
+  default: Loaders.yaml,
+  yml: Loaders.yaml,
+  yaml: Loaders.yaml,
+  json: Loaders.json,
+  jsonc: Loaders.jsonc,
+  json5: Loaders.json5,
+  js: Loaders.js,
+  cjs: Loaders.js,
+  mjs: Loaders.js,
+};
+
 const getPrettierConfig = (folderPath: string, fileName: string): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!Known.hasFilePath(filePath)) return;
@@ -126,4 +144,4 @@ const getPrettierConfigResolved = async (filePath: string, filesNames: string[])
   return resolved;
 };
 
-export { getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
+export { Loaders, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };

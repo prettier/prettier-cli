@@ -77,11 +77,8 @@ const makeBin = (): Bin => {
         section: "Format",
       })
       /* CONFIG OPTIONS */
-      // .option(
-      //   "--config <path>",
-      //   "Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)",
-      //   { section: "Config" },
-      // )
+      //TODO: Maybe Rename the following to "config", but it conflicts with the "no-config" flag
+      .option("--config-path <path>", "Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)", { section: "Config" })
       .option("--no-config", "Do not look for a configuration file", {
         section: "Config",
         default: true,
@@ -90,11 +87,11 @@ const makeBin = (): Bin => {
         section: "Config",
         default: true,
       })
-      // .option(
-      //   "--ignore-path <path...>",
-      //   "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]",
-      //   { section: "Config", eager: true },
-      // )
+      .option(
+        "--ignore-path <path...>",
+        "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]",
+        { section: "Config" },
+      )
       .option("--plugin <package...>", "Add a plugin\nMultiple plugins are accepted\nDefaults to []", { section: "Config" })
       .option("--with-node-modules", 'Process files inside the "node_modules" directory', { section: "Config" })
       /* EDITOR OPTIONS */

@@ -51,7 +51,9 @@ type Options = {
   write: boolean;
   /* CONFIG OPTIONS */
   config: boolean;
+  configPath: string[] | undefined;
   editorConfig: boolean;
+  ignorePath: string[] | undefined;
   withNodeModules: boolean;
   /* OTHER OPTIONS */
   cache: boolean;
