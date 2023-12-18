@@ -1,3 +1,4 @@
+import TOML from "@iarna/toml";
 import yaml from "js-yaml";
 import JSON5 from "json5";
 import fs from "node:fs";
@@ -8,8 +9,6 @@ import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath, getModule, getModulePath } from "./utils.js";
 import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
-
-//TODO: Maybe add support for TOML
 
 const Loaders = {
   auto: (filePath: string): Promise<unknown> => {
@@ -52,6 +51,10 @@ const Loaders = {
       }
     }
   },
+  toml: async (filePath: string): Promise<unknown> => {
+    const fileContent = fs.readFileSync(filePath, "utf8");
+    return TOML.parse(fileContent);
+  },
   yaml: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
     return yaml.load(fileContent, {
@@ -69,6 +72,7 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   ".prettierrc.json": Loaders.json,
   ".prettierrc.jsonc": Loaders.jsonc,
   ".prettierrc.json5": Loaders.json5,
+  ".prettierrc.toml": Loaders.toml,
   ".prettierrc.js": Loaders.js,
   ".prettierrc.cjs": Loaders.js,
   ".prettierrc.mjs": Loaders.js,
@@ -84,6 +88,7 @@ const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   json: Loaders.json,
   jsonc: Loaders.jsonc,
   json5: Loaders.json5,
+  toml: Loaders.toml,
   js: Loaders.js,
   cjs: Loaders.js,
   mjs: Loaders.js,

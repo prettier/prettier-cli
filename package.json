@@ -26,6 +26,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "atomically": "^2.0.2",
     "fast-ignore": "^1.1.1",
     "find-up-json": "^2.0.2",
