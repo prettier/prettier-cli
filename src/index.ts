@@ -93,6 +93,8 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   let totalIgnored = 0;
   let totalFormatted = 0;
   let totalUnformatted = 0;
+  let totalUnknown = 0;
+  let pathsUnknown: string[] = [];
   let totalErrored = 0;
   let pathsErrored: string[] = [];
 
@@ -120,9 +122,13 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
       }
     } else {
       const error = fileResult.reason;
-      totalErrored += 1;
-      pathsErrored.push(filesPathsTargets[i]);
+      if (error.name === "UndefinedParserError") {
+        totalUnknown += 1;
+        pathsUnknown.push(filesPathsTargets[i]);
+      }
       if (error.name !== "UndefinedParserError" || !options.ignoreUnknown) {
+        totalErrored += 1;
+        pathsErrored.push(filesPathsTargets[i]);
         const filePath = filesPathsTargets[i];
         const fileRelativePath = fastRelativePath(rootPath, filePath);
         //TODO: Make sure the error is syntax-highlighted when possible
@@ -140,6 +146,8 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   logger.prefixed.debug(`Files ignored: ${totalIgnored}`);
   logger.prefixed.debug(`Files formatted: ${totalFormatted}`);
   logger.prefixed.debug(`Files unformatted: ${totalUnformatted}`);
+  logger.prefixed.debug(`Files unknown: ${totalUnknown}`);
+  logger.prefixed.debug(() => pathsUnknown.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
   logger.prefixed.debug(`Files errored: ${totalErrored}`);
   logger.prefixed.debug(() => pathsErrored.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
 
