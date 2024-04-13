@@ -7,7 +7,7 @@ import process from "node:process";
 import url from "node:url";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
-import zeptomatch from "zeptomatch";
+import zeptomatchEscape from "zeptomatch-escape";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
 import type { PluginsOptions, PromiseMaybe } from "./types.js";
 
@@ -284,7 +284,8 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   if (!isObject(options)) exit("Invalid options object");
 
   const targetsGlobs = targets.filter(isString);
-  const targetsStatic = "--" in options && Array.isArray(options["--"]) ? options["--"].filter(isString).map(zeptomatch.escape) : [];
+
+  const targetsStatic = "--" in options && Array.isArray(options["--"]) ? options["--"].filter(isString).map(zeptomatchEscape) : [];
   const globs = [...targetsGlobs, ...targetsStatic];
 
   if (!globs.length) exit("Expected at least one target file/dir/glob");
