@@ -8,6 +8,7 @@ import url from "node:url";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatchEscape from "zeptomatch-escape";
+import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
 import type { PluginsOptions, PromiseMaybe } from "./types.js";
 
@@ -239,11 +240,6 @@ function isFunction(value: unknown): value is Function {
   return typeof value === "function";
 }
 
-function isGlobStatic(glob: string): boolean {
-  //TODO: Make this perfect, grammar-based, rather than letting some glob-looking paths slip through
-  return /^(?:\\.|[ a-zA-Z0-9/._-])*$/.test(glob);
-}
-
 function isInteger(value: unknown): value is number {
   return Number.isInteger(value);
 }
@@ -309,7 +305,7 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   const cache = "cache" in options ? !!options.cache : true;
   const cacheLocation = "cacheLocation" in options && isString(options.cacheLocation) ? options.cacheLocation : undefined;
   const errorOnUnmatchedPattern = "errorOnUnmatchedPattern" in options ? !!options.errorOnUnmatchedPattern : true;
-  const ignoreUnknown = "ignoreUnknown" in options && isBoolean(options.ignoreUnknown) ? !!options.ignoreUnknown : globs.some(isGlobStatic);
+  const ignoreUnknown = "ignoreUnknown" in options && isBoolean(options.ignoreUnknown) ? !!options.ignoreUnknown : globs.some(zeptomatchIsStatic);
 
   const logLevel = "logLevel" in options ? ((options.logLevel || "log") as LogLevel) : "log";
   const parallel = "parallel" in options && !!options.parallel;

@@ -51,7 +51,8 @@
     "tiny-spinner": "^2.0.3",
     "worktank": "^2.6.1",
     "zeptomatch": "^2.0.0",
-    "zeptomatch-escape": "^1.0.0"
+    "zeptomatch-escape": "^1.0.0",
+    "zeptomatch-is-static": "^1.0.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
