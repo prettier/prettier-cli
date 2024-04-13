@@ -1,6 +1,3 @@
-import TOML from "@iarna/toml";
-import yaml from "js-yaml";
-import JSON5 from "json5";
 import fs from "node:fs";
 import path from "node:path";
 import JSONC from "tiny-jsonc";
@@ -33,6 +30,7 @@ const Loaders = {
   },
   json5: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
+    const JSON5 = (await import("json5")).default;
     const config = JSON5.parse(fileContent);
     return config;
   },
@@ -53,9 +51,11 @@ const Loaders = {
   },
   toml: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
+    const TOML = (await import("@iarna/toml")).default;
     return TOML.parse(fileContent);
   },
   yaml: async (filePath: string): Promise<unknown> => {
+    const yaml = (await import("js-yaml")).default;
     const fileContent = fs.readFileSync(filePath, "utf8");
     return yaml.load(fileContent, {
       schema: yaml.JSON_SCHEMA,
