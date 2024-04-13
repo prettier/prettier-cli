@@ -5,10 +5,11 @@
   "license": "MIT",
   "version": "0.3.0",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "prettier-next": "dist/bin.js"
   },
-  "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./bin": "./dist/bin.js",
@@ -17,13 +18,19 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "compile": "tsc --outDir dist",
     "compile:watch": "tsc --outDir dist --watch",
     "prepublishOnly": "npm run compile",
     "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "prettier": "^3.1.0 || ^4.0.0"
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
@@ -45,17 +52,10 @@
     "worktank": "^2.6.0",
     "zeptomatch": "^1.2.2"
   },
-  "peerDependencies": {
-    "prettier": "^3.1.0 || ^4.0.0"
-  },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.9.3",
     "prettier": "3.1.0",
     "typescript": "^5.3.2"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }
