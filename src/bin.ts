@@ -4,7 +4,6 @@ import { toKebabCase } from "kasi";
 import { bin, color, parseArgv } from "specialist";
 import { PRETTIER_VERSION } from "./constants.js";
 import { getPlugin, isNumber, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
-import { run } from "./index.js";
 import type { Bin, PluginsOptions } from "./types.js";
 
 const makeBin = (): Bin => {
@@ -142,7 +141,8 @@ const makeBin = (): Bin => {
       // .option("--support-info", "Print support information as JSON")
       /* DEFAULT COMMAND */
       .argument("[file/dir/glob...]", "Files, directories or globs to format")
-      .action((options, files) => {
+      .action(async (options, files) => {
+        const { run } = await import("./index.js");
         const baseOptions = normalizeOptions(options, files);
         const pluginsOptions = {};
         return run(baseOptions, pluginsOptions);
@@ -204,7 +204,8 @@ const makePluggableBin = async (): Promise<Bin> => {
     }
   }
 
-  bin = bin.action((options, files) => {
+  bin = bin.action(async (options, files) => {
+    const { run } = await import("./index.js");
     const baseOptions = normalizeOptions(options, files);
     const pluginsDynamicOptions = normalizePluginOptions(options, optionsNames);
     const pluginsOptions = { ...pluginsStaticOptions, ...pluginsDynamicOptions };
