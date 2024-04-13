@@ -2,7 +2,7 @@
 
 import { toKebabCase } from "kasi";
 import { bin, color, parseArgv } from "specialist";
-import { PRETTIER_VERSION, IS_BUN } from "./constants.js";
+import { PRETTIER_VERSION } from "./constants.js";
 import { getPlugin, isNumber, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import { run } from "./index.js";
 import type { Bin, PluginsOptions } from "./types.js";
@@ -125,7 +125,7 @@ const makeBin = (): Bin => {
         enum: ["silent", "error", "warn", "log", "debug"],
       })
       .option("--no-parallel", 'Process files in parallel\nDefaults to "true"', {
-        default: !IS_BUN, //TOOD: always set this to "true", once "worker_threads" work in Bun
+        default: true,
       })
       .option("--parallel-workers <int>", 'Number of parallel workers to use\nDefaults to "0"')
       .option(

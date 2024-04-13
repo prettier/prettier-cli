@@ -6,6 +6,5 @@ const cliPackage = require("@prettier/cli/package.json");
 
 const PRETTIER_VERSION = prettierPackage.version;
 const CLI_VERSION = cliPackage.version;
-const IS_BUN = !!process.versions["bun"];
 
-export { PRETTIER_VERSION, CLI_VERSION, IS_BUN };
+export { PRETTIER_VERSION, CLI_VERSION };
