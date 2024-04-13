@@ -28,7 +28,6 @@ const makeBin = (): Bin => {
       .option("--list-different, -l", "Print the names of files that are different from Prettier's formatting (see also --check)", { section: "Output" })
       .option("--write, -w", "Edit files in-place (Beware!)", { section: "Output" })
       /* FORMAT OPTIONS */
-      .option("--experimental-ternaries", 'Use curious ternaries, with the question mark after the condition\nDefaults to "false"', { section: "Format" })
       .option("--arrow-parens <always|avoid>", 'Include parentheses around a sole arrow function parameter\nDefaults to "always"', {
         section: "Format",
         enum: ["always", "avoid"],
@@ -42,6 +41,10 @@ const makeBin = (): Bin => {
       .option("--end-of-line <lf|crlf|cr|auto>", 'Which end of line characters to apply\nDefaults to "lf"', {
         section: "Format",
         enum: ["lf", "crlf", "cr", "auto"],
+      })
+      .option("--no-experimental-ternaries", 'Don\'t use curious ternaries, with the question mark after the condition\nDefaults to "true"', {
+        section: "Format",
+        default: true,
       })
       .option("--html-whitespace-sensitivity <css|strict|ignore>", 'How to handle whitespaces in HTML\nDefaults to "css"', {
         section: "Format",
