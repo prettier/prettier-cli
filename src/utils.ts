@@ -31,12 +31,6 @@ function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
 }
 
-function everyOf<T>(fns: ((arg: T) => unknown)[]): (arg: T) => boolean {
-  return (arg: T): boolean => {
-    return fns.every((fn) => fn(arg));
-  };
-}
-
 function fastJoinedPath(folderPath: string, fileName: string): string {
   return `${folderPath}${path.sep}${fileName}`;
 }
@@ -232,10 +226,6 @@ function isBoolean(value: unknown): value is boolean {
   return typeof value === "boolean";
 }
 
-function isFalsy<T>(value: T): value is Extract<T, 0 | -0 | 0n | -0n | "" | false | null | undefined | void> {
-  return !value;
-}
-
 function isFile(targetPath: string): boolean {
   try {
     const stats = fs.statSync(targetPath);
@@ -266,10 +256,6 @@ function isObject(value: unknown): value is object {
   if (value === null) return false;
   const type = typeof value;
   return type === "object" || type === "function";
-}
-
-function isPromise(value: unknown): value is Promise<unknown> {
-  return value instanceof Promise;
 }
 
 function isString(value: unknown): value is string {
@@ -642,16 +628,6 @@ function uniq<T>(values: T[]): T[] {
   return Array.from(new Set(values));
 }
 
-function zipObject<T extends Key, U>(keys: T[], values: U[]): Partial<Record<T, U>> {
-  const map: Partial<Record<T, U>> = {};
-
-  for (let i = 0, l = keys.length; i < l; i++) {
-    map[keys[i]] = values[i];
-  }
-
-  return map;
-}
-
 function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (value: U) => boolean): Partial<Record<T, U>> {
   const map: Partial<Record<T, U>> = {};
 
@@ -667,7 +643,6 @@ function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (valu
 
 export {
   castArray,
-  everyOf,
   fastJoinedPath,
   fastRelativePath,
   fastRelativeChildPath,
@@ -689,12 +664,10 @@ export {
   getTargetsPaths,
   isArray,
   isBoolean,
-  isFalsy,
   isFunction,
   isInteger,
   isNumber,
   isObject,
-  isPromise,
   isString,
   isTruthy,
   isUndefined,
@@ -713,6 +686,5 @@ export {
   sha1base64,
   someOf,
   uniq,
-  zipObject,
   zipObjectUnless,
 };

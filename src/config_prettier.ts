@@ -6,7 +6,7 @@ import path from "node:path";
 import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath, getModule, getModulePath } from "./utils.js";
+import { fastJoinedPath, fastRelativeChildPath, getModulePath } from "./utils.js";
 import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
