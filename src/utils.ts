@@ -1,5 +1,6 @@
 import findUp from "find-up-json";
 import { moduleResolve } from "import-meta-resolve";
+import memoize from "lomemo";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -11,22 +12,6 @@ import zeptomatchEscape from "zeptomatch-escape";
 import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
 import type { PluginsOptions, PromiseMaybe } from "./types.js";
-
-//FIXME: Ensure all arguments are actually taken into account
-//TODO: Publish something like this as a standalone module, rather than manually hoisting this up
-function memoize<Args extends unknown[], Return>(fn: (...args: Args) => Return): ((...args: Args) => Return) & { cache: Map<Args[0], Return> } {
-  const memoized = (...args: Args): Return => {
-    const { cache } = memoized;
-    const id = args[0];
-    const cached = cache.get(id);
-    if (!isUndefined(cached) || cache.has(id)) return cached;
-    const result = fn(...args);
-    cache.set(id, result);
-    return result;
-  };
-  memoized.cache = new Map();
-  return memoized;
-}
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];

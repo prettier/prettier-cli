@@ -43,6 +43,7 @@
     "json-sorted-stringify": "^1.0.0",
     "json5": "^2.2.3",
     "kasi": "^1.1.0",
+    "lomemo": "^1.0.0",
     "pioppo": "^1.1.1",
     "specialist": "^1.4.0",
     "tiny-editorconfig": "^1.0.0",
