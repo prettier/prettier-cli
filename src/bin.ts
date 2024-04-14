@@ -41,9 +41,8 @@ const makeBin = (): Bin => {
         section: "Format",
         enum: ["lf", "crlf", "cr", "auto"],
       })
-      .option("--no-experimental-ternaries", 'Don\'t use curious ternaries, with the question mark after the condition\nDefaults to "true"', {
+      .option("--experimental-ternaries", 'Use curious ternaries, with the question mark after the condition\nDefaults to "false"', {
         section: "Format",
-        default: true,
       })
       .option("--html-whitespace-sensitivity <css|strict|ignore>", 'How to handle whitespaces in HTML\nDefaults to "css"', {
         section: "Format",
