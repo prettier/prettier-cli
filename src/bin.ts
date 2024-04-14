@@ -223,6 +223,10 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
     exit('The "--config" option has been renamed to "--config-path" instead');
   }
 
+  if (isString(args["cache-strategy"])) {
+    exit('The "--cache-strategy" option has been deleted, since the "metadata" strategy is no longer supported');
+  }
+
   const bin = await makePluggableBin();
   return bin;
 };
