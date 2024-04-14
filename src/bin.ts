@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { toKebabCase } from "kasi";
-import { bin, color, parseArgv } from "specialist";
+import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION } from "./constants.js";
-import { getPlugin, isNumber, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
+import { getPlugin, isNumber, isString, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import type { Bin, PluginsOptions } from "./types.js";
 
 const makeBin = (): Bin => {
@@ -215,8 +215,20 @@ const makePluggableBin = async (): Promise<Bin> => {
   return bin;
 };
 
-const runBin = async (): Promise<void> => {
+const makeWarnedPluggableBin = async (): Promise<Bin> => {
+  const argv = process.argv.slice(2);
+  const args = parseArgv(argv);
+
+  if (isString(args["config"])) {
+    exit('The "--config" option has been renamed to "--config-path" instead');
+  }
+
   const bin = await makePluggableBin();
+  return bin;
+};
+
+const runBin = async (): Promise<void> => {
+  const bin = await makeWarnedPluggableBin();
   bin.run();
 };
 
