@@ -1,4 +1,5 @@
 import findUp from "find-up-json";
+import once from "function-once";
 import { moduleResolve } from "import-meta-resolve";
 import memoize from "lomemo";
 import crypto from "node:crypto";
@@ -568,19 +569,6 @@ function omit<T extends object, K extends keyof T>(object: T, keys: K[]): Omit<T
   }
 
   return clone;
-}
-
-function once<T>(fn: () => T): () => T {
-  let inited = false;
-  let result: T;
-
-  return (): T => {
-    if (!inited) {
-      inited = true;
-      result = fn();
-    }
-    return result;
-  };
 }
 
 function pluralize(value: string, length: number): string {
