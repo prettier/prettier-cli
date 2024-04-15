@@ -63,6 +63,7 @@ type Options = {
   logLevel: LogLevel;
   parallel: boolean;
   parallelWorkers: number;
+  stdinFilepath: string | undefined;
   /* CONTEXT OPTIONS */
   contextOptions: ContextOptions;
   /* FORMAT OPTIONS */

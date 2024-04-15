@@ -46,6 +46,7 @@
     "kasi": "^1.1.0",
     "lomemo": "^1.0.0",
     "pioppo": "^1.1.1",
+    "promise-resolve-timeout": "^2.0.0",
     "specialist": "^1.4.0",
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",

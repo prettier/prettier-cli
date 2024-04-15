@@ -6,7 +6,9 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { text as stream2text } from "node:stream/consumers";
 import url from "node:url";
+import resolveTimeout from "promise-resolve-timeout";
 import { exit } from "specialist";
 import readdir from "tiny-readdir-glob";
 import zeptomatchEscape from "zeptomatch-escape";
@@ -166,6 +168,15 @@ function getProjectPath(rootPath: string): string {
   }
 }
 
+const getStdin = once(async (): Promise<string | undefined> => {
+  // Without a TTY, the process is likely, but not certainly, being piped
+  if (!process.stdin.isTTY) {
+    const stdin = stream2text(process.stdin);
+    const fallback = resolveTimeout(1_000, undefined);
+    return Promise.race([stdin, fallback]);
+  }
+});
+
 async function getTargetsPaths(
   rootPath: string,
   globs: string[],
@@ -262,15 +273,16 @@ function noop(): undefined {
   return;
 }
 
-function normalizeOptions(options: unknown, targets: unknown[]): Options {
+async function normalizeOptions(options: unknown, targets: unknown[]): Promise<Options> {
   if (!isObject(options)) exit("Invalid options object");
 
   const targetsGlobs = targets.filter(isString);
-
   const targetsStatic = "--" in options && Array.isArray(options["--"]) ? options["--"].filter(isString).map(zeptomatchEscape) : [];
   const globs = [...targetsGlobs, ...targetsStatic];
 
-  if (!globs.length) exit("Expected at least one target file/dir/glob");
+  const stdin = await getStdin();
+
+  if (!isString(stdin) && !globs.length) exit("Expected at least one target file/dir/glob");
 
   const check = "check" in options && !!options.check;
   const list = "listDifferent" in options && !!options.listDifferent;
@@ -296,6 +308,7 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
   const logLevel = "logLevel" in options ? ((options.logLevel || "log") as LogLevel) : "log";
   const parallel = "parallel" in options && !!options.parallel;
   const parallelWorkers = ("parallelWorkers" in options && Math.round(Number(options.parallelWorkers))) || 0;
+  const stdinFilepath = "stdinFilepath" in options && isString(options.stdinFilepath) ? options.stdinFilepath : undefined;
 
   const contextOptions = normalizeContextOptions(options);
   const formatOptions = normalizeFormatOptions(options);
@@ -317,6 +330,7 @@ function normalizeOptions(options: unknown, targets: unknown[]): Options {
     logLevel,
     parallel,
     parallelWorkers,
+    stdinFilepath,
     contextOptions,
     formatOptions,
   };
@@ -631,6 +645,7 @@ export {
   getPluginsPaths,
   getPluginsVersions,
   getProjectPath,
+  getStdin,
   getTargetsPaths,
   isArray,
   isBoolean,

@@ -133,16 +133,13 @@ const makeBin = (): Bin => {
         "--require-pragma",
         'Require either "@prettier" or "@format" to be present in the file\'s first docblock comment in order for it to be formatted\nDefaults to "false"',
       )
-      // .option(
-      //   "--stdin-filepath <path>",
-      //   "Path to the file to pretend that stdin comes from",
-      // )
+      .option("--stdin-filepath <path>", "Path to the file to pretend that stdin comes from")
       // .option("--support-info", "Print support information as JSON")
       /* DEFAULT COMMAND */
       .argument("[file/dir/glob...]", "Files, directories or globs to format")
       .action(async (options, files) => {
         const { run } = await import("./index.js");
-        const baseOptions = normalizeOptions(options, files);
+        const baseOptions = await normalizeOptions(options, files);
         const pluginsOptions = {};
         return run(baseOptions, pluginsOptions);
       })
@@ -205,7 +202,7 @@ const makePluggableBin = async (): Promise<Bin> => {
 
   bin = bin.action(async (options, files) => {
     const { run } = await import("./index.js");
-    const baseOptions = normalizeOptions(options, files);
+    const baseOptions = await normalizeOptions(options, files);
     const pluginsDynamicOptions = normalizePluginOptions(options, optionsNames);
     const pluginsOptions = { ...pluginsStaticOptions, ...pluginsDynamicOptions };
     return run(baseOptions, pluginsOptions);

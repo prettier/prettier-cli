@@ -11,11 +11,37 @@ import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
-import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getTargetsPaths } from "./utils.js";
+import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getStdin, getTargetsPaths } from "./utils.js";
 import { fastRelativePath, isString, isUndefined, negate, pluralize, uniq } from "./utils.js";
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
-async function run(options: Options, pluginsOptions: PluginsOptions): Promise<void> {
+async function run(options: Options, pluginsOptions): Promise<void> {
+  const stdin = await getStdin();
+  if (isString(stdin)) {
+    return runStdin(options, pluginsOptions);
+  } else {
+    return runGlobs(options, pluginsOptions);
+  }
+}
+
+async function runStdin(options: Options, pluginsOptions: PluginsOptions): Promise<void> {
+  const logger = new Logger(options.logLevel);
+  const prettier = await import("./prettier_serial.js");
+
+  const fileName = options.stdinFilepath || "stdin";
+  const fileContent = (await getStdin()) || "";
+
+  try {
+    const formatted = await prettier.format(fileName, fileContent, options.formatOptions, options.contextOptions, pluginsOptions);
+    logger.always(formatted);
+    process.exitCode = options.check && formatted !== fileContent ? 1 : 0;
+  } catch (error) {
+    logger.prefixed.error(String(error));
+    process.exitCode = 1;
+  }
+}
+
+async function runGlobs(options: Options, pluginsOptions: PluginsOptions): Promise<void> {
   const logger = new Logger(options.logLevel);
   const spinner = options.check ? logger.spinner.log() : undefined;
 
@@ -193,4 +219,4 @@ async function run(options: Options, pluginsOptions: PluginsOptions): Promise<vo
   process.exitCode = (!totalMatched && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
 }
 
-export { run };
+export { run, runStdin, runGlobs };
