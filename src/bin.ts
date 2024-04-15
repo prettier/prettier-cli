@@ -78,7 +78,6 @@ const makeBin = (): Bin => {
         section: "Format",
       })
       /* CONFIG OPTIONS */
-      //TODO: Maybe Rename the following to "config", but it conflicts with the "no-config" flag
       .option("--config-path <path>", "Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)", { section: "Config" })
       .option("--no-config", "Do not look for a configuration file", {
         section: "Config",
