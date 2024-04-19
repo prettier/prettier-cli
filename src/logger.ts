@@ -6,7 +6,7 @@ import type { FunctionMaybe, LogLevel } from "./types.js";
 
 class Logger {
   private pioppo = new Pioppo();
-  private levels: LogLevel[] = ["silent", "debug", "log", "warn", "error"];
+  private levels: LogLevel[] = ["debug", "log", "warn", "error", "silent"];
   private level: LogLevel;
   private strength: number;
 
@@ -22,23 +22,23 @@ class Logger {
     this.pioppo.info(message);
   };
 
-  silent = (message: FunctionMaybe<string>): void => {
+  debug = (message: FunctionMaybe<string>): void => {
     this.absract(message, 0);
   };
 
-  debug = (message: FunctionMaybe<string>): void => {
+  log = (message: FunctionMaybe<string>): void => {
     this.absract(message, 1);
   };
 
-  log = (message: FunctionMaybe<string>): void => {
+  warn = (message: FunctionMaybe<string>): void => {
     this.absract(message, 2);
   };
 
-  warn = (message: FunctionMaybe<string>): void => {
+  error = (message: FunctionMaybe<string>): void => {
     this.absract(message, 3);
   };
 
-  error = (message: FunctionMaybe<string>): void => {
+  silent = (message: FunctionMaybe<string>): void => {
     this.absract(message, 4);
   };
 
@@ -56,28 +56,28 @@ class Logger {
       this.pioppo.info(linesPrefixed.join("\n"));
     },
 
-    silent: (message: FunctionMaybe<string>): void => {
-      const prefix = `[${color.dim("silent")}]`;
-      this.prefixed.abstract(prefix, message, 0);
-    },
-
     debug: (message: FunctionMaybe<string>): void => {
       const prefix = `[${color.magenta("debug")}]`;
-      this.prefixed.abstract(prefix, message, 1);
+      this.prefixed.abstract(prefix, message, 0);
     },
 
     log: (message: FunctionMaybe<string>): void => {
       const prefix = `[${color.cyan("log")}]`;
-      this.prefixed.abstract(prefix, message, 2);
+      this.prefixed.abstract(prefix, message, 1);
     },
 
     warn: (message: FunctionMaybe<string>): void => {
       const prefix = `[${color.yellow("warn")}]`;
-      this.prefixed.abstract(prefix, message, 3);
+      this.prefixed.abstract(prefix, message, 2);
     },
 
     error: (message: FunctionMaybe<string>): void => {
       const prefix = `[${color.red("error")}]`;
+      this.prefixed.abstract(prefix, message, 3);
+    },
+
+    silent: (message: FunctionMaybe<string>): void => {
+      const prefix = `[${color.dim("silent")}]`;
       this.prefixed.abstract(prefix, message, 4);
     },
 
@@ -92,23 +92,23 @@ class Logger {
       return new Spinner();
     },
 
-    silent: (): Spinner | undefined => {
+    debug: (): Spinner | undefined => {
       return this.spinner.abstract(0);
     },
 
-    debug: (): Spinner | undefined => {
+    log: (): Spinner | undefined => {
       return this.spinner.abstract(1);
     },
 
-    log: (): Spinner | undefined => {
+    warn: (): Spinner | undefined => {
       return this.spinner.abstract(2);
     },
 
-    warn: (): Spinner | undefined => {
+    error: (): Spinner | undefined => {
       return this.spinner.abstract(3);
     },
 
-    error: (): Spinner | undefined => {
+    silent: (): Spinner | undefined => {
       return this.spinner.abstract(4);
     },
 
