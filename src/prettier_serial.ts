@@ -1,23 +1,8 @@
 import { readFile, writeFile } from "atomically";
 import process from "node:process";
 import prettier from "prettier/standalone";
-import prettierAcorn from "prettier/plugins/acorn";
-import prettierAngular from "prettier/plugins/angular";
-import prettierBabel from "prettier/plugins/babel";
-import prettierEstree from "prettier/plugins/estree";
-import prettierFlow from "prettier/plugins/flow";
-import prettierGlimmer from "prettier/plugins/glimmer";
-import prettierGraphql from "prettier/plugins/graphql";
-import prettierHtml from "prettier/plugins/html";
-import prettierMarkdown from "prettier/plugins/markdown";
-import prettierMeriyah from "prettier/plugins/meriyah";
-import prettierPostcss from "prettier/plugins/postcss";
-import prettierTypescript from "prettier/plugins/typescript";
-import prettierYaml from "prettier/plugins/yaml";
-import { getPlugins, resolve } from "./utils.js";
+import { getPlugins, getPluginsBuiltin, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions, PluginsOptions } from "./types.js";
-
-//TODO: Avoid loading plugins until they are actually needed (https://github.com/prettier/prettier/blob/main/src/main/plugins/load-builtin-plugins.js)
 
 async function check(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsOptions: PluginsOptions ): Promise<boolean> {
   const fileContentFormatted = await format(filePath, fileContent, formatOptions, contextOptions, pluginsOptions);
@@ -31,6 +16,7 @@ async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions,
 
 async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsOptions: PluginsOptions): Promise<string> {
   formatOptions = await resolve(formatOptions);
+  const pluginsBuiltin = await getPluginsBuiltin();
   const plugins = await getPlugins(formatOptions.plugins || []);
 
   const options = {
@@ -39,19 +25,7 @@ async function format(filePath: string, fileContent: string, formatOptions: Lazy
     ...contextOptions,
     filepath: filePath,
     plugins: [
-      prettierAcorn,
-      prettierAngular,
-      prettierBabel,
-      prettierEstree,
-      prettierFlow,
-      prettierGlimmer,
-      prettierGraphql,
-      prettierHtml,
-      prettierMarkdown,
-      prettierMeriyah,
-      prettierPostcss,
-      prettierTypescript,
-      prettierYaml,
+      ...pluginsBuiltin,
       ...plugins,
     ],
   };
