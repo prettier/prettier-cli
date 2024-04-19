@@ -17,7 +17,7 @@ import prettierYaml from "prettier/plugins/yaml";
 import { getPlugins, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions, PluginsOptions } from "./types.js";
 
-//TODO: Avoid loading plugins until they are actually needed
+//TODO: Avoid loading plugins until they are actually needed (https://github.com/prettier/prettier/blob/main/src/main/plugins/load-builtin-plugins.js)
 
 async function check(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsOptions: PluginsOptions ): Promise<boolean> {
   const fileContentFormatted = await format(filePath, fileContent, formatOptions, contextOptions, pluginsOptions);

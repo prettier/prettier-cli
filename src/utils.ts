@@ -133,6 +133,10 @@ function getPlugins(names: string[]): PromiseMaybe<PrettierPlugin[]> {
   return Promise.all(names.map(getPlugin));
 }
 
+// const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {
+//   return (await import("prettier/src/main/plugins/load-builtin-plugins.js")).default;
+// });
+
 function getPluginsPaths(names: string[]): string[] {
   const pluginsPaths = names.map(getPluginPath);
   return pluginsPaths;
@@ -642,6 +646,7 @@ export {
   getPluginPath,
   getPluginVersion,
   getPlugins,
+  // getPluginsBuiltin,
   getPluginsPaths,
   getPluginsVersions,
   getProjectPath,
