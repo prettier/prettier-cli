@@ -45,7 +45,7 @@ const Loaders = {
         return config;
       } else if (isString(config)) {
         const modulePath = getModulePath(config, filePath);
-        return Loaders.js(modulePath);
+        return Loaders.auto(modulePath);
       }
     }
   },
