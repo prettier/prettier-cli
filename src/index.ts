@@ -103,9 +103,9 @@ async function runGlobs(options: Options, pluginsOptions: PluginsOptions): Promi
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
   const filesResults = await Promise.allSettled(
     filesPathsTargets.map(async (filePath) => {
-      const isIgnored = () => !ignoreFiles.length && (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
+      const isIgnored = () => (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
       const isCacheable = () => cache?.has(filePath, isIgnored);
-      const ignored = cache ? !(await isCacheable()) : await isIgnored();
+      const ignored = !ignoreFiles.length && (cache ? !(await isCacheable()) : await isIgnored());
       if (ignored) return;
       const getFormatOptions = async (): Promise<FormatOptions> => {
         const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
