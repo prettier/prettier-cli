@@ -10,7 +10,7 @@ import { text as stream2text } from "node:stream/consumers";
 import url from "node:url";
 import resolveTimeout from "promise-resolve-timeout";
 import { exit } from "specialist";
-import readdir from "tiny-readdir-glob";
+import readdir from "tiny-readdir-glob-gitignore";
 import zeptomatchEscape from "zeptomatch-escape";
 import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
@@ -87,11 +87,13 @@ async function getFoldersChildrenPaths(foldersPaths: string[]): Promise<string[]
   return childrenPaths;
 }
 
-function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
+function getGlobPaths(rootPath: string, globs: string[], ignoreFiles: string[], withNodeModules: boolean) {
   return readdir(globs, {
     cwd: rootPath,
     followSymlinks: false,
     ignore: `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`,
+    ignoreFiles,
+    ignoreFilesFindAbove: false,
   });
 }
 
@@ -184,6 +186,7 @@ const getStdin = once(async (): Promise<string | undefined> => {
 async function getTargetsPaths(
   rootPath: string,
   globs: string[],
+  ignoreFiles: string[],
   withNodeModules: boolean,
 ): Promise<[string[], string[], Record<string, string[]>, string[], string[]]> {
   const targetFiles: string[] = [];
@@ -204,7 +207,7 @@ async function getTargetsPaths(
     }
   }
 
-  const result = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
+  const result = await getGlobPaths(rootPath, targetGlobs, ignoreFiles, withNodeModules);
   const filesPaths = [...targetFiles, ...result.files];
   const filesNames = [...targetFilesNames, ...result.filesFoundNames];
   const filesNamesToPaths = result.filesFoundNamesToPaths;

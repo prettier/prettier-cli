@@ -49,7 +49,8 @@ async function runGlobs(options: Options, pluginsOptions: PluginsOptions): Promi
 
   const rootPath = process.cwd();
   const projectPath = getProjectPath(rootPath);
-  const [filesPaths, filesNames, filesNamesToPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, options.globs, options.withNodeModules); // prettier-ignore
+  const ignoreFiles = options.ignorePath ? [] : [".gitignore", ".prettierignore"];
+  const [filesPaths, filesNames, filesNamesToPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, options.globs, ignoreFiles, options.withNodeModules); // prettier-ignore
   const filesPathsTargets = filesPaths.filter(negate(isBinaryPath)).sort();
   const [foldersPathsTargets, foldersExtraPaths] = getExpandedFoldersPaths(foldersFoundPaths, projectPath);
   const filesExtraPaths = await getFoldersChildrenPaths([rootPath, ...foldersExtraPaths]);
@@ -102,7 +103,7 @@ async function runGlobs(options: Options, pluginsOptions: PluginsOptions): Promi
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
   const filesResults = await Promise.allSettled(
     filesPathsTargets.map(async (filePath) => {
-      const isIgnored = () => (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
+      const isIgnored = () => !ignoreFiles.length && (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
       const isCacheable = () => cache?.has(filePath, isIgnored);
       const ignored = cache ? !(await isCacheable()) : await isIgnored();
       if (ignored) return;
