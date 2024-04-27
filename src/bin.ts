@@ -139,8 +139,9 @@ const makeBin = (): Bin => {
       .action(async (options, files) => {
         const { run } = await import("./index.js");
         const baseOptions = await normalizeOptions(options, files);
-        const pluginsOptions = {};
-        return run(baseOptions, pluginsOptions);
+        const pluginsDefaultOptions = {};
+        const pluginsCustomOptions = {};
+        return run(baseOptions, pluginsDefaultOptions, pluginsCustomOptions);
       })
   );
 };
@@ -151,7 +152,7 @@ const makePluggableBin = async (): Promise<Bin> => {
   const argv = process.argv.slice(2);
   const args = parseArgv(argv);
   const formatOptions = normalizeFormatOptions(args);
-  const pluginsStaticOptions: PluginsOptions = {};
+  const pluginsDefaultOptions: PluginsOptions = {};
   const pluginsNames = formatOptions.plugins || [];
   const optionsNames: string[] = [];
 
@@ -161,7 +162,7 @@ const makePluggableBin = async (): Promise<Bin> => {
 
     for (const option in plugin.options) {
       optionsNames.push(option);
-      Object.assign(pluginsStaticOptions, plugin.defaultOptions);
+      Object.assign(pluginsDefaultOptions, plugin.defaultOptions);
 
       const schema = plugin.options[option];
       const type = schema.type;
@@ -177,24 +178,28 @@ const makePluggableBin = async (): Promise<Bin> => {
         const description = `${descriptionInfo}\n${descriptionDefault}`.trim();
         const variadic = !!schema.array;
         const args = variadic ? "<int...>" : "<int>";
-        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, default: initial });
+        pluginsDefaultOptions[option] = initial;
+        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section });
       } else if (type === "boolean") {
         //TODO: Support schema.array
         const descriptionDefault = initial ? 'Defaults to "true"' : 'Defaults to "false"';
         const description = `${descriptionInfo}\n${descriptionDefault}`.trim();
-        bin = bin.option(`--${toKebabCase(option)}`, description, { deprecated, section, default: initial });
+        pluginsDefaultOptions[option] = initial;
+        bin = bin.option(`--${toKebabCase(option)}`, description, { deprecated, section });
       } else if (type === "string" || type === "path") {
         const descriptionDefault = initial ? `Defaults to "${initial}"` : "";
         const description = `${descriptionInfo}\n${descriptionDefault}`.trim();
         const variadic = !!schema.array;
         const args = variadic ? "<value...>" : "<value>";
-        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, default: initial });
+        pluginsDefaultOptions[option] = initial;
+        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section });
       } else if (type === "choice") {
         const descriptionDefault = initial ? `Defaults to "${initial}"` : "";
         const description = `${descriptionInfo}\n${descriptionDefault}`.trim();
         const values = schema.choices.map((choice) => choice.value);
         const args = values.length ? `<${values.join("|")}>` : "<value>";
-        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, default: initial });
+        pluginsDefaultOptions[option] = initial;
+        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section });
       }
     }
   }
@@ -202,9 +207,8 @@ const makePluggableBin = async (): Promise<Bin> => {
   bin = bin.action(async (options, files) => {
     const { run } = await import("./index.js");
     const baseOptions = await normalizeOptions(options, files);
-    const pluginsDynamicOptions = normalizePluginOptions(options, optionsNames);
-    const pluginsOptions = { ...pluginsStaticOptions, ...pluginsDynamicOptions };
-    return run(baseOptions, pluginsOptions);
+    const pluginsCustomOptions = normalizePluginOptions(options, optionsNames);
+    return run(baseOptions, pluginsDefaultOptions, pluginsCustomOptions);
   });
 
   return bin;
