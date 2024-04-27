@@ -3,7 +3,7 @@
 import { toKebabCase } from "kasi";
 import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION } from "./constants.js";
-import { getPlugin, isNumber, isString, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
+import { getPlugin, isBoolean, isNumber, isString, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import type { Bin, PluginsOptions } from "./types.js";
 
 const makeBin = (): Bin => {
@@ -224,6 +224,10 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
 
   if (isString(args["cache-strategy"])) {
     exit('The "--cache-strategy" option has been deleted, since the "metadata" strategy is no longer supported');
+  }
+
+  if (isBoolean(args["find-config-path"])) {
+    exit('The "--find-config-path" is not currently supported, please open an issue on GitHub if you need it');
   }
 
   const bin = await makePluggableBin();
