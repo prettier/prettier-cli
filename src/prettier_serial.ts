@@ -18,11 +18,12 @@ async function format(filePath: string, fileContent: string, formatOptions: Lazy
   formatOptions = await resolve(formatOptions);
   const pluginsBuiltin = await getPluginsBuiltin();
   const plugins = await getPlugins(formatOptions.plugins || []);
+  const pluginsOverride = contextOptions.configPrecedence !== 'file-override';
 
   const options = {
     ...pluginsDefaultOptions,
-    ...formatOptions,
-    ...pluginsCustomOptions,
+    ...(pluginsOverride ? formatOptions : pluginsCustomOptions),
+    ...(pluginsOverride ? pluginsCustomOptions : formatOptions),
     ...contextOptions,
     filepath: filePath,
     plugins: [

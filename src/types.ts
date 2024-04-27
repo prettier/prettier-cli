@@ -1,6 +1,7 @@
 type Bin = ReturnType<typeof import("tiny-bin").default>;
 
 type ContextOptions = {
+  configPrecedence?: "cli-override" | "file-override";
   cursorOffset?: number;
   rangeEnd?: number;
   rangeStart?: number;

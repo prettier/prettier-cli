@@ -345,6 +345,13 @@ function normalizeContextOptions(options: unknown): ContextOptions {
 
   const contextOptions: ContextOptions = {};
 
+  if ("configPrecedence" in options) {
+    const value = options.configPrecedence;
+    if (isString(value) && (value === "cli-override" || value === "file-override")) {
+      contextOptions.configPrecedence = value;
+    }
+  }
+
   if ("cursorOffset" in options) {
     const value = Number(options.cursorOffset);
     if (isInteger(value) && value >= 0) {
