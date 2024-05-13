@@ -320,7 +320,6 @@ const languages = [
       ".cjs",
       ".es",
       ".es6",
-      ".frag",
       ".gs",
       ".jake",
       ".javascript",
