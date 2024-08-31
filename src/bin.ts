@@ -137,7 +137,6 @@ const makeBin = (): Bin => {
         'Require either "@prettier" or "@format" to be present in the file\'s first docblock comment in order for it to be formatted\nDefaults to "false"',
       )
       .option("--stdin-filepath <path>", "Path to the file to pretend that stdin comes from")
-      // .option("--support-info", "Print support information as JSON")
       /* DEFAULT COMMAND */
       .argument("[file/dir/glob...]", "Files, directories or globs to format")
       .action(async (options, files) => {
@@ -240,6 +239,10 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
 
   if (args["file-info"]) {
     exit('The "--file-info" option is not currently supported, please open an issue on GitHub if you need it');
+  }
+
+  if (args["support-info"]) {
+    exit('The "--support-info" option is not currently supported, please open an issue on GitHub if you need it');
   }
 
   const bin = await makePluggableBin();
