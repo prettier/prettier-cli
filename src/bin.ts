@@ -226,7 +226,7 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
   const argv = process.argv.slice(2);
   const args = parseArgv(argv);
 
-  if (isString(args["config"])) {
+  if (isString(args["config"]) || args["config"] === true) {
     exit('The "--config" option has been renamed to "--config-path" instead');
   }
 
