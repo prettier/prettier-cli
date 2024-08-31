@@ -123,10 +123,6 @@ const makeBin = (): Bin => {
       .option("--cache-location <path>", "Path to the cache file")
       .option("--no-color", "Do not colorize output messages")
       .option("--no-error-on-unmatched-pattern", "Prevent errors when pattern is unmatched", { default: true })
-      // .option(
-      //   "--file-info <path>",
-      //   "Extract the following info (as JSON) for a given file path. Reported fields:\n* ignored (boolean) - true if file path is filtered by --ignore-path\n* inferredParser (string | null) - name of parser inferred from file path",
-      // )
       .option("--ignore-unknown, -u", "Ignore unknown files")
       .option("--insert-pragma", 'Insert @format pragma into file\'s first docblock comment\nDefaults to "false"')
       .option("--log-level <silent|error|warn|log|debug>", 'What level of logs to report\nDefaults to "log"', {
@@ -240,6 +236,10 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
 
   if (args["config-precedence"] === "prefer-file") {
     exit('The "prefer-file" value for "--config-precedence" is not currently supported, please open an issue on GitHub if you need it');
+  }
+
+  if (args["file-info"]) {
+    exit('The "--file-info" option is not currently supported, please open an issue on GitHub if you need it');
   }
 
   const bin = await makePluggableBin();
