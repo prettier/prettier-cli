@@ -240,7 +240,7 @@ const makePluggableBin = async (): Promise<Bin> => {
         const values = schema.choices.map((choice) => choice.value);
         const args = values.length ? `<${values.join("|")}>` : "<value>";
         pluginsDefaultOptions[option] = initial;
-        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section });
+        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, enum: values });
       }
     }
   }
