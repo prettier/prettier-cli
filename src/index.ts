@@ -16,11 +16,10 @@ import { fastRelativePath, isString, isUndefined, negate, pluralize, uniq } from
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  const stdin = await getStdin();
-  if (isString(stdin)) {
-    return runStdin(options, pluginsDefaultOptions, pluginsCustomOptions);
-  } else {
+  if (options.globs.length || !isString(await getStdin())) {
     return runGlobs(options, pluginsDefaultOptions, pluginsCustomOptions);
+  } else {
+    return runStdin(options, pluginsDefaultOptions, pluginsCustomOptions);
   }
 }
 
