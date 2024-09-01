@@ -214,13 +214,13 @@ const makePluggableBin = async (): Promise<Bin> => {
 
       if (type === "int") {
         //TODO: Support schema.range
-        //TODO: Ensure the value is cast to a valid integer
         const descriptionDefault = isNumber(initial) ? `Defaults to "${initial}"` : "";
         const description = `${descriptionInfo}\n${descriptionDefault}`.trim();
         const variadic = !!schema.array;
+        const type = 'integer';
         const args = variadic ? "<int...>" : "<int>";
         pluginsDefaultOptions[option] = initial;
-        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section });
+        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, type });
       } else if (type === "boolean") {
         //TODO: Support schema.array
         const descriptionDefault = initial ? 'Defaults to "true"' : 'Defaults to "false"';
