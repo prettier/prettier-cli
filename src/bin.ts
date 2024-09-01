@@ -19,20 +19,28 @@ const makeBin = (): Bin => {
       .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--check")}`)
       .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("-l")} ${color.green("--no-cache")}`)
       .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--write")} ${color.green("--no-parallel")}`)
-      .usage(
-        `${color.cyan("prettier")} ${color.yellow("./path/to/target/file.js")} ${color.green("--cache-location")} ${color.blue("./path/to/cache/file.json")}`,
-      )
+      .usage(`${color.cyan("prettier")} ${color.yellow("./path/to/target/file.js")} ${color.green("--cache-location")} ${color.blue("./path/to/cache/file.json")}`)
       /* OUTPUT OPTIONS */
-      .option("--check, -c", "Check if the given files are formatted, print a human-friendly summary (see also --list-different)", { section: "Output" })
-      .option("--list-different, -l", "Print the names of files that are different from Prettier's formatting (see also --check)", { section: "Output" })
-      .option("--write, -w", "Edit files in-place (Beware!)", { section: "Output" })
+      .option("--check, -c", "Check if the given files are formatted, print a human-friendly summary (see also --list-different)", {
+        section: "Output",
+      })
+      .option("--list-different, -l", "Print the names of files that are different from Prettier's formatting (see also --check)", {
+        section: "Output",
+      })
+      .option("--write, -w", "Edit files in-place (Beware!)", {
+        section: "Output",
+      })
       /* FORMAT OPTIONS */
       .option("--arrow-parens <always|avoid>", 'Include parentheses around a sole arrow function parameter\nDefaults to "always"', {
         section: "Format",
         enum: ["always", "avoid"],
       })
-      .option("--bracket-same-line", 'Put ">" of opening tags on the last line instead of on a new line\nDefaults to "false"', { section: "Format" })
-      .option("--no-bracket-spacing", 'Do not print spaces between brackets\nDefaults to "true"', { section: "Format" })
+      .option("--bracket-same-line", 'Put ">" of opening tags on the last line instead of on a new line\nDefaults to "false"', {
+        section: "Format",
+      })
+      .option("--no-bracket-spacing", 'Do not print spaces between brackets\nDefaults to "true"', {
+        section: "Format",
+      })
       .option("--embedded-language-formatting <auto|off>", 'Control how Prettier formats quoted code embedded in the file\nDefaults to "auto"', {
         section: "Format",
         enum: ["auto", "off"],
@@ -48,12 +56,13 @@ const makeBin = (): Bin => {
         section: "Format",
         enum: ["css", "strict", "ignore"],
       })
-      .option("--jsx-single-quote", 'Use single quotes in JSX\nDefaults to "false"', { section: "Format" })
-      .option(
-        "--parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>",
-        "Which parser to use",
-        { section: "Format", enum: ["flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less", "scss", "json", "json5", "json-stringify", "graphql", "markdown", "mdx", "vue", "yaml", "glimmer", "html", "angular", "lwc"] }, // prettier-ignore
-      )
+      .option("--jsx-single-quote", 'Use single quotes in JSX\nDefaults to "false"', {
+        section: "Format",
+      })
+      .option("--parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>", "Which parser to use", {
+        section: "Format",
+        enum: ["flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less", "scss", "json", "json5", "json-stringify", "graphql", "markdown", "mdx", "vue", "yaml", "glimmer", "html", "angular", "lwc"],
+      })
       .option("--print-width <int>", 'The line length where Prettier will try wrap\nDefaults to "80"', {
         section: "Format",
       })
@@ -65,15 +74,25 @@ const makeBin = (): Bin => {
         section: "Format",
         enum: ["as-needed", "consistent", "preserve"],
       })
-      .option("--no-semi", 'Do not print semicolons, except at the beginning of lines which may need them\nDefaults to "true"', { section: "Format" })
-      .option("--single-attribute-per-line", 'Enforce single attribute per line in HTML, Vue and JSX\nDefaults to "false"', { section: "Format" })
-      .option("--single-quote", 'Use single quotes instead of double quotes\nDefaults to "false"', { section: "Format" })
-      .option("--tab-width <int>", 'Number of spaces per indentation level\nDefaults to "2"', { section: "Format" })
+      .option("--no-semi", 'Do not print semicolons, except at the beginning of lines which may need them\nDefaults to "true"', {
+        section: "Format",
+      })
+      .option("--single-attribute-per-line", 'Enforce single attribute per line in HTML, Vue and JSX\nDefaults to "false"', {
+        section: "Format",
+      })
+      .option("--single-quote", 'Use single quotes instead of double quotes\nDefaults to "false"', {
+        section: "Format",
+      })
+      .option("--tab-width <int>", 'Number of spaces per indentation level\nDefaults to "2"', {
+        section: "Format",
+      })
       .option("--trailing-comma <all|es5|none>", 'Print trailing commas wherever possible when multi-line\nDefaults to "all"', {
         section: "Format",
         enum: ["all", "es5", "none"],
       })
-      .option("--use-tabs", 'Indent with tabs instead of spaces\nDefaults to "false"', { section: "Format" })
+      .option("--use-tabs", 'Indent with tabs instead of spaces\nDefaults to "false"', {
+        section: "Format",
+      })
       .option("--vue-indent-script-and-style", 'Indent script and style tags in Vue files\nDefaults to "false"', {
         section: "Format",
       })
@@ -82,61 +101,74 @@ const makeBin = (): Bin => {
         section: "Config",
         default: true,
       })
-      .option("--config-path <path>", "Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)", { section: "Config" })
-      .option(
-        "--config-precedence <cli-override|file-override>",
-        'Define in which order config files and CLI options should be evaluated.\nDefaults to "cli-override"',
-        {
-          section: "Config",
-          enum: ["cli-override", "file-override"],
-        },
-      )
+      .option("--config-path <path>", "Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)", {
+        section: "Config",
+      })
+      .option("--config-precedence <cli-override|file-override>", 'Define in which order config files and CLI options should be evaluated.\nDefaults to "cli-override"', {
+        section: "Config",
+        enum: ["cli-override", "file-override"],
+      })
       .option("--no-editorconfig", "Don't take .editorconfig into account when parsing configuration", {
         section: "Config",
         default: true,
       })
-      .option(
-        "--ignore-path <path...>",
-        "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]",
-        { section: "Config" },
-      )
-      .option("--plugin <package...>", "Add a plugin\nMultiple plugins are accepted\nDefaults to []", { section: "Config" })
-      .option("--with-node-modules", 'Process files inside the "node_modules" directory', { section: "Config" })
+      .option("--ignore-path <path...>", "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]", {
+        section: "Config",
+      })
+      .option("--plugin <package...>", "Add a plugin\nMultiple plugins are accepted\nDefaults to []", {
+        section: "Config",
+      })
+      .option("--with-node-modules", 'Process files inside the "node_modules" directory', {
+        section: "Config",
+      })
       /* EDITOR OPTIONS */
       .option("--cursor-offset <int>", 'Print (to stderr) where a cursor at the given position would move to after formatting\nDefaults to "-1"', {
         section: "Editor",
       })
-      .option(
-        "--range-end <int>",
-        'Format code ending at a given character offset (exclusive)\nThe range will extend forwards to the end of the selected statement\nDefaults to "Infinity"',
-        { section: "Editor" },
-      )
-      .option(
-        "--range-start <int>",
-        'Format code starting at a given character offset\nThe range will extend backwards to the start of the first line containing the selected statement\nDefaults to "0"',
-        { section: "Editor" },
-      )
+      .option("--range-end <int>", 'Format code ending at a given character offset (exclusive)\nThe range will extend forwards to the end of the selected statement\nDefaults to "Infinity"', {
+        section: "Editor",
+      })
+      .option("--range-start <int>", 'Format code starting at a given character offset\nThe range will extend backwards to the start of the first line containing the selected statement\nDefaults to "0"', {
+        section: "Editor",
+      })
       /* OTHER OPTIONS */
       .option("--no-cache", "Do not use the built-in caching mechanism", {
+        section: "Other",
         default: true,
       })
-      .option("--cache-location <path>", "Path to the cache file")
-      .option("--no-color", "Do not colorize output messages")
-      .option("--no-error-on-unmatched-pattern", "Prevent errors when pattern is unmatched", { default: true })
-      .option("--ignore-unknown, -u", "Ignore unknown files")
-      .option("--insert-pragma", 'Insert @format pragma into file\'s first docblock comment\nDefaults to "false"')
+      .option("--cache-location <path>", "Path to the cache file", {
+        section: "Other",
+      })
+      .option("--no-color", "Do not colorize output messages", {
+        section: "Other",
+      })
+      .option("--no-error-on-unmatched-pattern", "Prevent errors when pattern is unmatched", {
+        section: "Other",
+        default: true
+      })
+      .option("--ignore-unknown, -u", "Ignore unknown files", {
+        section: "Other",
+      })
+      .option("--insert-pragma", 'Insert @format pragma into file\'s first docblock comment\nDefaults to "false"', {
+        section: "Other",
+      })
       .option("--log-level <silent|error|warn|log|debug>", 'What level of logs to report\nDefaults to "log"', {
+        section: "Other",
         enum: ["silent", "error", "warn", "log", "debug"],
       })
       .option("--no-parallel", 'Process files in parallel\nDefaults to "true"', {
+        section: "Other",
         default: true,
       })
-      .option("--parallel-workers <int>", 'Number of parallel workers to use\nDefaults to "0"')
-      .option(
-        "--require-pragma",
-        'Require either "@prettier" or "@format" to be present in the file\'s first docblock comment in order for it to be formatted\nDefaults to "false"',
-      )
-      .option("--stdin-filepath <path>", "Path to the file to pretend that stdin comes from")
+      .option("--parallel-workers <int>", 'Number of parallel workers to use\nDefaults to "0"', {
+        section: "Other",
+      })
+      .option("--require-pragma", 'Require either "@prettier" or "@format" to be present in the file\'s first docblock comment in order for it to be formatted\nDefaults to "false"', {
+        section: "Other",
+      })
+      .option("--stdin-filepath <path>", "Path to the file to pretend that stdin comes from", {
+        section: "Other",
+      })
       /* DEFAULT COMMAND */
       .argument("[file/dir/glob...]", "Files, directories or globs to format")
       .action(async (options, files) => {
