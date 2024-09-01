@@ -245,6 +245,10 @@ function isInteger(value: unknown): value is number {
   return Number.isInteger(value);
 }
 
+function isIntegerInRange(value: unknown, min: number = -Infinity, max: number = Infinity, step: number = 1): value is number {
+  return isInteger(value) && value >= min && value <= max && value % step === 0;
+}
+
 function isNumber(value: unknown): value is number {
   return typeof value === "number";
 }
@@ -663,6 +667,7 @@ export {
   isBoolean,
   isFunction,
   isInteger,
+  isIntegerInRange,
   isNumber,
   isObject,
   isString,

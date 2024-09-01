@@ -3,7 +3,8 @@
 import { toKebabCase } from "kasi";
 import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION } from "./constants.js";
-import { getPlugin, isBoolean, isNumber, isString, normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
+import { getPlugin, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
+import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import type { Bin, PluginsOptions } from "./types.js";
 
 const makeBin = (): Bin => {
@@ -213,14 +214,15 @@ const makePluggableBin = async (): Promise<Bin> => {
       const initial = schema.default;
 
       if (type === "int") {
-        //TODO: Support schema.range
         const descriptionDefault = isNumber(initial) ? `Defaults to "${initial}"` : "";
         const description = `${descriptionInfo}\n${descriptionDefault}`.trim();
+        const range = !schema.array ? schema.range : undefined;
+        const validate = ( value: string ) => isIntegerInRange(Number(value), range?.start, range?.end, range?.step);
         const variadic = !!schema.array;
         const type = 'integer';
         const args = variadic ? "<int...>" : "<int>";
         pluginsDefaultOptions[option] = initial;
-        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, type });
+        bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, type, validate });
       } else if (type === "boolean") {
         //TODO: Support schema.array
         const descriptionDefault = initial ? 'Defaults to "true"' : 'Defaults to "false"';
