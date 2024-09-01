@@ -65,6 +65,7 @@ const makeBin = (): Bin => {
       })
       .option("--print-width <int>", 'The line length where Prettier will try wrap\nDefaults to "80"', {
         section: "Format",
+        type: "integer",
       })
       .option("--prose-wrap <always|never|preserve>", 'How to wrap prose\nDefaults to "preserve"', {
         section: "Format",
@@ -85,6 +86,7 @@ const makeBin = (): Bin => {
       })
       .option("--tab-width <int>", 'Number of spaces per indentation level\nDefaults to "2"', {
         section: "Format",
+        type: "integer",
       })
       .option("--trailing-comma <all|es5|none>", 'Print trailing commas wherever possible when multi-line\nDefaults to "all"', {
         section: "Format",
@@ -124,12 +126,15 @@ const makeBin = (): Bin => {
       /* EDITOR OPTIONS */
       .option("--cursor-offset <int>", 'Print (to stderr) where a cursor at the given position would move to after formatting\nDefaults to "-1"', {
         section: "Editor",
+        type: "integer",
       })
       .option("--range-end <int>", 'Format code ending at a given character offset (exclusive)\nThe range will extend forwards to the end of the selected statement\nDefaults to "Infinity"', {
         section: "Editor",
+        type: "integer",
       })
       .option("--range-start <int>", 'Format code starting at a given character offset\nThe range will extend backwards to the start of the first line containing the selected statement\nDefaults to "0"', {
         section: "Editor",
+        type: "integer",
       })
       /* OTHER OPTIONS */
       .option("--no-cache", "Do not use the built-in caching mechanism", {
@@ -162,6 +167,7 @@ const makeBin = (): Bin => {
       })
       .option("--parallel-workers <int>", 'Number of parallel workers to use\nDefaults to "0"', {
         section: "Other",
+        type: "integer",
       })
       .option("--require-pragma", 'Require either "@prettier" or "@format" to be present in the file\'s first docblock comment in order for it to be formatted\nDefaults to "false"', {
         section: "Other",
