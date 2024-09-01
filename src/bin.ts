@@ -24,12 +24,15 @@ const makeBin = (): Bin => {
       /* OUTPUT OPTIONS */
       .option("--check, -c", "Check if the given files are formatted, print a human-friendly summary (see also --list-different)", {
         section: "Output",
+        incompatible: ["l", 'w'],
       })
       .option("--list-different, -l", "Print the names of files that are different from Prettier's formatting (see also --check)", {
         section: "Output",
+        incompatible: ["c", 'w'],
       })
       .option("--write, -w", "Edit files in-place (Beware!)", {
         section: "Output",
+        incompatible: ["c", "l"],
       })
       /* FORMAT OPTIONS */
       .option("--arrow-parens <always|avoid>", 'Include parentheses around a sole arrow function parameter\nDefaults to "always"', {
