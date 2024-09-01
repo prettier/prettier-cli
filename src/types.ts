@@ -54,6 +54,7 @@ type Options = {
   config: boolean;
   configPath: string[] | undefined;
   editorConfig: boolean;
+  ignore: boolean;
   ignorePath: string[] | undefined;
   withNodeModules: boolean;
   /* OTHER OPTIONS */

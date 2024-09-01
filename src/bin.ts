@@ -118,6 +118,10 @@ const makeBin = (): Bin => {
         section: "Config",
         default: true,
       })
+      .option("--no-ignore", "Do not look for an ignore file", {
+        section: "Config",
+        default: true,
+      })
       .option("--ignore-path <path...>", "Path to a file with patterns describing files to ignore\nMultiple values are accepted\nDefaults to [.gitignore, .prettierignore]", {
         section: "Config",
       })

@@ -66,9 +66,9 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const pluginsNames = options.formatOptions.plugins || [];
   const pluginsVersions = getPluginsVersions(pluginsNames);
 
-  const editorConfigNames = [".editorconfig"].filter(Known.hasFileName);
-  const ignoreNames = [".gitignore", ".prettierignore"].filter(Known.hasFileName);
-  const prettierConfigNames = ["package.json", ".prettierrc", ".prettierrc.yml", ".prettierrc.yaml", ".prettierrc.json", ".prettierrc.jsonc", ".prettierrc.json5", ".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"].filter(Known.hasFileName); // prettier-ignore
+  const editorConfigNames = options.editorConfig ? [".editorconfig"].filter(Known.hasFileName) : [];
+  const ignoreNames = options.ignore ? [".gitignore", ".prettierignore"].filter(Known.hasFileName) : [];
+  const prettierConfigNames = options.config ? ["package.json", ".prettierrc", ".prettierrc.yml", ".prettierrc.yaml", ".prettierrc.json", ".prettierrc.jsonc", ".prettierrc.json5", ".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"].filter(Known.hasFileName) : []; // prettier-ignore
 
   const fileNames2parentPaths = (names: string[]) => names.flatMap((name) => filesNamesToPaths[name]?.map(path.dirname) || []);
   const editorConfigPaths = uniq([...fileNames2parentPaths(editorConfigNames), rootPath, ...foldersExtraPaths]);
@@ -76,10 +76,10 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const prettierConfigPaths = uniq([...fileNames2parentPaths(prettierConfigNames), rootPath, ...foldersExtraPaths]);
 
   const editorConfigs = options.editorConfig ? await getEditorConfigsMap(editorConfigPaths, editorConfigNames) : {};
-  const ignoreContents = await getIgnoresContentMap(ignorePaths, ignoreNames);
+  const ignoreContents = options.ignore ? await getIgnoresContentMap(ignorePaths, ignoreNames) : {};
   const prettierConfigs = options.config ? await getPrettierConfigsMap(prettierConfigPaths, prettierConfigNames) : {};
 
-  const ignoreManualFilesNames = options.ignorePath || [];
+  const ignoreManualFilesNames = options.ignore ? options.ignorePath || [] : [];
   const ignoreManualFilesPaths = ignoreManualFilesNames.map((fileName) => path.resolve(fileName));
   const ignoreManualFilesContents = await Promise.all(ignoreManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8")));
   const ignoreManualFoldersPaths = ignoreManualFilesPaths.map(path.dirname);

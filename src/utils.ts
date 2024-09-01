@@ -305,6 +305,7 @@ async function normalizeOptions(options: unknown, targets: unknown[]): Promise<O
   const config = "config" in options ? !!options.config : true;
   const configPath = "configPath" in options && isString(options.configPath) ? [options.configPath] : undefined;
   const editorConfig = "editorconfig" in options ? !!options.editorconfig : true;
+  const ignore = "ignore" in options ? !!options.ignore : true;
   const ignorePath = "ignorePath" in options && isArray(options.ignorePath) && options.ignorePath.every(isString) ? options.ignorePath : undefined;
   const withNodeModules = "withNodeModules" in options ? !!options.withNodeModules : false;
 
@@ -329,6 +330,7 @@ async function normalizeOptions(options: unknown, targets: unknown[]): Promise<O
     config,
     configPath,
     editorConfig,
+    ignore,
     ignorePath,
     withNodeModules,
     cache,
