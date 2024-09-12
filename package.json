@@ -26,7 +26,8 @@
     "clean": "rm -rf dist",
     "compile": "tsc --outDir dist",
     "compile:watch": "tsc --outDir dist --watch",
-    "prepublishOnly": "npm run compile",
+    "prepublishOnly": "npm run compile && npm run test",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand --rootDir test/__tests__",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
@@ -47,7 +48,7 @@
     "lomemo": "^1.0.0",
     "pioppo": "^1.1.1",
     "promise-resolve-timeout": "^2.0.0",
-    "specialist": "^1.4.2",
+    "specialist": "^1.4.3",
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",
     "tiny-readdir-glob": "^1.22.24",
@@ -58,8 +59,14 @@
     "zeptomatch-is-static": "^1.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.7",
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "jest-snapshot-serializer-ansi": "^2.1.0",
+    "jest-snapshot-serializer-raw": "^2.0.0",
+    "nanoexec": "^1.1.0",
     "prettier": "3.3.3",
     "typescript": "^5.4.5"
   }
