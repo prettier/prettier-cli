@@ -624,6 +624,10 @@ function someOf<T>(fns: ((arg: T) => unknown)[]): (arg: T) => boolean {
   };
 }
 
+function trimFinalNewline(value: string): string {
+  return value.replace(/(\r?\n|\r)$/, "");
+}
+
 function uniq<T>(values: T[]): T[] {
   if (values.length < 2) return values;
   return Array.from(new Set(values));
@@ -689,6 +693,7 @@ export {
   sha1hex,
   sha1base64,
   someOf,
+  trimFinalNewline,
   uniq,
   zipObjectUnless,
 };

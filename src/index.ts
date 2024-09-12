@@ -12,7 +12,7 @@ import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getStdin, getTargetsPaths } from "./utils.js";
-import { fastRelativePath, isString, isUndefined, negate, pluralize, uniq } from "./utils.js";
+import { fastRelativePath, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq } from "./utils.js";
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
@@ -32,7 +32,7 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   try {
     const formatted = await prettier.format(fileName, fileContent, options.formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
-    logger.always(formatted);
+    logger.always(trimFinalNewline(formatted));
     process.exitCode = options.check && formatted !== fileContent ? 1 : 0;
   } catch (error) {
     logger.prefixed.error(String(error));
@@ -143,7 +143,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
         totalMatched -= 1;
         totalIgnored += 1;
       } else if (isString(fileResult.value)) {
-        logger.always(fileResult.value);
+        logger.always(trimFinalNewline(fileResult.value));
       } else {
         if (fileResult.value) {
           totalFormatted += 1;
