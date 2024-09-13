@@ -13,7 +13,11 @@ const ROOT_PATH = process.cwd();
 const BIN_PATH = path.join(ROOT_PATH, "dist", "bin.js");
 const FIXTURES_PATH = path.join(ROOT_PATH, "test", "__fixtures__");
 
-function normalizeOutput(output, options) {
+function getFixturesPath(dir) {
+  return path.join(FIXTURES_PATH, dir);
+}
+
+function getNormalizedOutput(output, options) {
   // \r is trimmed from jest snapshots by default;
   // manually replacing this character with /*CR*/ to test its true presence
   // If ignoreLineEndings is specified, \r is simply deleted instead
@@ -23,7 +27,7 @@ function normalizeOutput(output, options) {
 }
 
 async function runCommand(dir, args, options) {
-  const cwd = path.join(FIXTURES_PATH, dir);
+  const cwd = getFixturesPath(dir);
   const result = exec("node", [BIN_PATH, ...args], { cwd, stdio: "pipe" });
 
   if (options.input) {
@@ -32,8 +36,8 @@ async function runCommand(dir, args, options) {
   }
 
   const status = await result.code;
-  const stdout = normalizeOutput((await result.stdout).toString());
-  const stderr = normalizeOutput((await result.stderr).toString());
+  const stdout = getNormalizedOutput((await result.stdout).toString());
+  const stderr = getNormalizedOutput((await result.stderr).toString());
   const write = []; //TODO
 
   return { status, stdout, stderr, write };
@@ -84,4 +88,4 @@ function runCli(dir, args = [], options = {}) {
   };
 }
 
-export { runCli };
+export { getFixturesPath, runCli };
