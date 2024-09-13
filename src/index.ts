@@ -24,7 +24,8 @@ async function run(options: Options, pluginsDefaultOptions: PluginsOptions, plug
 }
 
 async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  const logger = new Logger(options.logLevel, "stdout");
+  const stderr = new Logger(options.logLevel, "stderr");
+  const stdout = new Logger(options.logLevel, "stdout");
   const prettier = await import("./prettier_serial.js");
 
   const fileName = options.stdinFilepath || "stdin";
@@ -32,17 +33,18 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   try {
     const formatted = await prettier.format(fileName, fileContent, options.formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
-    logger.always(trimFinalNewline(formatted));
+    stdout.always(trimFinalNewline(formatted));
     process.exitCode = options.check && formatted !== fileContent ? 1 : 0;
   } catch (error) {
-    logger.prefixed.error(String(error));
+    stderr.prefixed.error(String(error));
     process.exitCode = 1;
   }
 }
 
 async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  const logger = new Logger(options.logLevel, "stdout");
-  const spinner = options.check ? logger.spinner.log() : undefined;
+  const stderr = new Logger(options.logLevel, "stderr");
+  const stdout = new Logger(options.logLevel, "stdout");
+  const spinner = options.check ? stdout.spinner.log() : undefined;
 
   spinner?.start("Checking formatting...");
 
@@ -95,7 +97,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, ignoreManualFilesPaths, ignoreManualFilesContents, prettierManualFilesPaths, prettierManualFilesContents, cliContextConfig, cliFormatConfig, pluginsDefaultOptions, pluginsCustomOptions }); // prettier-ignore
 
   const shouldCache = isUndefined(cliContextConfig.cursorOffset);
-  const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, logger) : undefined;
+  const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, stdout) : undefined;
   const prettier = await makePrettier(options, cache);
 
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
@@ -143,7 +145,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
         totalMatched -= 1;
         totalIgnored += 1;
       } else if (isString(fileResult.value)) {
-        logger.always(trimFinalNewline(fileResult.value));
+        stdout.always(trimFinalNewline(fileResult.value));
       } else {
         if (fileResult.value) {
           totalFormatted += 1;
@@ -152,9 +154,9 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
           const filePath = filesPathsTargets[i];
           const fileRelativePath = fastRelativePath(rootPath, filePath);
           if (options.check) {
-            logger.prefixed.warn(fileRelativePath);
+            stdout.prefixed.warn(fileRelativePath);
           } else if (options.list || options.write) {
-            logger.warn(fileRelativePath);
+            stdout.warn(fileRelativePath);
           }
         }
       }
@@ -171,33 +173,33 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
         const fileRelativePath = fastRelativePath(rootPath, filePath);
         //TODO: Make sure the error is syntax-highlighted when possible
         if (options.check || options.write) {
-          logger.prefixed.error(`${fileRelativePath}: ${error}`);
+          stderr.prefixed.error(`${fileRelativePath}: ${error}`);
         } else if (options.list) {
-          logger.error(fileRelativePath);
+          stderr.error(fileRelativePath);
         }
       }
     }
   }
 
-  logger.prefixed.debug(`Files found: ${totalMatched + totalIgnored}`);
-  logger.prefixed.debug(`Files matched: ${totalMatched}`);
-  logger.prefixed.debug(`Files ignored: ${totalIgnored}`);
-  logger.prefixed.debug(`Files formatted: ${totalFormatted}`);
-  logger.prefixed.debug(`Files unformatted: ${totalUnformatted}`);
-  logger.prefixed.debug(`Files unknown: ${totalUnknown}`);
-  logger.prefixed.debug(() => pathsUnknown.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
-  logger.prefixed.debug(`Files errored: ${totalErrored}`);
-  logger.prefixed.debug(() => pathsErrored.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
+  stdout.prefixed.debug(`Files found: ${totalMatched + totalIgnored}`);
+  stdout.prefixed.debug(`Files matched: ${totalMatched}`);
+  stdout.prefixed.debug(`Files ignored: ${totalIgnored}`);
+  stdout.prefixed.debug(`Files formatted: ${totalFormatted}`);
+  stdout.prefixed.debug(`Files unformatted: ${totalUnformatted}`);
+  stdout.prefixed.debug(`Files unknown: ${totalUnknown}`);
+  stdout.prefixed.debug(() => pathsUnknown.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
+  stdout.prefixed.debug(`Files errored: ${totalErrored}`);
+  stdout.prefixed.debug(() => pathsErrored.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
 
   if (!totalMatched) {
     if (options.errorOnUnmatchedPattern) {
-      logger.prefixed.error(`No files matching the given patterns were found`);
+      stderr.prefixed.error(`No files matching the given patterns were found`);
     }
   }
 
   if (totalUnformatted) {
     if (options.check) {
-      logger.prefixed.warn(`Code style issues found in ${totalUnformatted} ${pluralize("file", totalUnformatted)}. Run Prettier to fix.`);
+      stdout.prefixed.warn(`Code style issues found in ${totalUnformatted} ${pluralize("file", totalUnformatted)}. Run Prettier to fix.`);
     }
   }
 
@@ -209,7 +211,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   if (!totalUnformatted && !totalErrored) {
     if (options.check) {
-      logger.log("All matched files use Prettier code style!");
+      stdout.log("All matched files use Prettier code style!");
     }
   }
 
