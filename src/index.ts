@@ -40,7 +40,7 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
     } else {
       stdout.always(trimFinalNewline(formatted));
     }
-    process.exitCode = options.check && formatted !== fileContent ? 1 : 0;
+    process.exitCode = (options.check || options.list) && formatted !== fileContent ? 1 : 0;
   } catch (error) {
     stderr.prefixed.error(String(error));
     process.exitCode = 1;
