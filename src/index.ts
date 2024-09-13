@@ -33,7 +33,13 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   try {
     const formatted = await prettier.format(fileName, fileContent, options.formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
-    stdout.always(trimFinalNewline(formatted));
+    if (options.check || options.list) {
+      if (formatted !== fileContent) {
+        stdout.warn("(stdin)");
+      }
+    } else {
+      stdout.always(trimFinalNewline(formatted));
+    }
     process.exitCode = options.check && formatted !== fileContent ? 1 : 0;
   } catch (error) {
     stderr.prefixed.error(String(error));
