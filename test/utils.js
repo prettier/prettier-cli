@@ -62,30 +62,32 @@ async function runTest(name, expected, result, options) {
 }
 
 function runCli(dir, args = [], options = {}) {
-  const result = runCommand(dir, args, options);
-  return {
+  const promise = runCommand(dir, args, options);
+  const result = {
     get status() {
-      return result.then(({ status }) => status);
+      return promise.then((result) => result.status);
     },
     get stdout() {
-      return run().then(({ stdout }) => stdout);
+      return promise.then((result) => result.stdout);
     },
     get stderr() {
-      return run().then(({ stderr }) => stderr);
+      return promise.then((result) => result.stderr);
     },
     get write() {
-      return run().then(({ write }) => write);
+      return promise.then((result) => result.write);
     },
     test: (tests) => {
       for (const name of ["status", "stdout", "stderr", "write"]) {
         const expected = tests[name];
-        runTest(name, expected, result, options);
+        runTest(name, expected, promise, options);
       }
+      return result;
     },
     then: (onFulfilled, onRejected) => {
-      return result.then(onFulfilled, onRejected);
+      return promise.then(onFulfilled, onRejected);
     },
   };
+  return result;
 }
 
 export { getFixturesPath, runCli };
