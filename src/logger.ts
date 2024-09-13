@@ -1,17 +1,21 @@
 import Pioppo from "pioppo";
 import { color } from "specialist";
 import Spinner from "tiny-spinner";
+import { transportToStderr, transportToStdout } from "./logger_transports.js";
 import { resolve } from "./utils.js";
 import type { FunctionMaybe, LogLevel } from "./types.js";
 
 class Logger {
-  private pioppo = new Pioppo();
-  private levels: LogLevel[] = ["debug", "log", "warn", "error", "silent"];
   private level: LogLevel;
+  private levels: LogLevel[] = ["debug", "log", "warn", "error", "silent"];
+  private pioppo: Pioppo;
   private strength: number;
 
-  constructor(level: LogLevel) {
+  constructor(level: LogLevel, stream: "stderr" | "stdout") {
+    const transports = stream === "stderr" ? [transportToStderr] : [transportToStdout];
+
     this.level = level;
+    this.pioppo = new Pioppo({ transports });
     this.strength = this.levels.indexOf(level);
   }
 

@@ -24,7 +24,7 @@ async function run(options: Options, pluginsDefaultOptions: PluginsOptions, plug
 }
 
 async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  const logger = new Logger(options.logLevel);
+  const logger = new Logger(options.logLevel, "stdout");
   const prettier = await import("./prettier_serial.js");
 
   const fileName = options.stdinFilepath || "stdin";
@@ -41,7 +41,7 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
 }
 
 async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  const logger = new Logger(options.logLevel);
+  const logger = new Logger(options.logLevel, "stdout");
   const spinner = options.check ? logger.spinner.log() : undefined;
 
   spinner?.start("Checking formatting...");
