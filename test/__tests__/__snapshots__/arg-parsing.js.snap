@@ -10,12 +10,6 @@ exports[`boolean flags do not swallow the next argument (stdout) 1`] = `"console
 
 exports[`boolean flags do not swallow the next argument (write) 1`] = `[]`;
 
-exports[`deprecated option values are warned (stderr) 1`] = `"[warn] --jsx-bracket-same-line is deprecated."`;
-
-exports[`deprecated option values are warned (stdout) 1`] = `"console.log("could be single quote and without semi");"`;
-
-exports[`deprecated option values are warned (write) 1`] = `[]`;
-
 exports[`negated options work (stderr) 1`] = `""`;
 
 exports[`negated options work (stdout) 1`] = `"console.log("could be single quote and without semi")"`;
@@ -56,16 +50,6 @@ exports[`unknown negated options are errored (stdout) 1`] = `
 
 exports[`unknown negated options are errored (write) 1`] = `[]`;
 
-exports[`unknown negated options are warned (stderr) 1`] = `""`;
-
-exports[`unknown negated options are warned (stdout) 1`] = `
-"
-  Unknown option: "unknown"
-"
-`;
-
-exports[`unknown negated options are warned (write) 1`] = `[]`;
-
 exports[`unknown options are errored (stderr) 1`] = `""`;
 
 exports[`unknown options are errored (stdout) 1`] = `
@@ -83,7 +67,3 @@ exports[`unknown options may trigger a suggestion \`_\` (stdout) 1`] = `
   Unknown option: "a". Did you mean "v"?
 "
 `;
-
-exports[`unknown options not suggestion \`_\` (stderr) 1`] = `"[warn] Ignored unknown option -a. Did you mean -c?"`;
-
-exports[`unknown options not suggestion \`_\` (stdout) 1`] = `"console.log("could be single quote and without semi");"`;
