@@ -1,13 +1,13 @@
 import { runCli } from "../utils";
 
-describe("flush all line-suffix content", () => {
-  runCli("plugin-flush-line-suffix", [
+describe("uses 'extensions' from languages to determine parser", () => {
+  runCli("plugin-extensions", [
     "*.foo",
     "--plugin=./plugin.cjs",
   ], {
     ignoreLineEndings: true,
   }).test({
-    stdout: "contents",
+    stdout: "!contents",
     stderr: "",
     status: 0,
     write: [],
