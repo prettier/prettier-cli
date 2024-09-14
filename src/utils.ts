@@ -209,8 +209,11 @@ async function getTargetsPaths(
   }
 
   const result = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
-  const filesPaths = [...targetFiles, ...result.files];
-  const filesNames = [...targetFilesNames, ...result.filesFoundNames];
+  const resultFiles = result.files;
+  const resultFilesFoundNames = [...result.filesFoundNames];
+
+  const filesPaths = [...without(targetFiles, resultFiles), ...resultFiles];
+  const filesNames = [...without(targetFilesNames, resultFilesFoundNames), ...resultFilesFoundNames];
   const filesNamesToPaths = result.filesFoundNamesToPaths;
 
   for (const fileName in targetFilesNamesToPaths) {
@@ -637,6 +640,13 @@ function uniq<T>(values: T[]): T[] {
   return Array.from(new Set(values));
 }
 
+function without<T>(values: T[], exclude: T[]): T[] {
+  if (!values.length) return values;
+  if (!exclude.length) return values;
+  const excludeSet = new Set(exclude);
+  return values.filter((value) => !excludeSet.has(value));
+}
+
 function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (value: U) => boolean): Partial<Record<T, U>> {
   const map: Partial<Record<T, U>> = {};
 
@@ -699,5 +709,6 @@ export {
   someOf,
   trimFinalNewline,
   uniq,
+  without,
   zipObjectUnless,
 };
