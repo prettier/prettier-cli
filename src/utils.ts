@@ -153,6 +153,10 @@ function getProjectPath(rootPath: string): string {
     if (fs.existsSync(gitPath)) return true;
     const hgPath = path.join(folderPath, ".hg");
     if (fs.existsSync(hgPath)) return true;
+    const svnPath = path.join(folderPath, ".svn");
+    if (fs.existsSync(svnPath)) return true;
+    const slPath = path.join(folderPath, ".sl");
+    if (fs.existsSync(slPath)) return true;
     return false;
   }
 
