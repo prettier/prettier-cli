@@ -1,7 +1,7 @@
 import { runCli } from "../utils";
 
 describe("write cursorOffset to stderr with --cursor-offset <int>", () => {
-  runCli("/", [
+  runCli("", [
     "--cursor-offset",
     "2",
     "--parser",
@@ -14,7 +14,7 @@ describe("write cursorOffset to stderr with --cursor-offset <int>", () => {
 });
 
 describe("cursorOffset should not be affected by full-width character", () => {
-  runCli("/", [
+  runCli("", [
     "--cursor-offset",
     "21",
     "--parser",

@@ -1,6 +1,10 @@
+import once from "function-once";
+import * as Archive from "json-archive";
 import exec from "nanoexec";
+import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import Base64 from "radix64-encoding";
 
 import { expect, test } from "@jest/globals";
 import serializerRaw from "jest-snapshot-serializer-raw";
@@ -12,6 +16,48 @@ expect.addSnapshotSerializer(serializerAnsi);
 const ROOT_PATH = process.cwd();
 const BIN_PATH = path.join(ROOT_PATH, "dist", "bin.js");
 const FIXTURES_PATH = path.join(ROOT_PATH, "test", "__fixtures__");
+
+async function getArchive(folderPath) {
+  const packPrev = await Archive.pack(folderPath);
+  const archive = {
+    getPack: once(() => {
+      return Archive.pack(folderPath);
+    }),
+    getChanged: once(async () => {
+      const packNext = await archive.getPack();
+      const changed = [];
+      for (const fileName in packNext) {
+        const filePrev = packPrev[fileName];
+        const fileNext = packNext[fileName];
+        if (filePrev.contents === fileNext.contents) continue;
+        changed.push(fileName);
+      }
+      return changed;
+    }),
+    getDiff: async () => {
+      const packNext = await archive.getPack();
+      const changed = await archive.getChanged();
+      const diff = [];
+      for (const fileName of changed) {
+        const fileNext = packNext[fileName];
+        diff.push({
+          filename: fileName,
+          content: Base64.decodeStr(fileNext.contents),
+        });
+      }
+      return diff;
+    },
+    reset: async () => {
+      const changed = await archive.getChanged();
+      for (const fileName of changed) {
+        const filePath = path.join(folderPath, fileName);
+        const filePrev = packPrev[fileName];
+        await fs.writeFile(filePath, filePrev.contents, filePrev.encoding);
+      }
+    },
+  };
+  return archive;
+}
 
 function getFixturesPath(dir) {
   return path.join(FIXTURES_PATH, dir);
@@ -28,6 +74,7 @@ function getNormalizedOutput(output, options) {
 
 async function runCommand(dir, args, options) {
   const cwd = getFixturesPath(dir);
+  const archive = dir ? await getArchive(cwd) : undefined;
   const result = exec("node", [BIN_PATH, ...args], { cwd, stdio: "pipe" });
 
   if (options.input) {
@@ -38,7 +85,9 @@ async function runCommand(dir, args, options) {
   const status = await result.code;
   const stdout = getNormalizedOutput((await result.stdout).toString());
   const stderr = getNormalizedOutput((await result.stderr).toString());
-  const write = []; //TODO
+  const write = (await archive?.getDiff()) || [];
+
+  await archive?.reset();
 
   return { status, stdout, stderr, write };
 }

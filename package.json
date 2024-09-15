@@ -66,8 +66,10 @@
     "jest": "^29.7.0",
     "jest-snapshot-serializer-ansi": "^2.1.0",
     "jest-snapshot-serializer-raw": "^2.0.0",
+    "json-archive": "^2.1.0",
     "nanoexec": "^1.1.0",
     "prettier": "3.3.3",
+    "radix64-encoding": "^2.0.1",
     "tiny-dirname": "^1.0.1",
     "typescript": "^5.4.5"
   }

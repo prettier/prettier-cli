@@ -1,7 +1,7 @@
 import { runCli } from "../utils";
 
 describe("json-stringify takes precedence over json for package.json", () => {
-  runCli("/", [
+  runCli("", [
     "--stdin-filepath=package.json",
   ], {
     input:
