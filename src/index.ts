@@ -197,7 +197,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   stdout.prefixed.debug(`Files errored: ${totalErrored}`);
   stdout.prefixed.debug(() => pathsErrored.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
 
-  if (!totalMatched) {
+  if (!totalMatched && !totalIgnored) {
     if (options.errorOnUnmatchedPattern) {
       stderr.prefixed.error(`No files matching the given patterns were found`);
     }
@@ -223,7 +223,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   cache?.write();
 
-  process.exitCode = (!totalMatched && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
+  process.exitCode = (!totalMatched && !totalIgnored && options.errorOnUnmatchedPattern) || totalErrored || (totalUnformatted && !options.write) ? 1 : 0;
 }
 
 export { run, runStdin, runGlobs };
