@@ -160,7 +160,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
           const filePath = filesPathsTargets[i];
           const fileRelativePath = fastRelativePath(rootPath, filePath);
           if (options.check) {
-            stdout.prefixed.warn(fileRelativePath);
+            stderr.prefixed.warn(fileRelativePath);
           } else if (options.list || options.write) {
             stdout.warn(fileRelativePath);
           }
@@ -205,7 +205,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   if (totalUnformatted) {
     if (options.check) {
-      stdout.prefixed.warn(`Code style issues found in ${totalUnformatted} ${pluralize("file", totalUnformatted)}. Run Prettier to fix.`);
+      stderr.prefixed.warn(`Code style issues found in ${totalUnformatted} ${pluralize("file", totalUnformatted)}. Run Prettier with --write to fix.`);
     }
   }
 
