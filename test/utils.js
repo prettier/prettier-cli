@@ -4,6 +4,7 @@ import exec from "nanoexec";
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { setTimeout as delay } from "node:timers/promises";
 import Base64 from "radix64-encoding";
 
 import { expect, test } from "@jest/globals";
@@ -20,7 +21,8 @@ const FIXTURES_PATH = path.join(ROOT_PATH, "test", "__fixtures__");
 async function getArchive(folderPath) {
   const packPrev = await Archive.pack(folderPath);
   const archive = {
-    getPack: once(() => {
+    getPack: once(async () => {
+      await delay(100); // Giving a little time for the FS to settle
       return Archive.pack(folderPath);
     }),
     getChanged: once(async () => {
