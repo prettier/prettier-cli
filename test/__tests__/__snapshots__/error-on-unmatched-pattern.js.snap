@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`error on unmatched pattern (stderr) 1`] = `"[error] No files matching the given patterns were found"`;
+
+exports[`error on unmatched pattern (stdout) 1`] = `""`;
+
+exports[`error on unmatched pattern (write) 1`] = `[]`;
+
+exports[`error on unmatched pattern when 2nd glob has no match, by default (stderr) 1`] = `""`;
+
+exports[`error on unmatched pattern when 2nd glob has no match, by default (stdout) 1`] = `
+"const hello = "there";
+{
+  "hello": "there"
+}
+hello: there"
+`;
+
+exports[`error on unmatched pattern when 2nd glob has no match, by default (write) 1`] = `[]`;
+
+exports[`no error on unmatched pattern (stderr) 1`] = `""`;
+
+exports[`no error on unmatched pattern (stdout) 1`] = `"const hello = "there";"`;
+
+exports[`no error on unmatched pattern (write) 1`] = `[]`;
+
+exports[`no error on unmatched pattern when 2nd glob has no match, with flag (stderr) 1`] = `""`;
+
+exports[`no error on unmatched pattern when 2nd glob has no match, with flag (stdout) 1`] = `
+"const hello = "there";
+{
+  "hello": "there"
+}
+hello: there"
+`;
+
+exports[`no error on unmatched pattern when 2nd glob has no match, with flag (write) 1`] = `[]`;
