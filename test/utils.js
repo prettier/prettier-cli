@@ -26,7 +26,7 @@ async function getArchive(folderPath) {
     getChanged: once(async () => {
       const packNext = await archive.getPack();
       const changed = [];
-      for (const fileName in packNext) {
+      for (const fileName in packPrev) {
         const filePrev = packPrev[fileName];
         const fileNext = packNext[fileName];
         if (filePrev.contents === fileNext.contents) continue;
