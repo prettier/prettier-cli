@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`exits with an informative message when there are no patterns provided (stderr) 1`] = `""`;
+
+exports[`exits with an informative message when there are no patterns provided (stdout) 1`] = `"Expected at least one target file/dir/glob."`;
+
+exports[`exits with an informative message when there are no patterns provided (write) 1`] = `[]`;
+
 exports[`multiple patterns (stderr) 1`] = `""`;
 
 exports[`multiple patterns (stdout) 1`] = `
@@ -70,9 +76,3 @@ exports[`multiple patterns, throw error and exit with non zero code on non exist
 exports[`multiple patterns, throw error and exit with non zero code on non existing files (stdout) 1`] = `""`;
 
 exports[`multiple patterns, throw error and exit with non zero code on non existing files (write) 1`] = `[]`;
-
-exports[`no errors on empty patterns (stderr) 1`] = `""`;
-
-exports[`no errors on empty patterns (stdout) 1`] = `""`;
-
-exports[`no errors on empty patterns (write) 1`] = `[]`;

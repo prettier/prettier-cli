@@ -41,12 +41,12 @@ describe("multiple patterns with non exists pattern", () => {
 //   });
 // });
 
-// describe("no errors on empty patterns", () => {
-//   // --parser is mandatory if no filepath is passed
-//   runCli("patterns", ["--parser", "babel"]).test({
-//     status: 0,
-//   });
-// });
+// MIGRATION: Modified to match the new behavior.
+describe("exits with an informative message when there are no patterns provided", () => {
+  runCli("patterns").test({
+    status: 0,
+  });
+});
 
 // MIGRATION: Updated the snapshot and changed the status to 1.
 describe("multiple patterns, throw error and exit with non zero code on non existing files", () => {
