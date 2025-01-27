@@ -297,7 +297,7 @@ async function normalizeOptions(options: unknown, targets: unknown[]): Promise<O
 
   const stdin = await getStdin();
 
-  if (!isString(stdin) && !globs.length) exit("Expected at least one target file/dir/glob.", 0);
+  if (!isString(stdin) && !globs.length) exit("Expected at least one target file/dir/glob.");
 
   const check = "check" in options && !!options.check;
   const list = "listDifferent" in options && !!options.listDifferent;
