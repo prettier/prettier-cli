@@ -44,7 +44,7 @@ describe("multiple patterns with non exists pattern", () => {
 // MIGRATION: Modified to match the new behavior.
 describe("exits with an informative message when there are no patterns provided", () => {
   runCli("patterns").test({
-    status: 0,
+    status: 1,
   });
 });
 
