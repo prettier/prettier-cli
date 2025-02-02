@@ -1,20 +1,14 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
 import { getFixturesPath, runCli } from "../utils";
 
-// `.js` files are ignored in `.gitignore`
-const files = [
+// These `.js` files are ignored in `.gitignore`, so we need to write them manually here
+[
   "ignore-path/ignore-path-test/ignored-by-customignore.js",
   "ignore-path/ignore-path-test/ignored-by-gitignore.js",
   "ignore-path/ignore-path-test/ignored-by-prettierignore.js",
-].map(getFixturesPath);
-
-const clean = () =>
-  Promise.all(files.map((file) => fs.rm(file, { force: true })));
-const setup = () =>
-  Promise.all(files.map((file) => fs.writeFile(file, "   a+   b")));
-
-beforeAll(setup);
-afterAll(clean);
+].forEach(file => {
+  fs.writeFileSync(getFixturesPath(file), "   a+   b");
+});
 
 const getUnformattedFiles = async (args) => {
   const { stdout } = await runCli("ignore-path/ignore-path-test/", [
