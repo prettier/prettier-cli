@@ -1,8 +1,9 @@
 import { runCli } from "../utils";
+import { PRETTIER_VERSION } from "../../dist/constants.js";
 
-describe.skip("show version with --version", () => {
+describe("show version with --version", () => {
   runCli("with-shebang", ["--version"]).test({
-    stdout: "???",
+    stdout: PRETTIER_VERSION,
     status: 0,
   });
 });
