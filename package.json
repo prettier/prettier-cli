@@ -26,6 +26,7 @@
     "clean": "rm -rf dist",
     "compile": "tsc --outDir dist",
     "compile:watch": "tsc --outDir dist --watch",
+    "format": "npm run compile && node dist/bin.js --write src test",
     "prepublishOnly": "npm run compile && npm run test",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand --rootDir test/__tests__",
     "typecheck": "tsc --noEmit"
