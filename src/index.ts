@@ -88,7 +88,14 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   const ignoreManualFilesNames = options.ignore ? options.ignorePath || [] : [];
   const ignoreManualFilesPaths = ignoreManualFilesNames.map((fileName) => path.resolve(fileName));
-  const ignoreManualFilesContents = await Promise.all(ignoreManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8")));
+  const ignoreManualFilesContents = await Promise.all(ignoreManualFilesPaths.map(async (filePath) => {
+    try {
+      return await fs.readFile(filePath, "utf8");
+    } catch {
+      // Treat a missing file as if it was empty (no ignores)
+      return "";
+    }
+  }));
   const ignoreManualFoldersPaths = ignoreManualFilesPaths.map(path.dirname);
   const ignoreManual = getIgnoreBys(ignoreManualFoldersPaths, ignoreManualFilesContents.map(castArray));
 
