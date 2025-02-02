@@ -102,7 +102,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cliFormatConfig = options.formatOptions;
   const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, ignoreManualFilesPaths, ignoreManualFilesContents, prettierManualFilesPaths, prettierManualFilesContents, cliContextConfig, cliFormatConfig, pluginsDefaultOptions, pluginsCustomOptions }); // prettier-ignore
 
-  const shouldCache = isUndefined(cliContextConfig.cursorOffset);
+  const shouldCache = options.cache === false && isUndefined(cliContextConfig.cursorOffset);
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, stdout) : undefined;
   const prettier = await makePrettier(options, cache);
 
