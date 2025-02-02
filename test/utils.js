@@ -94,10 +94,11 @@ async function runCommand(dir, args, options) {
   return { status, stdout, stderr, write };
 }
 
-async function runTest(name, expected, result, options) {
+async function runTest(name, expected, getResult, options) {
   const title = options.title || "";
   test(`${title}(${name})`, async () => {
-    const value = (await result)[name];
+    const result = await getResult();
+    const value = result[name];
     if (expected !== undefined) {
       if (name === "status" && expected === "non-zero") {
         expect(value).not.toBe(0);
@@ -113,29 +114,31 @@ async function runTest(name, expected, result, options) {
 }
 
 function runCli(dir, args = [], options = {}) {
-  const promise = runCommand(dir, args, options);
+  const getResult = once(() => {
+    return runCommand(dir, args, options);
+  });
   const result = {
     get status() {
-      return promise.then((result) => result.status);
+      return getResult().then((result) => result.status);
     },
     get stdout() {
-      return promise.then((result) => result.stdout);
+      return getResult().then((result) => result.stdout);
     },
     get stderr() {
-      return promise.then((result) => result.stderr);
+      return getResult().then((result) => result.stderr);
     },
     get write() {
-      return promise.then((result) => result.write);
+      return getResult().then((result) => result.write);
     },
     test: (tests) => {
       for (const name of ["status", "stdout", "stderr", "write"]) {
         const expected = tests[name];
-        runTest(name, expected, promise, options);
+        runTest(name, expected, getResult, options);
       }
       return result;
     },
     then: (onFulfilled, onRejected) => {
-      return promise.then(onFulfilled, onRejected);
+      return getResult().then(onFulfilled, onRejected);
     },
   };
   return result;
