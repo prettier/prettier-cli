@@ -94,10 +94,10 @@ async function runCommand(dir, args, options) {
   return { status, stdout, stderr, write };
 }
 
-async function runTest(name, expected, result, options) {
+async function runTest(name, expected, lazyResult, options) {
   const title = options.title || "";
   test(`${title}(${name})`, async () => {
-    const value = (await result)[name];
+    const value = (await lazyResult())[name];
     if (expected !== undefined) {
       if (name === "status" && expected === "non-zero") {
         expect(value).not.toBe(0);
@@ -113,24 +113,31 @@ async function runTest(name, expected, result, options) {
 }
 
 function runCli(dir, args = [], options = {}) {
-  const promise = runCommand(dir, args, options);
+  let promise;
+  const lazyPromise = async () => {
+    if (promise) {
+      return promise;
+    }
+    promise = runCommand(dir, args, options);
+    return promise;
+  };
   const result = {
     get status() {
-      return promise.then((result) => result.status);
+      return lazyPromise().then((result) => result.status);
     },
     get stdout() {
-      return promise.then((result) => result.stdout);
+      return lazyPromise().then((result) => result.stdout);
     },
     get stderr() {
-      return promise.then((result) => result.stderr);
+      return lazyPromise().then((result) => result.stderr);
     },
     get write() {
-      return promise.then((result) => result.write);
+      return lazyPromise().then((result) => result.write);
     },
     test: (tests) => {
       for (const name of ["status", "stdout", "stderr", "write"]) {
         const expected = tests[name];
-        runTest(name, expected, promise, options);
+        runTest(name, expected, lazyPromise, options);
       }
       return result;
     },
