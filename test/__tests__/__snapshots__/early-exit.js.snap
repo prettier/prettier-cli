@@ -134,32 +134,32 @@ exports[`show version with --version (stderr) 1`] = `""`;
 
 exports[`show version with --version (write) 1`] = `[]`;
 
-exports[`throw error with --check + --list-different (stderr) 1`] = `""`;
-
-exports[`throw error with --check + --list-different (stdout) 1`] = `
+exports[`throw error with --check + --list-different (stderr) 1`] = `
 "
   Incompatible options: "check" and "list-different" cannot be used together
 "
 `;
 
+exports[`throw error with --check + --list-different (stdout) 1`] = `""`;
+
 exports[`throw error with --check + --list-different (write) 1`] = `[]`;
 
-exports[`throw error with something unexpected (stderr) 1`] = `""`;
-
-exports[`throw error with something unexpected (stdout) 1`] = `
+exports[`throw error with something unexpected (stderr) 1`] = `
 "
   Expected at least one target file/dir/glob
 "
 `;
 
+exports[`throw error with something unexpected (stdout) 1`] = `""`;
+
 exports[`throw error with something unexpected (write) 1`] = `[]`;
 
-exports[`throw unsupported error with --file-info (stderr) 1`] = `""`;
-
-exports[`throw unsupported error with --file-info (stdout) 1`] = `
+exports[`throw unsupported error with --file-info (stderr) 1`] = `
 "
   The "--file-info" option is not currently supported, please open an issue on GitHub if you need it
 "
 `;
+
+exports[`throw unsupported error with --file-info (stdout) 1`] = `""`;
 
 exports[`throw unsupported error with --file-info (write) 1`] = `[]`;
