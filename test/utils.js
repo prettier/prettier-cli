@@ -77,7 +77,8 @@ function getNormalizedOutput(output, options) {
 async function runCommand(dir, args, options) {
   const cwd = getFixturesPath(dir);
   const archive = dir ? await getArchive(cwd) : undefined;
-  const result = exec("node", [BIN_PATH, ...args], { cwd, stdio: "pipe" });
+  const argsWithReplacements = args.map((arg) => arg.replaceAll("$CWD", cwd));
+  const result = exec("node", [BIN_PATH, ...argsWithReplacements], { cwd, stdio: "pipe" });
 
   if (options.input) {
     result.process.stdin.write(options.input);
