@@ -120,12 +120,15 @@ function getPluginPath(name: string): string {
   return pluginPath;
 }
 
-function getPluginVersion(name: string): string {
+function getPluginVersion(name: string): string | null {
   const pluginPath = getPluginPath(name);
   const parentPath = path.dirname(pluginPath);
   const pkg = findUp("package.json", parentPath);
-  if (!pkg || !pkg.content.version) throw new Error(`Version not found for plugin: "${name}"`);
-  return pkg.content.version;
+  if (!pkg || !pkg.content.version) {
+    return null;
+  } else {
+    return pkg.content.version;
+  }
 }
 
 function getPlugins(names: string[]): PromiseMaybe<PrettierPlugin[]> {
@@ -142,7 +145,7 @@ function getPluginsPaths(names: string[]): string[] {
   return pluginsPaths;
 }
 
-function getPluginsVersions(names: string[]): string[] {
+function getPluginsVersions(names: string[]): (string | null)[] {
   const pluginsVersions = names.map(getPluginVersion);
   return pluginsVersions;
 }
@@ -254,6 +257,10 @@ function isInteger(value: unknown): value is number {
 
 function isIntegerInRange(value: unknown, min: number = -Infinity, max: number = Infinity, step: number = 1): value is number {
   return isInteger(value) && value >= min && value <= max && value % step === 0;
+}
+
+function isNull(value: unknown): value is null {
+  return value === null;
 }
 
 function isNumber(value: unknown): value is number {
@@ -688,6 +695,7 @@ export {
   isFunction,
   isInteger,
   isIntegerInRange,
+  isNull,
   isNumber,
   isObject,
   isString,
