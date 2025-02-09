@@ -51,7 +51,7 @@
     "specialist": "^1.4.3",
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",
-    "tiny-readdir-glob": "^1.22.24",
+    "tiny-readdir-glob": "^1.23.0",
     "tiny-spinner": "^2.0.4",
     "worktank": "^2.7.3",
     "zeptomatch": "^2.0.0",
