@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`exits with an informative message when there are no patterns provided (stderr) 1`] = `""`;
-
-exports[`exits with an informative message when there are no patterns provided (stdout) 1`] = `
+exports[`exits with an informative message when there are no patterns provided (stderr) 1`] = `
 "
   Expected at least one target file/dir/glob.
 "
 `;
+
+exports[`exits with an informative message when there are no patterns provided (stdout) 1`] = `""`;
 
 exports[`exits with an informative message when there are no patterns provided (write) 1`] = `[]`;
 
