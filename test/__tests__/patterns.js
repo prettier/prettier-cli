@@ -1,65 +1,53 @@
 import { runCli } from "../utils";
 
-// MIGRATION: Worked as is.
 describe("multiple patterns", () => {
   runCli("patterns", ["directory/**/*.js", "other-directory/**/*.js", "-l"]).test({
     status: 1,
   });
 });
 
-// MIGRATION: Error is no longer reported when there are other matches, even with
-// `--error-on-unmatched-pattern`. Adjusted the stderr snapshot for now.
-// Should we change the logic to report the invalid patterns regardless?
-// Changed tha status to 1.
-describe("multiple patterns with non exists pattern", () => {
+describe("multiple patterns with an extra non-existent pattern", () => {
   runCli("patterns", ["directory/**/*.js", "non-existent.js", "-l"]).test({
     status: 1,
   });
 });
 
-// MIGRATION: Worked as is after handling negated patterns in `tiny-readdir-glob`.
-describe("multiple patterns with ignore nested directories pattern", () => {
+describe("multiple patterns with a negated pattern", () => {
   runCli("patterns", ["**/*.js", "!**/nested-directory/**", "-l"]).test({
     status: 1,
   });
 });
 
-// MIGRATION: Worked as is after handling negated patterns in `tiny-readdir-glob`.
-describe("multiple patterns by with ignore pattern, ignores node_modules by default", () => {
+describe("multiple patterns with a negated pattern, ignores node_modules by default", () => {
   runCli("patterns", ["**/*.js", "!directory/**", "-l"]).test({
     status: 1,
   });
 });
 
-// NOT OK: Fails, being discussed on Discord.
-describe("multiple patterns by with ignore pattern, ignores node_modules by with ./**/*.js", () => {
+describe("multiple patterns with a negated pattern and leading `./`, ignores node_modules by default", () => {
   runCli("patterns", ["./**/*.js", "!./directory/**", "-l"]).test({
     status: 1,
   });
 });
 
-// MIGRATION: Worked as is after handling negated patterns in `tiny-readdir-glob`.
-describe("multiple patterns by with ignore pattern, doesn't ignore node_modules with --with-node-modules flag", () => {
+describe("multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag", () => {
   runCli("patterns", ["**/*.js", "!directory/**", "-l", "--with-node-modules"]).test({
     status: 1,
   });
 });
 
-// MIGRATION: Modified to match the new behavior.
 describe("exits with an informative message when there are no patterns provided", () => {
   runCli("patterns").test({
     status: 1,
   });
 });
 
-// MIGRATION: Updated the snapshot and changed the status to 1.
-describe("multiple patterns, throw error and exit with non zero code on non existing files", () => {
+describe("multiple patterns, throws an error and exits with a non-zero code when there are no matches", () => {
   runCli("patterns", ["non-existent.js", "other-non-existent.js", "-l"]).test({
     status: 1,
   });
 });
 
-// MIGRATION: Worked as is, but maybe we should split this suites into separate files?
 describe("file names with special characters", () => {
   runCli("patterns-special-characters/square-brackets/", ["[with-square-brackets].js", "-l"]).test({
     status: 1,
