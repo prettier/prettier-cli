@@ -30,9 +30,15 @@ async function getArchive(folderPath) {
       const packNext = await archive.getPack();
       const changed = [];
       for (const fileName in packPrev) {
+        if (fileName.includes(".prettier-caches")) continue;
         const filePrev = packPrev[fileName];
         const fileNext = packNext[fileName];
         if (filePrev.contents === fileNext.contents) continue;
+        changed.push(fileName);
+      }
+      for (const fileName in packNext) {
+        if (fileName.includes(".prettier-caches")) continue;
+        if (packPrev[fileName]) continue;
         changed.push(fileName);
       }
       return changed;
@@ -55,7 +61,11 @@ async function getArchive(folderPath) {
       for (const fileName of changed) {
         const filePath = path.join(folderPath, fileName);
         const filePrev = packPrev[fileName];
-        await fs.writeFile(filePath, filePrev.contents, filePrev.encoding);
+        if (filePrev) {
+          await fs.writeFile(filePath, filePrev.contents, filePrev.encoding);
+        } else {
+          await fs.rm(filePath);
+        }
       }
     },
   };
