@@ -12,7 +12,7 @@ import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getStdin, getTargetsPaths } from "./utils.js";
-import { fastRelativePath, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq } from "./utils.js";
+import { fastRelativePath, isNull, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq } from "./utils.js";
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
@@ -72,6 +72,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cliVersion = CLI_VERSION;
   const pluginsNames = options.formatOptions.plugins || [];
   const pluginsVersions = getPluginsVersions(pluginsNames);
+  const pluginsVersionsMissing = pluginsVersions.filter(isNull);
 
   const editorConfigNames = options.editorConfig ? [".editorconfig"].filter(Known.hasFileName) : [];
   const ignoreNames = options.ignore ? [".gitignore", ".prettierignore"].filter(Known.hasFileName) : [];
@@ -88,7 +89,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   const ignoreManualFilesNames = options.ignore ? options.ignorePath || [] : [];
   const ignoreManualFilesPaths = ignoreManualFilesNames.map((fileName) => path.resolve(fileName));
-  const ignoreManualFilesContents = await Promise.all(ignoreManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8")));
+  const ignoreManualFilesContents = await Promise.all(ignoreManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8").catch(() => "")));
   const ignoreManualFoldersPaths = ignoreManualFilesPaths.map(path.dirname);
   const ignoreManual = getIgnoreBys(ignoreManualFoldersPaths, ignoreManualFilesContents.map(castArray));
 
@@ -102,7 +103,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cliFormatConfig = options.formatOptions;
   const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, ignoreManualFilesPaths, ignoreManualFilesContents, prettierManualFilesPaths, prettierManualFilesContents, cliContextConfig, cliFormatConfig, pluginsDefaultOptions, pluginsCustomOptions }); // prettier-ignore
 
-  const shouldCache = isUndefined(cliContextConfig.cursorOffset);
+  const shouldCache = options.cache && !pluginsVersionsMissing.length && isUndefined(cliContextConfig.cursorOffset);
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, stdout) : undefined;
   const prettier = await makePrettier(options, cache);
 

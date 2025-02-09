@@ -4,21 +4,41 @@ import prettier from "prettier/standalone";
 import { getPlugins, getPluginsBuiltin, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions, PluginsOptions } from "./types.js";
 
-async function check(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions ): Promise<boolean> {
+async function check(
+  filePath: string,
+  fileContent: string,
+  formatOptions: LazyFormatOptions,
+  contextOptions: ContextOptions,
+  pluginsDefaultOptions: PluginsOptions,
+  pluginsCustomOptions: PluginsOptions,
+): Promise<boolean> {
   const fileContentFormatted = await format(filePath, fileContent, formatOptions, contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
   return fileContent === fileContentFormatted;
 }
 
-async function checkWithPath(filePath: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<boolean> {
+async function checkWithPath(
+  filePath: string,
+  formatOptions: LazyFormatOptions,
+  contextOptions: ContextOptions,
+  pluginsDefaultOptions: PluginsOptions,
+  pluginsCustomOptions: PluginsOptions,
+): Promise<boolean> {
   const fileContent = await readFile(filePath, "utf8");
   return check(filePath, fileContent, formatOptions, contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
 }
 
-async function format(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<string> {
+async function format(
+  filePath: string,
+  fileContent: string,
+  formatOptions: LazyFormatOptions,
+  contextOptions: ContextOptions,
+  pluginsDefaultOptions: PluginsOptions,
+  pluginsCustomOptions: PluginsOptions,
+): Promise<string> {
   formatOptions = await resolve(formatOptions);
   const pluginsBuiltin = await getPluginsBuiltin();
   const plugins = await getPlugins(formatOptions.plugins || []);
-  const pluginsOverride = contextOptions.configPrecedence !== 'file-override';
+  const pluginsOverride = contextOptions.configPrecedence !== "file-override";
 
   const options = {
     ...pluginsDefaultOptions,
@@ -26,10 +46,7 @@ async function format(filePath: string, fileContent: string, formatOptions: Lazy
     ...(pluginsOverride ? pluginsCustomOptions : formatOptions),
     ...contextOptions,
     filepath: filePath,
-    plugins: [
-      ...pluginsBuiltin,
-      ...plugins,
-    ],
+    plugins: [...pluginsBuiltin, ...plugins],
   };
 
   const result = await prettier.formatWithCursor(fileContent, options as any); //FIXME: Prettier's own types are incorrect here
@@ -41,19 +58,38 @@ async function format(filePath: string, fileContent: string, formatOptions: Lazy
   return result.formatted;
 }
 
-async function formatWithPath(filePath: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<string> {
+async function formatWithPath(
+  filePath: string,
+  formatOptions: LazyFormatOptions,
+  contextOptions: ContextOptions,
+  pluginsDefaultOptions: PluginsOptions,
+  pluginsCustomOptions: PluginsOptions,
+): Promise<string> {
   const fileContent = await readFile(filePath, "utf8");
   return format(filePath, fileContent, formatOptions, contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
 }
 
-async function write(filePath: string, fileContent: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<boolean> {
+async function write(
+  filePath: string,
+  fileContent: string,
+  formatOptions: LazyFormatOptions,
+  contextOptions: ContextOptions,
+  pluginsDefaultOptions: PluginsOptions,
+  pluginsCustomOptions: PluginsOptions,
+): Promise<boolean> {
   const fileContentFormatted = await format(filePath, fileContent, formatOptions, contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
   if (fileContent === fileContentFormatted) return true;
   await writeFile(filePath, fileContentFormatted, "utf8");
   return false;
 }
 
-async function writeWithPath(filePath: string, formatOptions: LazyFormatOptions, contextOptions: ContextOptions, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<boolean> {
+async function writeWithPath(
+  filePath: string,
+  formatOptions: LazyFormatOptions,
+  contextOptions: ContextOptions,
+  pluginsDefaultOptions: PluginsOptions,
+  pluginsCustomOptions: PluginsOptions,
+): Promise<boolean> {
   const fileContent = await readFile(filePath, "utf8");
   return write(filePath, fileContent, formatOptions, contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
 }

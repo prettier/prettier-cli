@@ -40,30 +40,30 @@ exports[`options with \`cliName\` should not allow to pass directly (stdout) 1`]
 
 exports[`options with \`cliName\` should not allow to pass directly (stdout) 2`] = `""`;
 
-exports[`unknown negated options are errored (stderr) 1`] = `""`;
-
-exports[`unknown negated options are errored (stdout) 1`] = `
+exports[`unknown negated options are errored (stderr) 1`] = `
 "
   Unknown option: "unknown"
 "
 `;
+
+exports[`unknown negated options are errored (stdout) 1`] = `""`;
 
 exports[`unknown negated options are errored (write) 1`] = `[]`;
 
-exports[`unknown options are errored (stderr) 1`] = `""`;
-
-exports[`unknown options are errored (stdout) 1`] = `
+exports[`unknown options are errored (stderr) 1`] = `
 "
   Unknown option: "unknown"
 "
 `;
 
+exports[`unknown options are errored (stdout) 1`] = `""`;
+
 exports[`unknown options are errored (write) 1`] = `[]`;
 
-exports[`unknown options may trigger a suggestion \`_\` (stderr) 1`] = `""`;
-
-exports[`unknown options may trigger a suggestion \`_\` (stdout) 1`] = `
+exports[`unknown options may trigger a suggestion \`_\` (stderr) 1`] = `
 "
   Unknown option: "a". Did you mean "v"?
 "
 `;
+
+exports[`unknown options may trigger a suggestion \`_\` (stdout) 1`] = `""`;
