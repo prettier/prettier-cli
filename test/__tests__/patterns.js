@@ -17,29 +17,33 @@ describe("multiple patterns with non exists pattern", () => {
   });
 });
 
-// describe("multiple patterns with ignore nested directories pattern", () => {
-//   runCli("patterns", ["**/*.js", "!**/nested-directory/**", "-l"]).test({
-//     status: 1,
-//   });
-// });
+// MIGRATION: Worked as is after handling negated patterns in `tiny-readdir-glob`.
+describe("multiple patterns with ignore nested directories pattern", () => {
+  runCli("patterns", ["**/*.js", "!**/nested-directory/**", "-l"]).test({
+    status: 1,
+  });
+});
 
-// describe("multiple patterns by with ignore pattern, ignores node_modules by default", () => {
-//   runCli("patterns", ["**/*.js", "!directory/**", "-l"]).test({
-//     status: 1,
-//   });
-// });
+// MIGRATION: Worked as is after handling negated patterns in `tiny-readdir-glob`.
+describe("multiple patterns by with ignore pattern, ignores node_modules by default", () => {
+  runCli("patterns", ["**/*.js", "!directory/**", "-l"]).test({
+    status: 1,
+  });
+});
 
-// describe("multiple patterns by with ignore pattern, ignores node_modules by with ./**/*.js", () => {
-//   runCli("patterns", ["./**/*.js", "!./directory/**", "-l"]).test({
-//     status: 1,
-//   });
-// });
+// NOT OK: Fails, being discussed on Discord.
+describe("multiple patterns by with ignore pattern, ignores node_modules by with ./**/*.js", () => {
+  runCli("patterns", ["./**/*.js", "!./directory/**", "-l"]).test({
+    status: 1,
+  });
+});
 
-// describe("multiple patterns by with ignore pattern, doesn't ignore node_modules with --with-node-modules flag", () => {
-//   runCli("patterns", ["**/*.js", "!directory/**", "-l", "--with-node-modules"]).test({
-//     status: 1,
-//   });
-// });
+// MIGRATION: Worked as is after handling negated patterns in `tiny-readdir-glob`.
+describe("multiple patterns by with ignore pattern, doesn't ignore node_modules with --with-node-modules flag", () => {
+  runCli("patterns", ["**/*.js", "!directory/**", "-l", "--with-node-modules"]).test({
+    status: 1,
+  });
+});
 
 // MIGRATION: Modified to match the new behavior.
 describe("exits with an informative message when there are no patterns provided", () => {
@@ -63,10 +67,10 @@ describe("file names with special characters", () => {
     stderr: "",
     stdout: "[with-square-brackets].js",
   });
-  runCli("patterns-special-characters/dots/", ["[...with-square-and-dots-brackets].js", "-l"]).test({
+  runCli("patterns-special-characters/dots/", ["[...with-square-brackets-and-dots].js", "-l"]).test({
     status: 1,
     write: [],
     stderr: "",
-    stdout: "[...with-square-and-dots-brackets].js",
+    stdout: "[...with-square-brackets-and-dots].js",
   });
 });
