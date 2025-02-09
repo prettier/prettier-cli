@@ -200,7 +200,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   if (!totalMatched && !totalIgnored) {
     if (options.errorOnUnmatchedPattern) {
-      stderr.prefixed.error(`No files matching the given patterns were found`);
+      stderr.prefixed.error(`No files matching the given patterns were found.`);
     }
   }
 

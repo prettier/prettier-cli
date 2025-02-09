@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`error on unmatched pattern (stderr) 1`] = `"[error] No files matching the given patterns were found"`;
+exports[`error on unmatched pattern (stderr) 1`] = `"[error] No files matching the given patterns were found."`;
 
 exports[`error on unmatched pattern (stdout) 1`] = `""`;
 
