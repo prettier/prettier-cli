@@ -188,24 +188,6 @@ const getStdin = once(async (): Promise<string | undefined> => {
   }
 });
 
-function removeLeadingCurrentDirectory(glob: string) {
-  for (let i = 0; i < glob.length; i++) {
-    switch (glob[i]) {
-      case "!":
-        continue;
-      case ".":
-        if (i !== glob.length - 1 && glob[i + 1] === "/") {
-          return glob.slice(0, i) + glob.slice(i + 2);
-        }
-        break;
-      default:
-        return glob;
-    }
-  }
-
-  return glob;
-}
-
 async function getTargetsPaths(
   rootPath: string,
   globs: string[],
@@ -217,8 +199,7 @@ async function getTargetsPaths(
   const targetGlobs: string[] = [];
 
   for (const glob of globs) {
-    const globWithoutCurrentDirectory = removeLeadingCurrentDirectory(glob);
-    const filePath = path.resolve(rootPath, globWithoutCurrentDirectory);
+    const filePath = path.resolve(rootPath, glob);
     if (isFile(filePath)) {
       const fileName = path.basename(filePath);
       targetFiles.push(filePath);
@@ -226,7 +207,7 @@ async function getTargetsPaths(
       targetFilesNamesToPaths.propertyIsEnumerable(fileName) || (targetFilesNamesToPaths[fileName] = []);
       targetFilesNamesToPaths[fileName].push(filePath);
     } else {
-      targetGlobs.push(globWithoutCurrentDirectory);
+      targetGlobs.push(glob);
     }
   }
 
