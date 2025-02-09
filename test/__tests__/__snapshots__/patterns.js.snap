@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`exits with an informative message when there are no patterns provided (stderr) 1`] = `
+"
+  Expected at least one target file/dir/glob
+"
+`;
+
+exports[`exits with an informative message when there are no patterns provided (stdout) 1`] = `""`;
+
+exports[`exits with an informative message when there are no patterns provided (write) 1`] = `[]`;
+
+exports[`multiple patterns (stderr) 1`] = `""`;
+
+exports[`multiple patterns (stdout) 1`] = `
+"directory/file.js
+directory/nested-directory/nested-directory-file.js
+other-directory/file.js
+other-directory/nested-directory/nested-directory-file.js"
+`;
+
+exports[`multiple patterns (write) 1`] = `[]`;
+
+exports[`multiple patterns with a negated pattern (stderr) 1`] = `""`;
+
+exports[`multiple patterns with a negated pattern (stdout) 1`] = `
+"directory/file.js
+other-directory/file.js
+other-regular-modules.js
+regular-module.js"
+`;
+
+exports[`multiple patterns with a negated pattern (write) 1`] = `[]`;
+
+exports[`multiple patterns with a negated pattern and leading \`./\`, ignores node_modules by default (stderr) 1`] = `""`;
+
+exports[`multiple patterns with a negated pattern and leading \`./\`, ignores node_modules by default (stdout) 1`] = `
+"other-directory/file.js
+other-directory/nested-directory/nested-directory-file.js
+other-regular-modules.js
+regular-module.js"
+`;
+
+exports[`multiple patterns with a negated pattern and leading \`./\`, ignores node_modules by default (write) 1`] = `[]`;
+
+exports[`multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag (stderr) 1`] = `""`;
+
+exports[`multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag (stdout) 1`] = `
+"node_modules/node-module.js
+other-directory/file.js
+other-directory/nested-directory/nested-directory-file.js
+other-regular-modules.js
+regular-module.js"
+`;
+
+exports[`multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag (write) 1`] = `[]`;
+
+exports[`multiple patterns with a negated pattern, ignores node_modules by default (stderr) 1`] = `""`;
+
+exports[`multiple patterns with a negated pattern, ignores node_modules by default (stdout) 1`] = `
+"other-directory/file.js
+other-directory/nested-directory/nested-directory-file.js
+other-regular-modules.js
+regular-module.js"
+`;
+
+exports[`multiple patterns with a negated pattern, ignores node_modules by default (write) 1`] = `[]`;
+
+exports[`multiple patterns with an extra non-existent pattern (stderr) 1`] = `""`;
+
+exports[`multiple patterns with an extra non-existent pattern (stdout) 1`] = `
+"directory/file.js
+directory/nested-directory/nested-directory-file.js"
+`;
+
+exports[`multiple patterns with an extra non-existent pattern (write) 1`] = `[]`;
+
+exports[`multiple patterns, throws an error and exits with a non-zero code when there are no matches (stderr) 1`] = `"[error] No files matching the given patterns were found."`;
+
+exports[`multiple patterns, throws an error and exits with a non-zero code when there are no matches (stdout) 1`] = `""`;
+
+exports[`multiple patterns, throws an error and exits with a non-zero code when there are no matches (write) 1`] = `[]`;

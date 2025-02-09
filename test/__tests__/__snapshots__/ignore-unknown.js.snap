@@ -6,13 +6,13 @@ exports[`Ignored file (stdout) 1`] = `""`;
 
 exports[`Ignored file (write) 1`] = `[]`;
 
-exports[`None exist file (stderr) 1`] = `"[error] No files matching the given patterns were found"`;
+exports[`None exist file (stderr) 1`] = `"[error] No files matching the given patterns were found."`;
 
 exports[`None exist file (stdout) 1`] = `""`;
 
 exports[`None exist file (write) 1`] = `[]`;
 
-exports[`Not matching pattern (stderr) 1`] = `"[error] No files matching the given patterns were found"`;
+exports[`Not matching pattern (stderr) 1`] = `"[error] No files matching the given patterns were found."`;
 
 exports[`Not matching pattern (stdout) 1`] = `""`;
 
