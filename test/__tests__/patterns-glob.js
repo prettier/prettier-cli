@@ -26,7 +26,7 @@ describe("fixtures-1: Should match files except `a.js`", () => {
   └─ !dir.js/
     ├─ 1.css
     └─ 2.css
-  */
+*/
 
 describe.skip("fixtures-2: Should match all js files and all supported files in the '!dir.js' directory", () => {
   runCli("patterns-glob/fixtures-2", ["*.js", "!dir.js", "-l"]).test({
@@ -55,7 +55,7 @@ describe("fixtures-2: Should only match `!b.js`", () => {
     │ └─in-node_modules.js
     └─ .svn/
       └─in-svn.js
-  */
+*/
 
 describe("fixtures-3: Should match `outside.js`, `dir/inside.js` and `dir/node_modules/in-node_modules.js`", () => {
   runCli("patterns-glob/fixtures-3", ["**/*.js", "-l", "--with-node-modules"]).test({
@@ -92,7 +92,7 @@ describe("fixtures-3: Should exclude `.svn`", () => {
       ├─ level-2.js
       └─ 2/
         └─ level-3.js
-  */
+*/
 
 describe("fixtures-4: Should match `level-1.js`", () => {
   runCli("patterns-glob/fixtures-4", ["./0/./level-1.js", "-l"]).test({
