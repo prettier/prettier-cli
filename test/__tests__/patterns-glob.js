@@ -28,7 +28,7 @@ describe("fixtures-1: Should match files except `a.js`", () => {
     └─ 2.css
 */
 
-describe.skip("fixtures-2: Should match all js files and all supported files in the '!dir.js' directory", () => {
+describe("fixtures-2: Should match all js files and all supported files in the '!dir.js' directory", () => {
   runCli("patterns-glob/fixtures-2", ["*.js", "!dir.js", "-l"]).test({
     status: 1,
   });
