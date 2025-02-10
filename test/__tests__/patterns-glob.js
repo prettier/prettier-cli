@@ -69,8 +69,8 @@ describe("fixtures-3: Should only match `outside.js` and `dir/inside.js`", () =>
   });
 });
 
-describe("fixtures-3: Should exclude `.svn`", () => {
-  describe.skip("(existing)", () => {
+describe("fixtures-3: Should not exclude `.svn` when specified explicitly", () => {
+  describe("(existing)", () => {
     runCli("patterns-glob/fixtures-3", ["*.js", "dir/.svn/in-svn.js", "-l"]).test({
       status: 1,
     });

@@ -45,18 +45,6 @@ exports[`fixtures-2: Should only match \`!b.js\` (stdout) 1`] = `"!b.js"`;
 
 exports[`fixtures-2: Should only match \`!b.js\` (write) 1`] = `[]`;
 
-exports[`fixtures-3: Should exclude \`.svn\` (existing) (stderr) 1`] = `""`;
-
-exports[`fixtures-3: Should exclude \`.svn\` (existing) (stdout) 1`] = `"outside.js"`;
-
-exports[`fixtures-3: Should exclude \`.svn\` (existing) (write) 1`] = `[]`;
-
-exports[`fixtures-3: Should exclude \`.svn\` (nonexisting) (stderr) 1`] = `""`;
-
-exports[`fixtures-3: Should exclude \`.svn\` (nonexisting) (stdout) 1`] = `"outside.js"`;
-
-exports[`fixtures-3: Should exclude \`.svn\` (nonexisting) (write) 1`] = `[]`;
-
 exports[`fixtures-3: Should match \`outside.js\`, \`dir/inside.js\` and \`dir/node_modules/in-node_modules.js\` (stderr) 1`] = `""`;
 
 exports[`fixtures-3: Should match \`outside.js\`, \`dir/inside.js\` and \`dir/node_modules/in-node_modules.js\` (stdout) 1`] = `
@@ -66,6 +54,21 @@ outside.js"
 `;
 
 exports[`fixtures-3: Should match \`outside.js\`, \`dir/inside.js\` and \`dir/node_modules/in-node_modules.js\` (write) 1`] = `[]`;
+
+exports[`fixtures-3: Should not exclude \`.svn\` when specified explicitly (existing) (stderr) 1`] = `""`;
+
+exports[`fixtures-3: Should not exclude \`.svn\` when specified explicitly (existing) (stdout) 1`] = `
+"dir/.svn/in-svn.js
+outside.js"
+`;
+
+exports[`fixtures-3: Should not exclude \`.svn\` when specified explicitly (existing) (write) 1`] = `[]`;
+
+exports[`fixtures-3: Should not exclude \`.svn\` when specified explicitly (nonexisting) (stderr) 1`] = `""`;
+
+exports[`fixtures-3: Should not exclude \`.svn\` when specified explicitly (nonexisting) (stdout) 1`] = `"outside.js"`;
+
+exports[`fixtures-3: Should not exclude \`.svn\` when specified explicitly (nonexisting) (write) 1`] = `[]`;
 
 exports[`fixtures-3: Should only match \`outside.js\` and \`dir/inside.js\` (stderr) 1`] = `""`;
 
