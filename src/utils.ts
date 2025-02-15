@@ -146,9 +146,19 @@ function getPluginVersion(name: string): string | null {
   }
 }
 
-function getPlugins(names: string[]): PromiseMaybe<PrettierPlugin[]> {
+async function getPlugins(names: string[]): Promise<PrettierPlugin[]> {
   if (!names.length) return [];
-  return Promise.all(names.map(getPlugin));
+  return (
+    await Promise.all(
+      names.map(async (name) => {
+        try {
+          return await getPlugin(name);
+        } catch {
+          return null;
+        }
+      }),
+    )
+  ).filter((plugin): plugin is PrettierPlugin => plugin !== null);
 }
 
 const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {

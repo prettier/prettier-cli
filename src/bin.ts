@@ -5,7 +5,7 @@ import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION, DEFAULT_PARSERS } from "./constants.js";
 import { getPlugin, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
 import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
-import type { Bin, PluginsOptions } from "./types.js";
+import type { Bin, PluginsOptions, PrettierPlugin } from "./types.js";
 
 const makeBin = (): Bin => {
   return (
@@ -208,7 +208,13 @@ const makePluggableBin = async (): Promise<Bin> => {
 
   for (let i = 0, l = pluginsNames.length; i < l; i++) {
     const pluginName = pluginsNames[i];
-    const plugin = await getPlugin(pluginName);
+    let plugin: PrettierPlugin;
+
+    try {
+      plugin = await getPlugin(pluginName);
+    } catch {
+      exit(`The plugin "${pluginName}" could not be loaded`);
+    }
 
     for (const option in plugin.options) {
       optionsNames.push(option);
