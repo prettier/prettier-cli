@@ -7,6 +7,8 @@ import { getPlugin, isBoolean, isNumber, isIntegerInRange, isString } from "./ut
 import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import type { Bin, PluginsOptions } from "./types.js";
 
+const defaultParsers = ["flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less", "scss", "json", "json5", "json-stringify", "graphql", "markdown", "mdx", "vue", "yaml", "glimmer", "html", "angular", "lwc"];
+
 const makeBin = (): Bin => {
   return (
     bin("prettier", "An opinionated code formatter")
@@ -63,9 +65,9 @@ const makeBin = (): Bin => {
       .option("--jsx-single-quote", 'Use single quotes in JSX\nDefaults to "false"', {
         section: "Format",
       })
-      .option("--parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>", "Which parser to use", {
+      .option(`--parser <${defaultParsers.join('|')}>`, "Which parser to use", {
         section: "Format",
-        enum: ["flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less", "scss", "json", "json5", "json-stringify", "graphql", "markdown", "mdx", "vue", "yaml", "glimmer", "html", "angular", "lwc"],
+        enum: defaultParsers,
       })
       .option("--print-width <int>", 'The line length where Prettier will try wrap\nDefaults to "80"', {
         section: "Format",
@@ -204,10 +206,17 @@ const makePluggableBin = async (): Promise<Bin> => {
   const pluginsDefaultOptions: PluginsOptions = {};
   const pluginsNames = formatOptions.plugins || [];
   const optionsNames: string[] = [];
+  const parserNames = new Set<string>();
 
   for (let i = 0, l = pluginsNames.length; i < l; i++) {
     const pluginName = pluginsNames[i];
     const plugin = await getPlugin(pluginName);
+
+    if (plugin.parsers) {
+      for (const key of Object.keys(plugin.parsers)) {
+        parserNames.add(key);
+      }
+    }
 
     for (const option in plugin.options) {
       optionsNames.push(option);
@@ -252,6 +261,16 @@ const makePluggableBin = async (): Promise<Bin> => {
         bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, enum: values });
       }
     }
+  }
+
+  if (parserNames.size > 0) {
+    const allParserNames = [...defaultParsers, ...parserNames];
+    // TODO (43081j): this doesn't work! tiny-bin won't let you override
+    // an already defined option
+    bin.option(`--parser <${allParserNames}>`, "Which parser to use", {
+      section: "Format",
+      enum: defaultParsers,
+    });
   }
 
   bin = bin.action(async (options, files) => {
