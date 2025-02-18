@@ -35,7 +35,6 @@
     "prettier": "^3.1.0 || ^4.0.0-alpha"
   },
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
     "atomically": "^2.0.3",
     "fast-ignore": "^1.1.3",
     "find-up-json": "^2.0.4",
@@ -49,6 +48,7 @@
     "lomemo": "^1.0.0",
     "pioppo": "^1.2.0",
     "promise-resolve-timeout": "^2.0.0",
+    "smol-toml": "^1.3.1",
     "specialist": "^1.4.5",
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",
