@@ -51,8 +51,8 @@ const Loaders = {
   },
   toml: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
-    const TOML = (await import("@iarna/toml")).default;
-    return TOML.parse(fileContent);
+    const toml = await import("smol-toml");
+    return toml.parse(fileContent);
   },
   yaml: async (filePath: string): Promise<unknown> => {
     const yaml = (await import("js-yaml")).default;
@@ -149,4 +149,4 @@ const getPrettierConfigResolved = async (filePath: string, filesNames: string[])
   return resolved;
 };
 
-export { Loaders, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
+export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
