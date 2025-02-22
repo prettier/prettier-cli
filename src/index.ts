@@ -6,13 +6,13 @@ import process from "node:process";
 import Cache from "./cache.js";
 import { getEditorConfigsMap, getEditorConfigResolved, getEditorConfigFormatOptions } from "./config_editorconfig.js";
 import { getIgnoresContentMap, getIgnoreBys, getIgnoreResolved } from "./config_ignore.js";
-import { Loaders, getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
+import { Loaders, File2Loader, getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
 import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getStdin, getTargetsPaths } from "./utils.js";
-import { fastRelativePath, isNull, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq } from "./utils.js";
+import { fastRelativePath, isNull, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq, without } from "./utils.js";
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
@@ -76,7 +76,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   const editorConfigNames = options.editorConfig ? [".editorconfig"].filter(Known.hasFileName) : [];
   const ignoreNames = options.ignore ? [".gitignore", ".prettierignore"].filter(Known.hasFileName) : [];
-  const prettierConfigNames = options.config ? ["package.json", ".prettierrc", ".prettierrc.yml", ".prettierrc.yaml", ".prettierrc.json", ".prettierrc.jsonc", ".prettierrc.json5", ".prettierrc.js", "prettier.config.js", ".prettierrc.cjs", "prettier.config.cjs", ".prettierrc.mjs", "prettier.config.mjs"].filter(Known.hasFileName) : []; // prettier-ignore
+  const prettierConfigNames = options.config ? without(Object.keys(File2Loader), ["default"]).filter(Known.hasFileName) : [];
 
   const fileNames2parentPaths = (names: string[]) => names.flatMap((name) => filesNamesToPaths[name]?.map(path.dirname) || []);
   const editorConfigPaths = uniq([...fileNames2parentPaths(editorConfigNames), rootPath, ...foldersExtraPaths]);

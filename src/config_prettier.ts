@@ -149,4 +149,4 @@ const getPrettierConfigResolved = async (filePath: string, filesNames: string[])
   return resolved;
 };
 
-export { Loaders, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
+export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
