@@ -7,4 +7,30 @@ const cliPackage = require("@prettier/cli/package.json");
 const PRETTIER_VERSION = prettierPackage.version;
 const CLI_VERSION = cliPackage.version;
 
-export { PRETTIER_VERSION, CLI_VERSION };
+const DEFAULT_PARSERS = [
+  "flow",
+  "babel",
+  "babel-flow",
+  "babel-ts",
+  "typescript",
+  "acorn",
+  "espree",
+  "meriyah",
+  "css",
+  "less",
+  "scss",
+  "json",
+  "json5",
+  "json-stringify",
+  "graphql",
+  "markdown",
+  "mdx",
+  "vue",
+  "yaml",
+  "glimmer",
+  "html",
+  "angular",
+  "lwc",
+];
+
+export { PRETTIER_VERSION, CLI_VERSION, DEFAULT_PARSERS };

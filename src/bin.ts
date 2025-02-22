@@ -2,7 +2,7 @@
 
 import { toKebabCase } from "kasi";
 import { bin, color, exit, parseArgv } from "specialist";
-import { PRETTIER_VERSION } from "./constants.js";
+import { PRETTIER_VERSION, DEFAULT_PARSERS } from "./constants.js";
 import { getPlugin, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
 import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import type { Bin, PluginsOptions } from "./types.js";
@@ -63,9 +63,9 @@ const makeBin = (): Bin => {
       .option("--jsx-single-quote", 'Use single quotes in JSX\nDefaults to "false"', {
         section: "Format",
       })
-      .option("--parser <flow|babel|babel-flow|babel-ts|typescript|acorn|espree|meriyah|css|less|scss|json|json5|json-stringify|graphql|markdown|mdx|vue|yaml|glimmer|html|angular|lwc>", "Which parser to use", {
+      .option(`--parser <${DEFAULT_PARSERS.join('|')}>`, "Which parser to use", {
         section: "Format",
-        enum: ["flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less", "scss", "json", "json5", "json-stringify", "graphql", "markdown", "mdx", "vue", "yaml", "glimmer", "html", "angular", "lwc"],
+        enum: DEFAULT_PARSERS,
       })
       .option("--print-width <int>", 'The line length where Prettier will try wrap\nDefaults to "80"', {
         section: "Format",
@@ -203,6 +203,7 @@ const makePluggableBin = async (): Promise<Bin> => {
   const formatOptions = normalizeFormatOptions(args);
   const pluginsDefaultOptions: PluginsOptions = {};
   const pluginsNames = formatOptions.plugins || [];
+  const pluginsParsers = new Set<string>();
   const optionsNames: string[] = [];
 
   for (let i = 0, l = pluginsNames.length; i < l; i++) {
@@ -252,6 +253,20 @@ const makePluggableBin = async (): Promise<Bin> => {
         bin = bin.option(`--${toKebabCase(option)} ${args}`, description, { deprecated, section, enum: values });
       }
     }
+
+    if (plugin.parsers) {
+      for (const parserName of Object.keys(plugin.parsers)) {
+        pluginsParsers.add(parserName);
+      }
+    }
+  }
+
+  if (pluginsParsers.size) {
+    const parsers = [...DEFAULT_PARSERS, ...pluginsParsers];
+    bin.option(`--parser <${parsers}>`, "Which parser to use", {
+      section: "Format",
+      enum: parsers,
+    });
   }
 
   bin = bin.action(async (options, files) => {
