@@ -28,17 +28,6 @@ a.js"
 
 exports[`fixtures-2: Should match \`a.js\` and \`!b.js\` (write) 1`] = `[]`;
 
-exports[`fixtures-2: Should match all js files and all supported files in the '!dir.js' directory (stderr) 1`] = `""`;
-
-exports[`fixtures-2: Should match all js files and all supported files in the '!dir.js' directory (stdout) 1`] = `
-"!b.js
-!dir.js/1.css
-!dir.js/2.css
-a.js"
-`;
-
-exports[`fixtures-2: Should match all js files and all supported files in the '!dir.js' directory (write) 1`] = `[]`;
-
 exports[`fixtures-2: Should only match \`!b.js\` (stderr) 1`] = `""`;
 
 exports[`fixtures-2: Should only match \`!b.js\` (stdout) 1`] = `"!b.js"`;
