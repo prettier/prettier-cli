@@ -1,6 +1,7 @@
 import esbuild from "esbuild";
 import path from "node:path";
 import url from "node:url";
+import fs from "node:fs/promises";
 
 const toPath = (file) => url.fileURLToPath(new URL(file, import.meta.url));
 
@@ -20,3 +21,7 @@ var require = __prettierCliCreateRequire(import.meta.url);
   external: ["prettier", "./src/prettier_serial.js"],
   legalComments: "none",
 });
+
+const BIN_FILE = new URL("../dist/bin.js", import.meta.url);
+const content = await fs.readFile(BIN_FILE, "utf8");
+await fs.writeFile(BIN_FILE, content.replace("../src/prettier_serial.js", "./prettier_serial.js"));
