@@ -14,7 +14,7 @@ await esbuild.build({
   format: "esm",
   banner: {
     js: `
-import { createRequire as __prettierCliCreateRequire } from 'node:module';
+import { createRequire as __prettierCliCreateRequire } from "node:module";
 var require = __prettierCliCreateRequire(import.meta.url);
     `.trim(),
   },
