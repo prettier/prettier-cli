@@ -192,7 +192,7 @@ async function getTargetsPaths(
   rootPath: string,
   globs: string[],
   withNodeModules: boolean,
-): Promise<[string[], string[], Record<string, string[]>, string[], string[]]> {
+): Promise<[string[], string[], Record<string, string[]>, string[], string[], string[]]> {
   const targetFiles: string[] = [];
   const targetFilesNames: string[] = [];
   const targetFilesNamesToPaths: Record<string, string[]> = {};
@@ -225,9 +225,10 @@ async function getTargetsPaths(
     filesNamesToPaths[fileName] = uniq(next);
   }
 
+  const filesExplicitPaths = targetFiles;
   const filesFoundPaths = result.filesFound;
   const foldersFoundPaths = [rootPath, ...result.directoriesFound];
-  return [filesPaths, filesNames, filesNamesToPaths, filesFoundPaths, foldersFoundPaths];
+  return [filesPaths, filesNames, filesNamesToPaths, filesExplicitPaths, filesFoundPaths, foldersFoundPaths];
 }
 
 function isArray(value: unknown): value is unknown[] {
@@ -309,6 +310,7 @@ async function normalizeOptions(options: unknown, targets: unknown[]): Promise<O
   const check = "check" in options && !!options.check;
   const list = "listDifferent" in options && !!options.listDifferent;
   const write = "write" in options && !!options.write;
+  const dump = !check && !list && !write;
 
   if (check && list) exit('The "--check" and "--list-different" flags cannot be used together');
 
@@ -339,6 +341,7 @@ async function normalizeOptions(options: unknown, targets: unknown[]): Promise<O
   return {
     globs,
     check,
+    dump,
     list,
     write,
     config,

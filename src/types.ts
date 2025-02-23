@@ -48,6 +48,7 @@ type Options = {
   globs: string[];
   /* OUTPUT OPTIONS */
   check: boolean;
+  dump: boolean;
   list: boolean;
   write: boolean;
   /* CONFIG OPTIONS */
