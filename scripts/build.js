@@ -24,4 +24,4 @@ var require = __prettierCliCreateRequire(import.meta.url);
 
 const BIN_FILE = new URL("../dist/bin.js", import.meta.url);
 const content = await fs.readFile(BIN_FILE, "utf8");
-await fs.writeFile(BIN_FILE, content.replace("../src/prettier_serial.js", "./prettier_serial.js"));
+await fs.writeFile(BIN_FILE, content.replaceAll("../src/prettier_serial.js", "./prettier_serial.js"));
