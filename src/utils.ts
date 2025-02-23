@@ -129,6 +129,14 @@ const getPlugin = memoize((name: string): Promise<PrettierPlugin> => {
   return plugin;
 });
 
+async function getPluginOrExit(name: string): Promise<PrettierPlugin> {
+  try {
+    return await getPlugin(name);
+  } catch {
+    exit(`The plugin "${name}" could not be loaded`);
+  }
+}
+
 function getPluginPath(name: string): string {
   const rootPath = path.join(process.cwd(), "index.js");
   const pluginPath = getModulePath(name, rootPath);
@@ -730,6 +738,7 @@ export {
   getModule,
   getModulePath,
   getPlugin,
+  getPluginOrExit,
   getPluginPath,
   getPluginVersion,
   getPlugins,

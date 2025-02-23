@@ -3,7 +3,7 @@
 import { toKebabCase } from "kasi";
 import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION, DEFAULT_PARSERS } from "./constants.js";
-import { getPlugin, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
+import { getPluginOrExit, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
 import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
 import type { Bin, PluginsOptions, PrettierPlugin } from "./types.js";
 
@@ -208,13 +208,7 @@ const makePluggableBin = async (): Promise<Bin> => {
 
   for (let i = 0, l = pluginsNames.length; i < l; i++) {
     const pluginName = pluginsNames[i];
-    let plugin: PrettierPlugin;
-
-    try {
-      plugin = await getPlugin(pluginName);
-    } catch {
-      exit(`The plugin "${pluginName}" could not be loaded`);
-    }
+    const plugin = await getPluginOrExit(pluginName);
 
     for (const option in plugin.options) {
       optionsNames.push(option);
