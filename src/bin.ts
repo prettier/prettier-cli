@@ -154,7 +154,6 @@ const makeBin = (): Bin => {
       })
       .option("--no-color", "Do not colorize output messages", {
         section: "Other",
-        override: true,
       })
       .option("--no-error-on-unmatched-pattern", "Prevent errors when pattern is unmatched", {
         section: "Other",
