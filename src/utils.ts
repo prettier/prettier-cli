@@ -10,7 +10,9 @@ import { text as stream2text } from "node:stream/consumers";
 import url from "node:url";
 import resolveTimeout from "promise-resolve-timeout";
 import { exit } from "specialist";
-import readdir from "tiny-readdir-glob";
+import readdir from "tiny-readdir";
+import readdirGlob from "tiny-readdir-glob";
+import zeptomatch from "zeptomatch";
 import zeptomatchEscape from "zeptomatch-escape";
 import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
@@ -54,6 +56,19 @@ function getCachePath(rootPath: string): string {
   return cachePath;
 }
 
+function getDirectoryPaths(rootPath: string, withNodeModules: boolean) {
+  const ignoreGlob = `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`;
+  const ignoreRe = zeptomatch.compile(ignoreGlob);
+  const ignore = (targetPath: string): boolean => {
+    return ignoreRe.test(path.relative(rootPath, targetPath));
+  };
+
+  return readdir(rootPath, {
+    followSymlinks: false,
+    ignore,
+  });
+}
+
 function getExpandedFoldersPaths(foldersPaths: string[], untilPath: string = "/"): [string[], string[]] {
   const knownPaths = new Set(foldersPaths);
   const expandedPaths = new Set<string>();
@@ -88,7 +103,7 @@ async function getFoldersChildrenPaths(foldersPaths: string[]): Promise<string[]
 }
 
 function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
-  return readdir(globs, {
+  return readdirGlob(globs, {
     cwd: rootPath,
     followSymlinks: false,
     ignore: `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`,
@@ -179,6 +194,14 @@ function getProjectPath(rootPath: string): string {
   }
 }
 
+function getStats(targetPath: string): fs.Stats | undefined {
+  try {
+    return fs.statSync(targetPath);
+  } catch {
+    return;
+  }
+}
+
 const getStdin = once(async (): Promise<string | undefined> => {
   // Without a TTY, the process is likely, but not certainly, being piped
   if (!process.stdin.isTTY) {
@@ -196,28 +219,39 @@ async function getTargetsPaths(
   const targetFiles: string[] = [];
   const targetFilesNames: string[] = [];
   const targetFilesNamesToPaths: Record<string, string[]> = {};
+  const targetDirectories: string[] = [];
   const targetGlobs: string[] = [];
 
   for (const glob of globs) {
     const filePath = path.resolve(rootPath, glob);
-    if (isFile(filePath)) {
+    const fileStats = getStats(filePath);
+    if (fileStats?.isFile()) {
       const fileName = path.basename(filePath);
       targetFiles.push(filePath);
       targetFilesNames.push(fileName);
       targetFilesNamesToPaths.propertyIsEnumerable(fileName) || (targetFilesNamesToPaths[fileName] = []);
       targetFilesNamesToPaths[fileName].push(filePath);
+    } else if (fileStats?.isDirectory()) {
+      targetDirectories.push(filePath);
     } else {
       targetGlobs.push(glob);
     }
   }
 
-  const result = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
-  const resultFiles = result.files;
-  const resultFilesFoundNames = [...result.filesFoundNames];
+  const globResult = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
+  const globResultFiles = globResult.files;
+  const globResultFilesFoundNames = [...globResult.filesFoundNames];
 
-  const filesPaths = [...without(targetFiles, resultFiles), ...resultFiles];
-  const filesNames = [...without(targetFilesNames, resultFilesFoundNames), ...resultFilesFoundNames];
-  const filesNamesToPaths = result.filesFoundNamesToPaths;
+  const directoriesResults = await Promise.all(targetDirectories.map((targetPath) => getDirectoryPaths(targetPath, withNodeModules)));
+  const directoriesResultsFiles = directoriesResults.map((result) => result.files);
+  const directoriesResultsFilesFoundNames = directoriesResults.map((result) => [...result.filesNames]);
+
+  const foundFiles = uniqChunks(globResultFiles, ...directoriesResultsFiles);
+  const foundFilesNames = uniqChunks(globResultFilesFoundNames, ...directoriesResultsFilesFoundNames);
+
+  const filesPaths = [...without(targetFiles, foundFiles), ...foundFiles];
+  const filesNames = [...without(targetFilesNames, foundFilesNames), ...foundFilesNames];
+  const filesNamesToPaths = globResult.filesFoundNamesToPaths;
 
   for (const fileName in targetFilesNamesToPaths) {
     const prev = filesNamesToPaths[fileName];
@@ -226,8 +260,8 @@ async function getTargetsPaths(
   }
 
   const filesExplicitPaths = targetFiles;
-  const filesFoundPaths = result.filesFound;
-  const foldersFoundPaths = [rootPath, ...result.directoriesFound];
+  const filesFoundPaths = globResult.filesFound;
+  const foldersFoundPaths = [rootPath, ...globResult.directoriesFound];
   return [filesPaths, filesNames, filesNamesToPaths, filesExplicitPaths, filesFoundPaths, foldersFoundPaths];
 }
 
@@ -237,15 +271,6 @@ function isArray(value: unknown): value is unknown[] {
 
 function isBoolean(value: unknown): value is boolean {
   return typeof value === "boolean";
-}
-
-function isFile(targetPath: string): boolean {
-  try {
-    const stats = fs.statSync(targetPath);
-    return stats.isFile();
-  } catch {
-    return false;
-  }
 }
 
 function isFunction(value: unknown): value is Function {
@@ -650,6 +675,17 @@ function uniq<T>(values: T[]): T[] {
   return Array.from(new Set(values));
 }
 
+function uniqChunks<T>(...chunks: T[][]): T[] {
+  const chunksNonEmpty = chunks.filter((chunk) => chunk.length);
+  if (chunksNonEmpty.length === 0) {
+    return [];
+  } else if (chunksNonEmpty.length === 1) {
+    return chunksNonEmpty[0];
+  } else {
+    return uniq(chunks.flat());
+  }
+}
+
 function without<T>(values: T[], exclude: T[]): T[] {
   if (!values.length) return values;
   if (!exclude.length) return values;
@@ -691,6 +727,7 @@ export {
   getPluginsPaths,
   getPluginsVersions,
   getProjectPath,
+  getStats,
   getStdin,
   getTargetsPaths,
   isArray,
@@ -720,6 +757,7 @@ export {
   someOf,
   trimFinalNewline,
   uniq,
+  uniqChunks,
   without,
   zipObjectUnless,
 };
