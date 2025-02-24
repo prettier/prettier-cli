@@ -158,15 +158,18 @@ async function getPlugins(names: string[]): Promise<PrettierPlugin[]> {
   if (!names.length) return [];
   return (
     await Promise.all(
-      names.map(async (name) => {
-        try {
-          return await getPlugin(name);
-        } catch {
-          return null;
-        }
-      }),
+      names.map((name) => getPlugin(name))
     )
-  ).filter((plugin): plugin is PrettierPlugin => plugin !== null);
+  );
+}
+
+async function getPluginsOrExit(names: string[]): Promise<PrettierPlugin[]> {
+  if (!names.length) return [];
+  return (
+    await Promise.all(
+      names.map((name) => getPluginOrExit(name))
+    )
+  );
 }
 
 const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {
@@ -743,6 +746,7 @@ export {
   getPluginVersion,
   getPlugins,
   getPluginsBuiltin,
+  getPluginsOrExit,
   getPluginsPaths,
   getPluginsVersions,
   getProjectPath,
