@@ -111,7 +111,7 @@ function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolea
 }
 
 async function getModule<T = unknown>(modulePath: string): Promise<T> {
-  const moduleExports = await import(modulePath);
+  const moduleExports = await import(url.pathToFileURL(modulePath).href);
   const module = moduleExports.default || moduleExports.exports || moduleExports;
   return module;
 }
@@ -706,6 +706,14 @@ function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (valu
   return map;
 }
 
+/**
+ * Replace `\` with `/` on Windows
+ */
+const normalizeToPosix =
+  path.sep === "\\"
+    ? (filepath: string): string => filepath.replaceAll("\\", "/")
+    : (filepath: string): string => filepath;
+
 export {
   castArray,
   fastJoinedPath,
@@ -717,7 +725,6 @@ export {
   getFoldersChildrenPaths,
   getExpandedFoldersPaths,
   getGlobPaths,
-  getModule,
   getModulePath,
   getPlugin,
   getPluginPath,
@@ -748,6 +755,7 @@ export {
   normalizeFormatOptions,
   normalizePluginOptions,
   normalizePrettierOptions,
+  normalizeToPosix,
   omit,
   once,
   pluralize,
