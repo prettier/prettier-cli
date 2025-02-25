@@ -194,8 +194,7 @@ const options = {
     choices: [
       {
         value: "preserve",
-        description:
-          "Keep as multi-line, if there is a newline between the opening brace and first property.",
+        description: "Keep as multi-line, if there is a newline between the opening brace and first property.",
       },
       {
         value: "collapse",
