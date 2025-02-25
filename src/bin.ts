@@ -102,6 +102,14 @@ const makeBin = (): Bin => {
       .option("--vue-indent-script-and-style", 'Indent script and style tags in Vue files\nDefaults to "false"', {
         section: "Format",
       })
+      .option("--experimental-operator-position <end|start>", 'Where to print operators when binary expressions wrap lines\nDefaults to "end"',{
+        section: "Format",
+        enum: ["end", "start"],
+      })
+      .option("--object-wrap <preserve|collapse>", 'How to wrap object literals\nDefaults to "preserve"',{
+        section: "Format",
+        enum: ["preserve", "collapse"],
+      })
       /* CONFIG OPTIONS */
       .option("--no-config", "Do not look for a configuration file", {
         section: "Config",
