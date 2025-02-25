@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "atomically";
 import process from "node:process";
 import prettier from "prettier/standalone";
-import { getPlugins, getPluginsBuiltin, resolve } from "./utils.js";
+import { getPluginsOrExit, getPluginsBuiltin, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions, PluginsOptions } from "./types.js";
 
 async function check(
@@ -37,7 +37,7 @@ async function format(
 ): Promise<string> {
   formatOptions = await resolve(formatOptions);
   const pluginsBuiltin = await getPluginsBuiltin();
-  const plugins = await getPlugins(formatOptions.plugins || []);
+  const plugins = await getPluginsOrExit(formatOptions.plugins || []);
   const pluginsOverride = contextOptions.configPrecedence !== "file-override";
 
   const options = {
