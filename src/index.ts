@@ -12,7 +12,7 @@ import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
 import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getStdin, getTargetsPaths } from "./utils.js";
-import { fastRelativePath, isNull, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq, without } from "./utils.js";
+import { fastRelativePath, isNull, isString, isUndefined, negate, pluralize, trimFinalNewline, uniq, without, normalizeToPosix } from "./utils.js";
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
@@ -162,11 +162,11 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
         } else {
           totalUnformatted += 1;
           const filePath = filesPathsTargets[i];
-          const fileRelativePath = fastRelativePath(rootPath, filePath);
+          const fileNameToDisplay = normalizeToPosix(fastRelativePath(rootPath, filePath));
           if (options.check) {
-            stderr.prefixed.warn(fileRelativePath);
+            stderr.prefixed.warn(fileNameToDisplay);
           } else if (options.list || options.write) {
-            stdout.warn(fileRelativePath);
+            stdout.warn(fileNameToDisplay);
           }
         }
       }
@@ -180,12 +180,12 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
         totalErrored += 1;
         pathsErrored.push(filesPathsTargets[i]);
         const filePath = filesPathsTargets[i];
-        const fileRelativePath = fastRelativePath(rootPath, filePath);
+        const fileNameToDisplay = normalizeToPosix(fastRelativePath(rootPath, filePath));
         //TODO: Make sure the error is syntax-highlighted when possible
         if (options.check || options.write) {
-          stderr.prefixed.error(`${fileRelativePath}: ${error}`);
+          stderr.prefixed.error(`${fileNameToDisplay}: ${error}`);
         } else if (options.list) {
-          stderr.error(fileRelativePath);
+          stderr.error(fileNameToDisplay);
         }
       }
     }
@@ -197,9 +197,9 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   stdout.prefixed.debug(`Files formatted: ${totalFormatted}`);
   stdout.prefixed.debug(`Files unformatted: ${totalUnformatted}`);
   stdout.prefixed.debug(`Files unknown: ${totalUnknown}`);
-  stdout.prefixed.debug(() => pathsUnknown.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
+  stdout.prefixed.debug(() => pathsUnknown.map((filePath) => normalizeToPosix(fastRelativePath(rootPath, filePath))).join("\n"));
   stdout.prefixed.debug(`Files errored: ${totalErrored}`);
-  stdout.prefixed.debug(() => pathsErrored.map((filePath) => fastRelativePath(rootPath, filePath)).join("\n"));
+  stdout.prefixed.debug(() => pathsErrored.map((filePath) => normalizeToPosix(fastRelativePath(rootPath, filePath))).join("\n"));
 
   if (!totalMatched && !totalIgnored) {
     if (options.errorOnUnmatchedPattern) {
