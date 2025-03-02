@@ -131,7 +131,7 @@ async function runCommand(dir, args, options) {
 
   await fixtures?.dispose();
 
-  return { status, stdout, stderr, write };
+  return { status, stdout, stderr, write, fixturePath: fixtures?.path };
 }
 
 async function runTest(name, expected, getResult, options) {
@@ -145,7 +145,11 @@ async function runTest(name, expected, getResult, options) {
       } else if (typeof expected === "function") {
         expected(value);
       } else {
-        expect(value).toEqual(expected);
+        if (typeof value === "string" && result.fixturePath) {
+          expect(value.replaceAll(result.fixturePath, "__FIXTURES__")).toEqual(expected);
+        } else {
+          expect(value).toEqual(expected);
+        }
       }
     } else {
       expect(value).toMatchSnapshot();
