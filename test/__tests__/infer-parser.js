@@ -1,8 +1,5 @@
 import { runCli } from "../utils";
 import { color } from "specialist";
-import path from 'node:path';
-
-const FIXTURES_PATH = path.join(process.cwd(), "test", "__fixtures__");
 
 describe("stdin no path and no parser", () => {
   describe("logs error and exits with 2", () => {
@@ -108,7 +105,7 @@ describe("--check with unknown path and no parser", () => {
     runCli("infer-parser/", ["--check", "*"]).test({
       status: 1,
       write: [],
-      stderr: `[${color.red('error')}] FOO: UndefinedParserError: No parser could be inferred for file "${FIXTURES_PATH}/infer-parser/FOO".
+      stderr: `[${color.red('error')}] FOO: UndefinedParserError: No parser could be inferred for file "__FIXTURES__/FOO".
 [${color.yellow('warn')}] foo.js
 [${color.yellow('warn')}] Code style issues found in 1 file. Run Prettier with --write to fix.`
     });
@@ -145,7 +142,7 @@ describe("--write with unknown path and no parser", () => {
   describe("multiple files", () => {
     runCli("infer-parser/", ["--write", "*"]).test({
       status: 1,
-      stderr: `[${color.red('error')}] FOO: UndefinedParserError: No parser could be inferred for file "${FIXTURES_PATH}/infer-parser/FOO".`,
+      stderr: `[${color.red('error')}] FOO: UndefinedParserError: No parser could be inferred for file "__FIXTURES__/FOO".`,
     });
   });
 });
