@@ -41,7 +41,7 @@ exports[`stdin with unknown path and no parser --list-different logs error but e
 
 exports[`stdin with unknown path and no parser logs error and exits with 2 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "foo"."`;
 
-exports[`unknown path and no parser multiple files (stderr) 1`] = `""`;
+exports[`unknown path and no parser multiple files (stderr) 1`] = `"[error] FOO: UndefinedParserError: No parser could be inferred for file "/tmp/prettier-infer-parser-68670a6cfd1d189a6f3c7fb6c5932306/FOO"."`;
 
 exports[`unknown path and no parser multiple files (stdout) 1`] = `"foo();"`;
 
