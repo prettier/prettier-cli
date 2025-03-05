@@ -429,6 +429,13 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
 
   const formatOptions: FormatOptions = {};
 
+  if ("experimentalOperatorPosition" in options) {
+    const value = options.experimentalOperatorPosition;
+    if (value === "start" || value === "end") {
+      formatOptions.experimentalOperatorPosition = value;
+    }
+  }
+
   if ("experimentalTernaries" in options) {
     const value = options.experimentalTernaries;
     if (isBoolean(value)) {
@@ -489,6 +496,13 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     const value = options.jsxSingleQuote;
     if (isBoolean(value)) {
       formatOptions.jsxSingleQuote = value;
+    }
+  }
+
+  if ("objectWrap" in options) {
+    const value = options.objectWrap;
+    if (value === "preserve" || value === "collapse") {
+      formatOptions.objectWrap = value;
     }
   }
 

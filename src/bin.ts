@@ -53,6 +53,10 @@ const makeBin = (): Bin => {
         section: "Format",
         enum: ["lf", "crlf", "cr", "auto"],
       })
+      .option("--experimental-operator-position <start|end>", 'Where to print operators when binary expressions wrap lines\nDefaults to "end"', {
+        section: "Format",
+        enum: ["start", "end"],
+      })
       .option("--experimental-ternaries", 'Use curious ternaries, with the question mark after the condition\nDefaults to "false"', {
         section: "Format",
       })
@@ -62,6 +66,10 @@ const makeBin = (): Bin => {
       })
       .option("--jsx-single-quote", 'Use single quotes in JSX\nDefaults to "false"', {
         section: "Format",
+      })
+      .option("--object-wrap <preserve|collapse>", 'How to wrap object literals\nDefaults to "preserve"', {
+        section: "Format",
+        enum: ["preserve", "collapse"],
       })
       .option(`--parser <${DEFAULT_PARSERS.join('|')}>`, "Which parser to use", {
         section: "Format",
