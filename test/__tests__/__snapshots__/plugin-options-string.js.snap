@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`show external options with \`--help\` 1`] = `
+"    --parser <flow,babel,babel-flow,babel-ts,typescript,acorn,espree,meriyah,css,less,scss,json,json5,json-stringify,graphql,markdown,mdx,vue,yaml,glimmer,html,angular,lwc,foo-parser>
+    --foo-string <value>      foo description
+                              Defaults to "bar""
+`;

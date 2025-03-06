@@ -129,6 +129,14 @@ const getPlugin = memoize((name: string): Promise<PrettierPlugin> => {
   return plugin;
 });
 
+async function getPluginOrExit(name: string): Promise<PrettierPlugin> {
+  try {
+    return await getPlugin(name);
+  } catch {
+    exit(`The plugin "${name}" could not be loaded`);
+  }
+}
+
 function getPluginPath(name: string): string {
   const rootPath = path.join(process.cwd(), "index.js");
   const pluginPath = getModulePath(name, rootPath);
@@ -146,9 +154,22 @@ function getPluginVersion(name: string): string | null {
   }
 }
 
-function getPlugins(names: string[]): PromiseMaybe<PrettierPlugin[]> {
+async function getPlugins(names: string[]): Promise<PrettierPlugin[]> {
   if (!names.length) return [];
-  return Promise.all(names.map(getPlugin));
+  return (
+    await Promise.all(
+      names.map((name) => getPlugin(name))
+    )
+  );
+}
+
+async function getPluginsOrExit(names: string[]): Promise<PrettierPlugin[]> {
+  if (!names.length) return [];
+  return (
+    await Promise.all(
+      names.map((name) => getPluginOrExit(name))
+    )
+  );
 }
 
 const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {
@@ -734,10 +755,12 @@ export {
   getModule,
   getModulePath,
   getPlugin,
+  getPluginOrExit,
   getPluginPath,
   getPluginVersion,
   getPlugins,
   getPluginsBuiltin,
+  getPluginsOrExit,
   getPluginsPaths,
   getPluginsVersions,
   getProjectPath,
