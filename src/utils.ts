@@ -156,20 +156,12 @@ function getPluginVersion(name: string): string | null {
 
 async function getPlugins(names: string[]): Promise<PrettierPlugin[]> {
   if (!names.length) return [];
-  return (
-    await Promise.all(
-      names.map((name) => getPlugin(name))
-    )
-  );
+  return await Promise.all(names.map((name) => getPlugin(name)));
 }
 
 async function getPluginsOrExit(names: string[]): Promise<PrettierPlugin[]> {
   if (!names.length) return [];
-  return (
-    await Promise.all(
-      names.map((name) => getPluginOrExit(name))
-    )
-  );
+  return await Promise.all(names.map((name) => getPluginOrExit(name)));
 }
 
 const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {
@@ -529,9 +521,9 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
 
   if ("parser" in options) {
     const value = options.parser;
-    // prettier-ignore
-    if (value === "flow" || value === "babel" || value === "babel-flow" || value === "babel-ts" || value === "typescript" || value === "acorn" || value === "espree" || value === "meriyah" || value === "css" || value === "less" || value === "scss" || value === "json" || value === "json5" || value === "json-stringify" || value === "graphql" || value === "markdown" || value === "mdx" || value === "vue" || value === "yaml" || value === "glimmer" || value === "html" || value === "angular" || value === "lwc") {
-      formatOptions.parser = value;
+    if (isString(value)) {
+      // New parsers that we don't about can be added by plugins
+      formatOptions.parser = value as FormatOptions["parser"];
     }
   }
 
