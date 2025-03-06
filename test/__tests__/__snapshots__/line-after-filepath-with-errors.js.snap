@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Line breaking after filepath with errors (stderr) 1`] = `
+"invalid-1.js
+invalid-2.js
+invalid-2.unknown"
+`;
+
+exports[`Line breaking after filepath with errors (stdout) 1`] = `"function foo() {}"`;
+
+exports[`Line breaking after filepath with errors (stdout) 2`] = `""`;
+
+exports[`Line breaking after filepath with errors (stdout) 3`] = `"Checking formatting..."`;
+
+exports[`Line breaking after filepath with errors (stdout) 4`] = `""`;
+
+exports[`Line breaking after filepath with errors (write) 1`] = `[]`;
+
+exports[`Line breaking after filepath with errors (write) 2`] = `[]`;
+
+exports[`Line breaking after filepath with errors (write) 3`] = `[]`;
+
+exports[`Line breaking after filepath with errors (write) 4`] = `[]`;
