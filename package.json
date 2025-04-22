@@ -53,10 +53,10 @@
     "tiny-editorconfig": "^1.0.0",
     "tiny-jsonc": "^1.0.1",
     "tiny-readdir": "^2.7.4",
-    "tiny-readdir-glob": "^1.23.1",
+    "tiny-readdir-glob": "^1.23.2",
     "tiny-spinner": "^2.0.4",
     "worktank": "^2.7.3",
-    "zeptomatch": "^2.0.0",
+    "zeptomatch": "^2.0.1",
     "zeptomatch-escape": "^1.0.0",
     "zeptomatch-is-static": "^1.0.0"
   },
