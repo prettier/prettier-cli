@@ -2,7 +2,7 @@
 
 class Known {
   private filesPaths: Set<string> = new Set();
-  filesNames: Set<string> = new Set();
+  private filesNames: Set<string> = new Set();
 
   addFilesPaths = (filesPaths: Array<string> | Set<string>): void => {
     if (!this.filesPaths.size) {
