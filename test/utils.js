@@ -134,24 +134,33 @@ async function runCommand(dir, args, options) {
   return { cwd, status, stdout, stderr, write };
 }
 
-async function runTest(name, expected, getResult, options) {
+async function runTest(tests, getResult, options) {
   const title = options.title || "";
-  test(`${title}(${name})`, async () => {
+  test(title, async () => {
     let result = await getResult();
-    let value = result[name];
-    if (expected !== undefined) {
-      if (name === "status" && expected === "non-zero") {
-        expect(value).not.toBe(0);
-      } else if (typeof expected === "function") {
-        expected(value);
-      } else {
-        if (typeof value === "string") {
-          value = value.replaceAll(result.cwd, "$CWD");
+    let snapshot;
+    for (const name of ["status", "stdout", "stderr", "write"]) {
+      let value = result[name];
+      const expected = tests[name];
+      if (expected !== undefined) {
+        if (name === "status" && expected === "non-zero") {
+          expect(value).not.toBe(0);
+        } else if (typeof expected === "function") {
+          expected(value);
+        } else {
+          if (typeof value === "string") {
+            value = value.replaceAll(result.cwd, "$CWD");
+          }
+          expect(value).toEqual(expected);
         }
-        expect(value).toEqual(expected);
+      } else {
+        snapshot ??= {};
+        snapshot[name] = value;
       }
-    } else {
-      expect(value).toMatchSnapshot();
+    }
+
+    if (snapshot) {
+      expect(snapshot).toMatchSnapshot();
     }
   });
 }
@@ -173,13 +182,7 @@ function runCli(dir, args = [], options = {}) {
     get write() {
       return getResult().then((result) => result.write);
     },
-    test: (tests) => {
-      for (const name of ["status", "stdout", "stderr", "write"]) {
-        const expected = tests[name];
-        runTest(name, expected, getResult, options);
-      }
-      return result;
-    },
+    test: (tests) => runTest(tests, getResult, options),
     then: (onFulfilled, onRejected) => {
       return getResult().then(onFulfilled, onRejected);
     },

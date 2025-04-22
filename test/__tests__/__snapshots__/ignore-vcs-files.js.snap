@@ -1,17 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`does not ignore files in version control systems, if manually provided (stderr) 1`] = `""`;
-
-exports[`does not ignore files in version control systems, if manually provided (stdout) 1`] = `
-".hg/file.js
-.svn/file.js
-file.js"
+exports[`ignores files in version control systems  1`] = `
+{
+  "stderr": "",
+  "stdout": "file.js",
+  "write": [],
+}
 `;
-
-exports[`does not ignore files in version control systems, if manually provided (write) 1`] = `[]`;
-
-exports[`ignores files in version control systems, if discovered (stderr) 1`] = `""`;
-
-exports[`ignores files in version control systems, if discovered (stdout) 1`] = `"file.js"`;
-
-exports[`ignores files in version control systems, if discovered (write) 1`] = `[]`;

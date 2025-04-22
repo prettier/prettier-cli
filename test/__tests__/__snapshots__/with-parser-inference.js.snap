@@ -1,53 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`infers parser from filename (.prettierrc) (stdout) 1`] = `"{}"`;
-
-exports[`infers parser from filename (.stylelintrc YAML) (stdout) 1`] = `"extends: """`;
-
-exports[`infers parser from filename (.stylelintrc) (stdout) 1`] = `"{}"`;
-
-exports[`infers parser from filename (jakefile) (stdout) 1`] = `"let foo = (x = 1) => x;"`;
-
-exports[`infers parser from filename (lintstagedrc YAML) (stdout) 1`] = `
-""*":
-  - your-cmd"
-`;
-
-exports[`infers parser from filename (lintstagedrc) (stdout) 1`] = `"{ "*": "your-cmd" }"`;
-
-exports[`infers parser from filename (swcrc) (stdout) 1`] = `
-"{
-  "jsc": {
-    // Requires v1.2.50 or upper and requires target to be es2016 or upper.
-    "keepClassNames": false
-  }
-}"
-`;
-
-exports[`infers postcss parser (stderr) 1`] = `""`;
-
-exports[`infers postcss parser (stdout) 1`] = `
-"/* JavaScript */
+exports[`infers postcss parser  1`] = `
+{
+  "stderr": "",
+  "stdout": "/* JavaScript */
 "use strict";
 /* Stylesheet */
 * {
   outline: none;
-}"
+}",
+  "write": [],
+}
 `;
 
-exports[`infers postcss parser (write) 1`] = `[]`;
-
-exports[`infers postcss parser with --check (stderr) 1`] = `""`;
-
-exports[`infers postcss parser with --check (stdout) 1`] = `
-"Checking formatting...
-All matched files use Prettier code style!"
+exports[`infers postcss parser with --check  1`] = `
+{
+  "stderr": "",
+  "stdout": "Checking formatting...
+All matched files use Prettier code style!",
+  "write": [],
+}
 `;
 
-exports[`infers postcss parser with --check (write) 1`] = `[]`;
-
-exports[`infers postcss parser with --list-different (stderr) 1`] = `""`;
-
-exports[`infers postcss parser with --list-different (stdout) 1`] = `""`;
-
-exports[`infers postcss parser with --list-different (write) 1`] = `[]`;
+exports[`infers postcss parser with --list-different  1`] = `
+{
+  "stderr": "",
+  "stdout": "",
+  "write": [],
+}
+`;
