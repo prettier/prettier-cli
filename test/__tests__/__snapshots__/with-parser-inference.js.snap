@@ -1,5 +1,53 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`infers parser from filename (.prettierrc)  1`] = `
+{
+  "stdout": "{}",
+}
+`;
+
+exports[`infers parser from filename (.stylelintrc YAML)  1`] = `
+{
+  "stdout": "extends: """,
+}
+`;
+
+exports[`infers parser from filename (.stylelintrc)  1`] = `
+{
+  "stdout": "{}",
+}
+`;
+
+exports[`infers parser from filename (jakefile)  1`] = `
+{
+  "stdout": "let foo = (x = 1) => x;",
+}
+`;
+
+exports[`infers parser from filename (lintstagedrc YAML)  1`] = `
+{
+  "stdout": ""*":
+  - your-cmd",
+}
+`;
+
+exports[`infers parser from filename (lintstagedrc)  1`] = `
+{
+  "stdout": "{ "*": "your-cmd" }",
+}
+`;
+
+exports[`infers parser from filename (swcrc)  1`] = `
+{
+  "stdout": "{
+  "jsc": {
+    // Requires v1.2.50 or upper and requires target to be es2016 or upper.
+    "keepClassNames": false
+  }
+}",
+}
+`;
+
 exports[`infers postcss parser  1`] = `
 {
   "stderr": "",

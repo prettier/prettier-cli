@@ -7,11 +7,3 @@ exports[`ignores file name contains emoji  1`] = `
   "write": [],
 }
 `;
-
-exports[`stdin  1`] = `
-{
-  "stderr": "",
-  "stdout": ".name {                         display: none; }",
-  "write": [],
-}
-`;

@@ -2,17 +2,12 @@
 
 exports[`Line breaking after filepath with errors  1`] = `
 {
-  "stdout": "ignored.js
-[[called readline.clearLine(process.stdout)]]
-foo(
-)",
+  "stdout": "foo();",
 }
 `;
 
 exports[`Line breaking after filepath with errors  2`] = `
 {
-  "stdout": "not-ignored.js
-[[called readline.clearLine(process.stdout)]]
-foo();",
+  "stdout": "foo();",
 }
 `;

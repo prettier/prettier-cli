@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`exits with an informative message when there are no patterns provided  1`] = `
+{
+  "stderr": "
+  Expected at least one target file/dir/glob
+",
+  "stdout": "",
+  "write": [],
+}
+`;
+
 exports[`multiple patterns  1`] = `
 {
   "stderr": "",
@@ -11,7 +21,18 @@ other-directory/nested-directory/nested-directory-file.js",
 }
 `;
 
-exports[`multiple patterns by with ignore pattern, doesn't ignore node_modules with --with-node-modules flag  1`] = `
+exports[`multiple patterns with a negated pattern  1`] = `
+{
+  "stderr": "",
+  "stdout": "directory/file.js
+other-directory/file.js
+other-regular-modules.js
+regular-module.js",
+  "write": [],
+}
+`;
+
+exports[`multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag  1`] = `
 {
   "stderr": "",
   "stdout": "node_modules/node-module.js
@@ -23,7 +44,7 @@ regular-module.js",
 }
 `;
 
-exports[`multiple patterns by with ignore pattern, ignores node_modules by default  1`] = `
+exports[`multiple patterns with a negated pattern, ignores node_modules by default  1`] = `
 {
   "stderr": "",
   "stdout": "other-directory/file.js
@@ -34,49 +55,18 @@ regular-module.js",
 }
 `;
 
-exports[`multiple patterns by with ignore pattern, ignores node_modules by with ./**/*.js  1`] = `
+exports[`multiple patterns with an extra non-existent pattern  1`] = `
 {
   "stderr": "",
-  "stdout": "other-directory/file.js
-other-directory/nested-directory/nested-directory-file.js
-other-regular-modules.js
-regular-module.js",
-  "write": [],
-}
-`;
-
-exports[`multiple patterns with ignore nested directories pattern  1`] = `
-{
-  "stderr": "",
-  "stdout": "directory/file.js
-other-directory/file.js
-other-regular-modules.js
-regular-module.js",
-  "write": [],
-}
-`;
-
-exports[`multiple patterns with non exists pattern  1`] = `
-{
-  "stderr": "[error] No files matching the pattern were found: "non-existent.js".",
   "stdout": "directory/file.js
 directory/nested-directory/nested-directory-file.js",
   "write": [],
 }
 `;
 
-exports[`multiple patterns, throw error and exit with non zero code on non existing files  1`] = `
+exports[`multiple patterns, throws an error and exits with a non-zero code when there are no matches  1`] = `
 {
-  "stderr": "[error] No files matching the pattern were found: "non-existent.js".
-[error] No files matching the pattern were found: "other-non-existent.js".",
-  "stdout": "",
-  "write": [],
-}
-`;
-
-exports[`no errors on empty patterns  1`] = `
-{
-  "stderr": "",
+  "stderr": "[error] No files matching the given patterns were found.",
   "stdout": "",
   "write": [],
 }

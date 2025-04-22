@@ -15,14 +15,6 @@ exports[`boolean flags do not swallow the next argument  1`] = `
 }
 `;
 
-exports[`deprecated option values are warned  1`] = `
-{
-  "stderr": "[warn] --jsx-bracket-same-line is deprecated.",
-  "stdout": "console.log("could be single quote and without semi");",
-  "write": [],
-}
-`;
-
 exports[`negated options work  1`] = `
 {
   "stderr": "",
@@ -64,39 +56,31 @@ exports[`number file/dir  5`] = `
 }
 `;
 
-exports[`options with \`cliName\` should not allow to pass directly  1`] = `
+exports[`unknown negated options are errored  1`] = `
 {
-  "stdout": "prettier();",
-}
-`;
-
-exports[`options with \`cliName\` should not allow to pass directly  2`] = `
-{
-  "stderr": "[warn] Ignored unknown option --filepath=file.js.
-[error] No parser and no file path given, couldn't infer a parser.",
+  "stderr": "
+  Unknown option: "unknown"
+",
   "stdout": "",
-}
-`;
-
-exports[`unknown negated options are warned  1`] = `
-{
-  "stderr": "[warn] Ignored unknown option --no-unknown.",
-  "stdout": "console.log("could be single quote and without semi");",
   "write": [],
 }
 `;
 
-exports[`unknown options are warned  1`] = `
+exports[`unknown options are errored  1`] = `
 {
-  "stderr": "[warn] Ignored unknown option --unknown.",
-  "stdout": "console.log("could be single quote and without semi");",
+  "stderr": "
+  Unknown option: "unknown"
+",
+  "stdout": "",
   "write": [],
 }
 `;
 
-exports[`unknown options not suggestion \`_\`  1`] = `
+exports[`unknown options may trigger a suggestion \`_\`  1`] = `
 {
-  "stderr": "[warn] Ignored unknown option -a. Did you mean -c?",
-  "stdout": "console.log("could be single quote and without semi");",
+  "stderr": "
+  Unknown option: "a". Did you mean "v"?
+",
+  "stdout": "",
 }
 `;

@@ -13,7 +13,7 @@ exports[`--checks should print the number of files that need formatting  1`] = `
 exports[`--checks works in CI just as in a non-TTY mode  1`] = `
 {
   "stderr": "[warn] unformatted.js
-[warn] Code style issues found in the above file. Run Prettier with --write to fix.",
+[warn] Code style issues found in 1 file. Run Prettier with --write to fix.",
   "stdout": "Checking formatting...",
   "write": [],
 }
@@ -22,7 +22,7 @@ exports[`--checks works in CI just as in a non-TTY mode  1`] = `
 exports[`--checks works in CI just as in a non-TTY mode  2`] = `
 {
   "stderr": "[warn] unformatted.js
-[warn] Code style issues found in the above file. Run Prettier with --write to fix.",
+[warn] Code style issues found in 1 file. Run Prettier with --write to fix.",
   "stdout": "Checking formatting...",
   "write": [],
 }

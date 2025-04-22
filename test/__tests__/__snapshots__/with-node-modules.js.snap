@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`does not ignore node_modules for manual file list  1`] = `
+{
+  "stderr": "",
+  "stdout": "nested/node_modules/node-module.js
+node_modules/node-module.js
+not_node_modules/file.js
+regular-module.js",
+  "write": [],
+}
+`;
+
 exports[`doesn't ignore node_modules with --with-node-modules flag  1`] = `
 {
   "stderr": "",
@@ -11,27 +22,7 @@ regular-module.js",
 }
 `;
 
-exports[`doesn't ignore node_modules with --with-node-modules flag for file list  1`] = `
-{
-  "stderr": "",
-  "stdout": "node_modules/node-module.js
-not_node_modules/file.js
-nested/node_modules/node-module.js
-regular-module.js",
-  "write": [],
-}
-`;
-
 exports[`ignores node_modules by default  1`] = `
-{
-  "stderr": "",
-  "stdout": "not_node_modules/file.js
-regular-module.js",
-  "write": [],
-}
-`;
-
-exports[`ignores node_modules by default for file list  1`] = `
 {
   "stderr": "",
   "stdout": "not_node_modules/file.js

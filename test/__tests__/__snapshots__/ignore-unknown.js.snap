@@ -10,7 +10,7 @@ exports[`Ignored file  1`] = `
 
 exports[`None exist file  1`] = `
 {
-  "stderr": "[error] No files matching the pattern were found: "non-exist-file".",
+  "stderr": "[error] No files matching the given patterns were found.",
   "stdout": "",
   "write": [],
 }
@@ -18,7 +18,7 @@ exports[`None exist file  1`] = `
 
 exports[`Not matching pattern  1`] = `
 {
-  "stderr": "[error] No files matching the pattern were found: "*.non-exist-pattern".",
+  "stderr": "[error] No files matching the given patterns were found.",
   "stdout": "",
   "write": [],
 }

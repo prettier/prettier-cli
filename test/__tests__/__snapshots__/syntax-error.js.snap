@@ -2,7 +2,7 @@
 
 exports[`exits with non-zero code when input has a syntax error  1`] = `
 {
-  "stderr": "[error] stdin: SyntaxError: Missing semicolon. (1:2)
+  "stderr": "[error] SyntaxError: Missing semicolon. (1:2)
 [error] > 1 | a.2
 [error]     |  ^",
   "stdout": "",
