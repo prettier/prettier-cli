@@ -106,6 +106,22 @@ const options = {
     description: "Print semicolons.",
     oppositeDescription: "Do not print semicolons, except at the beginning of lines which may need them.",
   },
+  experimentalOperatorPosition: {
+    category: "JavaScript",
+    type: "choice",
+    default: "end",
+    description: "Where to print operators when binary expressions wrap lines.",
+    choices: [
+      {
+        value: "start",
+        description: "Print operators at the start of new lines.",
+      },
+      {
+        value: "end",
+        description: "Print operators at the end of previous lines.",
+      },
+    ],
+  },
   experimentalTernaries: {
     category: "JavaScript",
     type: "boolean",
@@ -168,6 +184,22 @@ const options = {
       },
       { value: "never", description: "Do not wrap prose." },
       { value: "preserve", description: "Wrap prose as-is." },
+    ],
+  },
+  objectWrap: {
+    category: "Common",
+    type: "choice",
+    default: "preserve",
+    description: "How to wrap object literals.",
+    choices: [
+      {
+        value: "preserve",
+        description: "Keep as multi-line, if there is a newline between the opening brace and first property.",
+      },
+      {
+        value: "collapse",
+        description: "Fit to a single line when possible.",
+      },
     ],
   },
 };

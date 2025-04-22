@@ -129,6 +129,14 @@ const getPlugin = memoize((name: string): Promise<PrettierPlugin> => {
   return plugin;
 });
 
+async function getPluginOrExit(name: string): Promise<PrettierPlugin> {
+  try {
+    return await getPlugin(name);
+  } catch {
+    exit(`The plugin "${name}" could not be loaded`);
+  }
+}
+
 function getPluginPath(name: string): string {
   const rootPath = path.join(process.cwd(), "index.js");
   const pluginPath = getModulePath(name, rootPath);
@@ -146,9 +154,14 @@ function getPluginVersion(name: string): string | null {
   }
 }
 
-function getPlugins(names: string[]): PromiseMaybe<PrettierPlugin[]> {
+async function getPlugins(names: string[]): Promise<PrettierPlugin[]> {
   if (!names.length) return [];
-  return Promise.all(names.map(getPlugin));
+  return await Promise.all(names.map((name) => getPlugin(name)));
+}
+
+async function getPluginsOrExit(names: string[]): Promise<PrettierPlugin[]> {
+  if (!names.length) return [];
+  return await Promise.all(names.map((name) => getPluginOrExit(name)));
 }
 
 const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {
@@ -431,6 +444,13 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
 
   const formatOptions: FormatOptions = {};
 
+  if ("experimentalOperatorPosition" in options) {
+    const value = options.experimentalOperatorPosition;
+    if (value === "start" || value === "end") {
+      formatOptions.experimentalOperatorPosition = value;
+    }
+  }
+
   if ("experimentalTernaries" in options) {
     const value = options.experimentalTernaries;
     if (isBoolean(value)) {
@@ -494,11 +514,18 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     }
   }
 
+  if ("objectWrap" in options) {
+    const value = options.objectWrap;
+    if (value === "preserve" || value === "collapse") {
+      formatOptions.objectWrap = value;
+    }
+  }
+
   if ("parser" in options) {
     const value = options.parser;
-    // prettier-ignore
-    if (value === "flow" || value === "babel" || value === "babel-flow" || value === "babel-ts" || value === "typescript" || value === "acorn" || value === "espree" || value === "meriyah" || value === "css" || value === "less" || value === "scss" || value === "json" || value === "json5" || value === "json-stringify" || value === "graphql" || value === "markdown" || value === "mdx" || value === "vue" || value === "yaml" || value === "glimmer" || value === "html" || value === "angular" || value === "lwc") {
-      formatOptions.parser = value;
+    if (isString(value)) {
+      // New parsers that we don't about can be added by plugins
+      formatOptions.parser = value as FormatOptions["parser"];
     }
   }
 
@@ -722,10 +749,12 @@ export {
   getModule,
   getModulePath,
   getPlugin,
+  getPluginOrExit,
   getPluginPath,
   getPluginVersion,
   getPlugins,
   getPluginsBuiltin,
+  getPluginsOrExit,
   getPluginsPaths,
   getPluginsVersions,
   getProjectPath,
