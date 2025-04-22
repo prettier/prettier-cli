@@ -32,7 +32,11 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
   const fileContent = (await getStdin()) || "";
 
   try {
-    const formatted = await prettier.format(fileName, fileContent, options.formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
+    const editorConfigNames = options.editorConfig ? [".editorconfig"] : [];
+    const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(fileName, editorConfigNames)) : {};
+    const formatOptions = { ...editorConfig, ...options.formatOptions };
+
+    const formatted = await prettier.format(fileName, fileContent, formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
     if (options.check || options.list) {
       if (formatted !== fileContent) {
         stdout.warn("(stdin)");

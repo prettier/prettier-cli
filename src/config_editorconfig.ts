@@ -10,7 +10,7 @@ const getEditorConfig = memoize((folderPath: string, filesNames: string[]): Prom
   for (let i = 0, l = filesNames.length; i < l; i++) {
     const fileName = filesNames[i];
     const filePath = fastJoinedPath(folderPath, fileName);
-    if (!Known.hasFilePath(filePath)) continue;
+    // if (!Known.hasFilePath(filePath)) continue;
     return fs.readFile(filePath, "utf8").then(EditorConfig.parse).catch(noop);
   }
 });

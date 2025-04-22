@@ -32,7 +32,7 @@ describe("gracefully handle stdin-filepath with nonexistent directory", () => {
 });
 
 describe("apply editorconfig for stdin-filepath with nonexistent file", () => {
-  runCli("", ["--stdin-filepath", "editorconfig/nonexistent.js"], {
+  runCli("editorconfig", ["--stdin-filepath", "nonexistent.js"], {
     input: dedent`
       function f() {
         console.log("should be indented with a tab");
@@ -45,8 +45,8 @@ describe("apply editorconfig for stdin-filepath with nonexistent file", () => {
 
 describe("apply editorconfig for stdin-filepath with nonexistent directory", () => {
   runCli(
-    "",
-    ["--stdin-filepath", "editorconfig/nonexistent/one/two/three.js"],
+    "editorconfig",
+    ["--stdin-filepath", "nonexistent/one/two/three.js"],
     {
       input: dedent`
         function f() {
@@ -61,8 +61,8 @@ describe("apply editorconfig for stdin-filepath with nonexistent directory", () 
 
 describe("apply editorconfig for stdin-filepath with a deep path", () => {
   runCli(
-    "",
-    ["--stdin-filepath", "editorconfig/" + "a/".repeat(30) + "three.js"],
+    "editorconfig",
+    ["--stdin-filepath", "a/".repeat(30) + "three.js"],
     {
       input: dedent`
         function f() {
@@ -75,6 +75,8 @@ describe("apply editorconfig for stdin-filepath with a deep path", () => {
   });
 });
 
+// TODO: This is currently a false positive as no config actually gets resolved, but Prettier
+// somehow formats the input correctly anyway.
 describe("apply editorconfig for stdin-filepath in root", () => {
   const code = dedent`
     function f() {
@@ -93,8 +95,8 @@ describe("apply editorconfig for stdin-filepath in root", () => {
 
 describe("apply editorconfig for stdin-filepath with a deep path", () => {
   runCli(
-    "",
-    ["--stdin-filepath", "editorconfig/" + "a/".repeat(30) + "three.js"],
+    "editorconfig",
+    ["--stdin-filepath", "a/".repeat(30) + "three.js"],
     {
       input: dedent`
         function f() {
@@ -107,7 +109,9 @@ describe("apply editorconfig for stdin-filepath with a deep path", () => {
   });
 });
 
-describe("don’t apply editorconfig outside project for stdin-filepath with nonexistent directory", () => {
+// TODO: This is currently a false positive. Gotta investigate how it's handled in Prettier v3 to
+// gauge the expected behavior.
+describe("don't apply editorconfig outside project for stdin-filepath with nonexistent directory", () => {
   runCli(
     "",
     [
