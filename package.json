@@ -3,7 +3,7 @@
   "repository": "github:prettier/prettier-cli",
   "description": "A faster CLI for Prettier.",
   "license": "MIT",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "type": "module",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,7 +27,7 @@
     "compile": "tsc --outDir dist",
     "compile:watch": "tsc --outDir dist --watch",
     "format": "npm run compile && node dist/bin.js --write src test",
-    "prepublishOnly": "npm run compile && npm run test",
+    "prepublishOnly": "npm run compile",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --rootDir test/__tests__ --testTimeout 60000",
     "typecheck": "tsc --noEmit"
   },

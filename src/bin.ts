@@ -3,9 +3,9 @@
 import { toKebabCase } from "kasi";
 import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION, DEFAULT_PARSERS } from "./constants.js";
-import { getPlugin, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
+import { getPluginOrExit, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
 import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
-import type { Bin, PluginsOptions } from "./types.js";
+import type { Bin, PluginsOptions, PrettierPlugin } from "./types.js";
 
 const makeBin = (): Bin => {
   return (
@@ -53,6 +53,10 @@ const makeBin = (): Bin => {
         section: "Format",
         enum: ["lf", "crlf", "cr", "auto"],
       })
+      .option("--experimental-operator-position <start|end>", 'Where to print operators when binary expressions wrap lines\nDefaults to "end"', {
+        section: "Format",
+        enum: ["start", "end"],
+      })
       .option("--experimental-ternaries", 'Use curious ternaries, with the question mark after the condition\nDefaults to "false"', {
         section: "Format",
       })
@@ -62,6 +66,10 @@ const makeBin = (): Bin => {
       })
       .option("--jsx-single-quote", 'Use single quotes in JSX\nDefaults to "false"', {
         section: "Format",
+      })
+      .option("--object-wrap <preserve|collapse>", 'How to wrap object literals\nDefaults to "preserve"', {
+        section: "Format",
+        enum: ["preserve", "collapse"],
       })
       .option(`--parser <${DEFAULT_PARSERS.join('|')}>`, "Which parser to use", {
         section: "Format",
@@ -208,7 +216,7 @@ const makePluggableBin = async (): Promise<Bin> => {
 
   for (let i = 0, l = pluginsNames.length; i < l; i++) {
     const pluginName = pluginsNames[i];
-    const plugin = await getPlugin(pluginName);
+    const plugin = await getPluginOrExit(pluginName);
 
     for (const option in plugin.options) {
       optionsNames.push(option);

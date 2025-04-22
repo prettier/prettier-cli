@@ -131,20 +131,23 @@ async function runCommand(dir, args, options) {
 
   await fixtures?.dispose();
 
-  return { status, stdout, stderr, write };
+  return { cwd, status, stdout, stderr, write };
 }
 
 async function runTest(name, expected, getResult, options) {
   const title = options.title || "";
   test(`${title}(${name})`, async () => {
-    const result = await getResult();
-    const value = result[name];
+    let result = await getResult();
+    let value = result[name];
     if (expected !== undefined) {
       if (name === "status" && expected === "non-zero") {
         expect(value).not.toBe(0);
       } else if (typeof expected === "function") {
         expected(value);
       } else {
+        if (typeof value === "string") {
+          value = value.replaceAll(result.cwd, "$CWD");
+        }
         expect(value).toEqual(expected);
       }
     } else {
