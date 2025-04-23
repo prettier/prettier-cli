@@ -28,7 +28,7 @@
     "compile:watch": "tsc --outDir dist --watch",
     "format": "npm run compile && node dist/bin.js --write src test",
     "prepublishOnly": "npm run compile",
-    "test": "jest --rootDir test/__tests__ --testTimeout 60000 --runner=jest-light-runner/child-process",
+    "test": "jest --rootDir test/__tests__ --testTimeout 60000 --runner=jest-light-runner",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
