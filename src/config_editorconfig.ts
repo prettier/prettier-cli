@@ -6,7 +6,7 @@ import { fastJoinedPath, findLastIndex, isUndefined, memoize, noop, zipObjectUnl
 import type { Config, ConfigWithOverrides } from "tiny-editorconfig";
 import type { FormatOptions, PromiseMaybe } from "./types.js";
 
-const getEditorConfig = memoize((folderPath: string, filesNames: string[], ignoreKnown = false): PromiseMaybe<ConfigWithOverrides | undefined> => {
+const getEditorConfig = memoize((folderPath: string, filesNames: string[], ignoreKnown?: boolean): PromiseMaybe<ConfigWithOverrides | undefined> => {
   for (let i = 0, l = filesNames.length; i < l; i++) {
     const fileName = filesNames[i];
     const filePath = fastJoinedPath(folderPath, fileName);
@@ -21,7 +21,7 @@ const getEditorConfigsMap = async (foldersPaths: string[], filesNames: string[])
   return map;
 };
 
-const getEditorConfigsUp = memoize(async (folderPath: string, filesNames: string[], ignoreKnown = false): Promise<ConfigWithOverrides[]> => {
+const getEditorConfigsUp = memoize(async (folderPath: string, filesNames: string[], ignoreKnown?: boolean): Promise<ConfigWithOverrides[]> => {
   const config = await getEditorConfig(folderPath, filesNames, ignoreKnown);
   const folderPathUp = path.dirname(folderPath);
   const configsUp = folderPath !== folderPathUp ? await getEditorConfigsUp(folderPathUp, filesNames, ignoreKnown) : [];
@@ -30,7 +30,7 @@ const getEditorConfigsUp = memoize(async (folderPath: string, filesNames: string
   return lastRootIndex > 0 ? configs.slice(lastRootIndex) : configs;
 });
 
-const getEditorConfigResolved = async (filePath: string, filesNames: string[], ignoreKnown = false): Promise<Config> => {
+const getEditorConfigResolved = async (filePath: string, filesNames: string[], ignoreKnown?: boolean): Promise<Config> => {
   const folderPath = path.dirname(filePath);
   const configs = await getEditorConfigsUp(folderPath, filesNames, ignoreKnown);
   const config = EditorConfig.resolve(configs, filePath);

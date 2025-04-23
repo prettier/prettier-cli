@@ -94,7 +94,7 @@ const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   mjs: Loaders.js,
 };
 
-const getPrettierConfig = (folderPath: string, fileName: string, ignoreKnown = false): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
+const getPrettierConfig = (folderPath: string, fileName: string, ignoreKnown?: boolean): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!ignoreKnown && !Known.hasFilePath(filePath)) return;
   const loader = File2Loader[fileName] || File2Loader["default"];
@@ -125,7 +125,7 @@ const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: stri
   return configs;
 });
 
-const getPrettierConfigResolved = async (filePath: string, filesNames: string[], ignoreKnown = false): Promise<PrettierConfig> => {
+const getPrettierConfigResolved = async (filePath: string, filesNames: string[], ignoreKnown?: boolean): Promise<PrettierConfig> => {
   const folderPath = path.dirname(filePath);
   const configs = await getPrettierConfigsUp(folderPath, filesNames, ignoreKnown);
   let resolved: PrettierConfig = {};

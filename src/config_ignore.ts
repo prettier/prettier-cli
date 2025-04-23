@@ -5,14 +5,14 @@ import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath, isString, isUndefined, memoize, noop, someOf, zipObjectUnless } from "./utils.js";
 import type { Ignore, PromiseMaybe } from "./types.js";
 
-const getIgnoreContent = (folderPath: string, fileName: string): PromiseMaybe<string | undefined> => {
+const getIgnoreContent = (folderPath: string, fileName: string, ignoreKnown?: boolean): PromiseMaybe<string | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
-  if (!Known.hasFilePath(filePath)) return;
+  if (!ignoreKnown && !Known.hasFilePath(filePath)) return;
   return fs.readFile(filePath, "utf8").catch(noop);
 };
 
-const getIgnoresContent = memoize(async (folderPath: string, filesNames: string[]): Promise<string[] | undefined> => {
-  const contentsRaw = await Promise.all(filesNames.map((fileName) => getIgnoreContent(folderPath, fileName)));
+const getIgnoresContent = memoize(async (folderPath: string, filesNames: string[], ignoreKnown?: boolean): Promise<string[] | undefined> => {
+  const contentsRaw = await Promise.all(filesNames.map((fileName) => getIgnoreContent(folderPath, fileName, ignoreKnown)));
   const contents = contentsRaw.filter(isString);
   if (!contents.length) return;
   return contents;
@@ -39,26 +39,26 @@ const getIgnoreBys = (foldersPaths: string[], filesContents: string[][]): Ignore
   return ignore;
 };
 
-const getIgnores = memoize(async (folderPath: string, filesNames: string[]): Promise<Ignore | undefined> => {
-  const contents = await getIgnoresContent(folderPath, filesNames);
+const getIgnores = memoize(async (folderPath: string, filesNames: string[], ignoreKnown?: boolean): Promise<Ignore | undefined> => {
+  const contents = await getIgnoresContent(folderPath, filesNames, ignoreKnown);
   if (!contents?.length) return;
   const ignore = getIgnoreBy(folderPath, contents);
   return ignore;
 });
 
-const getIgnoresUp = memoize(async (folderPath: string, filesNames: string[]): Promise<Ignore | undefined> => {
-  const ignore = await getIgnores(folderPath, filesNames);
+const getIgnoresUp = memoize(async (folderPath: string, filesNames: string[], ignoreKnown?: boolean): Promise<Ignore | undefined> => {
+  const ignore = await getIgnores(folderPath, filesNames, ignoreKnown);
   const folderPathUp = path.dirname(folderPath);
-  const ignoreUp = folderPath !== folderPathUp ? await getIgnoresUp(folderPathUp, filesNames) : undefined;
+  const ignoreUp = folderPath !== folderPathUp ? await getIgnoresUp(folderPathUp, filesNames, ignoreKnown) : undefined;
   const ignores = ignore ? (ignoreUp ? [ignore, ignoreUp] : [ignore]) : ignoreUp ? [ignoreUp] : [];
   if (!ignores.length) return;
   const ignoreAll = someOf(ignores);
   return ignoreAll;
 });
 
-const getIgnoreResolved = async (filePath: string, filesNames: string[]): Promise<boolean> => {
+const getIgnoreResolved = async (filePath: string, filesNames: string[], ignoreKnown?: boolean): Promise<boolean> => {
   const folderPath = path.dirname(filePath);
-  const ignore = await getIgnoresUp(folderPath, filesNames);
+  const ignore = await getIgnoresUp(folderPath, filesNames, ignoreKnown);
   const ignored = !!ignore?.(filePath);
   return ignored;
 };

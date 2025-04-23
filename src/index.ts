@@ -31,15 +31,23 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
   const fileName = options.stdinFilepath || "stdin";
   const fileContent = (await getStdin()) || "";
 
+  const ignoreNames = options.ignore ? [".gitignore", ".prettierignore"] : [];
+  const isIgnored = await getIgnoreResolved(fileName, ignoreNames, true);
+  if (isIgnored) {
+    stdout.always(trimFinalNewline(fileContent));
+    process.exitCode = 0;
+    return;
+  }
+
+  const editorConfigNames = options.editorConfig ? [".editorconfig"] : [];
+  const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(fileName, editorConfigNames, true)) : {};
+
+  const prettierConfigNames = options.config ? without(Object.keys(File2Loader), ["default"]) : [];
+  const prettierConfig = options.config ? await getPrettierConfigResolved(fileName, prettierConfigNames, true) : {};
+
+  const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
+
   try {
-    const editorConfigNames = options.editorConfig ? [".editorconfig"] : [];
-    const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(fileName, editorConfigNames, true)) : {};
-
-    const prettierConfigNames = options.config ? without(Object.keys(File2Loader), ["default"]) : [];
-    const prettierConfig = options.config ? await getPrettierConfigResolved(fileName, prettierConfigNames, true) : {};
-
-    const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
-
     const formatted = await prettier.format(fileName, fileContent, formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
     if (options.check || options.list) {
       if (formatted !== fileContent) {
