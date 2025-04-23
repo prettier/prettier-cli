@@ -1,17 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ignores files in ignored folders (stderr) 1`] = `""`;
-
-exports[`ignores files in ignored folders (stdout) 1`] = `"not-ignored.js"`;
-
-exports[`ignores files in ignored folders (write) 1`] = `[]`;
-
-exports[`ignores ignore files when processing stdin (stderr) 1`] = `""`;
-
-exports[`ignores ignore files when processing stdin (stdout) 1`] = `
-".name {
-  display: none;
-}"
+exports[`ignores files in ignored folders  1`] = `
+{
+  "stderr": "",
+  "stdout": "not-ignored.js",
+  "write": [],
+}
 `;
 
-exports[`ignores ignore files when processing stdin (write) 1`] = `[]`;
+exports[`ignores ignore files when processing stdin  1`] = `
+{
+  "stderr": "",
+  "stdout": ".name {
+  display: none;
+}",
+  "write": [],
+}
+`;

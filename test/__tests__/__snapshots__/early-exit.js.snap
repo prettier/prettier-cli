@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`show usage with --help (stderr) 1`] = `""`;
-
-exports[`show usage with --help (stdout) 1`] = `
-"  
+exports[`show usage with --help  1`] = `
+{
+  "stderr": "",
+  "stdout": "  
   prettier 3.3.3
   
   USAGE
@@ -131,81 +131,84 @@ exports[`show usage with --help (stdout) 1`] = `
     --require-pragma          Require either "@prettier" or "@format" to be present in the file's first docblock comment in order for it to be formatted
                               Defaults to "false"
     --stdin-filepath <path>   Path to the file to pretend that stdin comes from
-    "
+    ",
+  "write": [],
+}
 `;
 
-exports[`show usage with --help (write) 1`] = `[]`;
+exports[`show version with --version  1`] = `
+{
+  "stderr": "",
+  "write": [],
+}
+`;
 
-exports[`show version with --version (stderr) 1`] = `""`;
-
-exports[`show version with --version (write) 1`] = `[]`;
-
-exports[`throw error with --check + --list-different (stderr) 1`] = `
-"
+exports[`throw error with --check + --list-different  1`] = `
+{
+  "stderr": "
   Incompatible options: "check" and "list-different" cannot be used together
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
 
-exports[`throw error with --check + --list-different (stdout) 1`] = `""`;
-
-exports[`throw error with --check + --list-different (write) 1`] = `[]`;
-
-exports[`throw error with --check + --write (stderr) 1`] = `
-"
+exports[`throw error with --check + --write  1`] = `
+{
+  "stderr": "
   Incompatible options: "check" and "write" cannot be used together
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
 
-exports[`throw error with --check + --write (stdout) 1`] = `""`;
-
-exports[`throw error with --check + --write (write) 1`] = `[]`;
-
-exports[`throw error with --list-different + --write (stderr) 1`] = `
-"
+exports[`throw error with --list-different + --write  1`] = `
+{
+  "stderr": "
   Incompatible options: "list-different" and "write" cannot be used together
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
 
-exports[`throw error with --list-different + --write (stdout) 1`] = `""`;
-
-exports[`throw error with --list-different + --write (write) 1`] = `[]`;
-
-exports[`throw error with something unexpected (stderr) 1`] = `
-"
+exports[`throw error with something unexpected  1`] = `
+{
+  "stderr": "
   Expected at least one target file/dir/glob
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
 
-exports[`throw error with something unexpected (stdout) 1`] = `""`;
-
-exports[`throw error with something unexpected (write) 1`] = `[]`;
-
-exports[`throw unsupported error with --file-info (stderr) 1`] = `
-"
+exports[`throw unsupported error with --file-info  1`] = `
+{
+  "stderr": "
   The "--file-info" option is not currently supported, please open an issue on GitHub if you need it
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
 
-exports[`throw unsupported error with --file-info (stdout) 1`] = `""`;
-
-exports[`throw unsupported error with --file-info (write) 1`] = `[]`;
-
-exports[`throw unsupported error with --find-config-path (stderr) 1`] = `
-"
+exports[`throw unsupported error with --find-config-path  1`] = `
+{
+  "stderr": "
   Unknown option: "find-config-path"
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
 
-exports[`throw unsupported error with --find-config-path (stdout) 1`] = `""`;
-
-exports[`throw unsupported error with --find-config-path (write) 1`] = `[]`;
-
-exports[`throw unsupported error with --support-info (stderr) 1`] = `
-"
+exports[`throw unsupported error with --support-info  1`] = `
+{
+  "stderr": "
   The "--support-info" option is not currently supported, please open an issue on GitHub if you need it
-"
+",
+  "stdout": "",
+  "write": [],
+}
 `;
-
-exports[`throw unsupported error with --support-info (stdout) 1`] = `""`;
-
-exports[`throw unsupported error with --support-info (write) 1`] = `[]`;
