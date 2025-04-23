@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { getFixturesPath, runCli } from "../utils";
+import { getFixturesPath, runCli } from "../utils.js";
 
 // These `.js` files are ignored in `.gitignore`, so we need to write them manually here
 [

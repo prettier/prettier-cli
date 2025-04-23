@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("parser preprocess function is used to reshape input text", () => {
   runCli("plugin-preprocess", [

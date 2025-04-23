@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("plugin default options should work", () => {
   runCli("plugin-default-options", [

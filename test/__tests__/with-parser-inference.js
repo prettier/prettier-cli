@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("infers postcss parser", () => {
   runCli("with-parser-inference", [

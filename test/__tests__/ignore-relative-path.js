@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("support relative paths", () => {
   runCli("ignore-relative-path", [

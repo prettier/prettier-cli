@@ -1,6 +1,6 @@
 import path from "node:path";
 import dirname from "tiny-dirname";
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("support absolute filename", () => {
   runCli("ignore-absolute-path", [
