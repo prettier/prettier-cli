@@ -93,7 +93,7 @@ describe("apply editorconfig for stdin-filepath in root", () => {
   });
 });
 
-describe.only("apply editorconfig for stdin-filepath with a deep path", () => {
+describe("apply editorconfig for stdin-filepath with a deep path", () => {
   runCli(
     "editorconfig",
     ["--stdin-filepath", "a/".repeat(30) + "three.js"],
