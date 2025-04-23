@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import url from "node:url";
 import JSONC from "tiny-jsonc";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
@@ -15,7 +16,7 @@ const Loaders = {
     return loader(filePath);
   },
   js: async (filePath: string): Promise<unknown> => {
-    const module = await import(filePath);
+    const module = await import(url.pathToFileURL(filePath).href);
     return module.default || module.exports || module.prettier || module;
   },
   json: async (filePath: string): Promise<unknown> => {
