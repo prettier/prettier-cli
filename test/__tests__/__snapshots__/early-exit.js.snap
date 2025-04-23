@@ -4,7 +4,7 @@ exports[`show usage with --help (stderr) 1`] = `""`;
 
 exports[`show usage with --help (stdout) 1`] = `
 "  
-  prettier 3.3.3
+  prettier 3.5.3
   
   USAGE
     
