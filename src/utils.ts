@@ -41,6 +41,10 @@ function fastRelativeChildPath(fromPath: string, toPath: string): string | undef
       return toPath.slice(fromPath.length + 1);
     }
   }
+
+  if (fromPath === ".") {
+    return toPath;
+  }
 }
 
 function findLastIndex<T>(array: T[], predicate: (value: T, index: number, array: T[]) => unknown): number {

@@ -33,8 +33,12 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
 
   try {
     const editorConfigNames = options.editorConfig ? [".editorconfig"] : [];
-    const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(fileName, editorConfigNames)) : {};
-    const formatOptions = { ...editorConfig, ...options.formatOptions };
+    const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(fileName, editorConfigNames, true)) : {};
+
+    const prettierConfigNames = options.config ? without(Object.keys(File2Loader), ["default"]) : [];
+    const prettierConfig = options.config ? await getPrettierConfigResolved(fileName, prettierConfigNames, true) : {};
+
+    const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
 
     const formatted = await prettier.format(fileName, fileContent, formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
     if (options.check || options.list) {
