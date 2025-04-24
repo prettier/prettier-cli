@@ -322,7 +322,7 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
 
 const runBin = async (): Promise<void> => {
   const bin = await makeWarnedPluggableBin();
-  bin.run();
+  await bin.run();
 };
 
 // Exposed for test, we can also consider use TLA someday
