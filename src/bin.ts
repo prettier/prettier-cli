@@ -325,5 +325,5 @@ const runBin = async (): Promise<void> => {
   bin.run();
 };
 
-// Exposed for test
+// Exposed for test, we can also consider use TLA someday
 export const __promise = runBin();
