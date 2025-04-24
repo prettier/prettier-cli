@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "atomically";
 import process from "node:process";
-import prettier from "prettier/standalone";
+import * as prettier from "prettier/standalone";
 import { getPluginsOrExit, getPluginsBuiltin, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions, PluginsOptions } from "./types.js";
 
