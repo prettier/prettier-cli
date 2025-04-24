@@ -325,4 +325,5 @@ const runBin = async (): Promise<void> => {
   bin.run();
 };
 
-runBin();
+// Exposed for test
+export const __promise = runBin();
