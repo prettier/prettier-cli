@@ -11,10 +11,14 @@ describe("show version with --version", () => {
 });
 
 describe("show usage with --help", () => {
-  runCli("", [
-    "--help",
-  ]).test({
-    status: 0,
+  it("shows help text", async () => {
+    const result = await runCli("", [
+      "--help",
+    ]);
+    expect(result.status).toBe(0);
+    expect(result.stdout.replaceAll(PRETTIER_VERSION, "$VERSION")).toMatchSnapshot();
+    expect(result.stderr).toMatchSnapshot();
+    expect(result.write).toMatchSnapshot();
   });
 });
 

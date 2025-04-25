@@ -82,10 +82,7 @@ describe("unknown path and no parser", () => {
     });
   });
 
-  // TODO (43081j): this currently eats parser errors up, we need to decide
-  // if when !check && !list && !write we should still log parser errors to
-  // stderr
-  describe("multiple files", () => {
+  describe("multiple files are ignored", () => {
     runCli("infer-parser/", ["--end-of-line", "lf", "*"]).test({
       status: 1,
       write: [],

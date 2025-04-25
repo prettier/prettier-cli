@@ -736,10 +736,7 @@ function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (valu
 /**
  * Replace `\` with `/` on Windows
  */
-const normalizeToPosix =
-  path.sep === "\\"
-    ? (filepath: string): string => filepath.replaceAll("\\", "/")
-    : (filepath: string): string => filepath;
+const normalizeToPosix = path.sep === "\\" ? (filepath: string): string => filepath.replaceAll("\\", "/") : (filepath: string): string => filepath;
 
 export {
   castArray,
