@@ -32,17 +32,6 @@ regular-module.js"
 
 exports[`multiple patterns with a negated pattern (write) 1`] = `[]`;
 
-exports[`multiple patterns with a negated pattern and leading \`./\`, ignores node_modules by default (stderr) 1`] = `""`;
-
-exports[`multiple patterns with a negated pattern and leading \`./\`, ignores node_modules by default (stdout) 1`] = `
-"other-directory/file.js
-other-directory/nested-directory/nested-directory-file.js
-other-regular-modules.js
-regular-module.js"
-`;
-
-exports[`multiple patterns with a negated pattern and leading \`./\`, ignores node_modules by default (write) 1`] = `[]`;
-
 exports[`multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag (stderr) 1`] = `""`;
 
 exports[`multiple patterns with a negated pattern, doesn't ignore node_modules with the --with-node-modules flag (stdout) 1`] = `

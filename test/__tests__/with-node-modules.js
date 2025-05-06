@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("ignores node_modules by default", () => {
   runCli("with-node-modules", [

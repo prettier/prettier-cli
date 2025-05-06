@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 test("show external options with `--help`", async () => {
   const originalStdout = await runCli("plugin-options-string", ["--help"])

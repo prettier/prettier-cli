@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("json-stringify takes precedence over json for package.json", () => {
   runCli("", [

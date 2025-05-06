@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("ignores files when executing in a subdirectory", () => {
   runCli("ignore-in-subdirectories/web1", [
