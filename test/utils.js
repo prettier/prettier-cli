@@ -97,12 +97,13 @@ async function getIsolatedFixtures(dir) {
   };
 }
 
-function getNormalizedOutput(output, options) {
+function getNormalizedOutput(output, cwd) {
   // \r is trimmed from jest snapshots by default;
   // manually replacing this character with /*CR*/ to test its true presence
   // If ignoreLineEndings is specified, \r is simply deleted instead
   // output = output.replace(/\r/gu, options.ignoreLineEndings ? "" : "/*CR*/"); //TODO
   output = output.replace(/(\r?\n|\r)$/, "");
+  output = output.replaceAll(cwd, "$CWD");
   return output;
 }
 
@@ -125,8 +126,8 @@ async function runCommand(dir, args, options) {
   }
 
   const status = await result.code;
-  const stdout = getNormalizedOutput((await result.stdout).toString());
-  const stderr = getNormalizedOutput((await result.stderr).toString());
+  const stdout = getNormalizedOutput((await result.stdout).toString(), cwd);
+  const stderr = getNormalizedOutput((await result.stderr).toString(), cwd);
   const write = (await archive?.getDiff()) || [];
 
   await fixtures?.dispose();

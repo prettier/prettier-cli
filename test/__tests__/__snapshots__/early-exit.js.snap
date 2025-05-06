@@ -1,10 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`show usage with --help (stderr) 1`] = `""`;
-
-exports[`show usage with --help (stdout) 1`] = `
+exports[`show usage with --help shows help text 1`] = `
 "  
-  prettier 3.5.3
+  prettier $VERSION
   
   USAGE
     
@@ -134,7 +132,9 @@ exports[`show usage with --help (stdout) 1`] = `
     "
 `;
 
-exports[`show usage with --help (write) 1`] = `[]`;
+exports[`show usage with --help shows help text 2`] = `""`;
+
+exports[`show usage with --help shows help text 3`] = `[]`;
 
 exports[`show version with --version (stderr) 1`] = `""`;
 

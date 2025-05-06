@@ -182,7 +182,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
         const filePath = filesPathsTargets[i];
         const fileNameToDisplay = normalizeToPosix(fastRelativePath(rootPath, filePath));
         //TODO: Make sure the error is syntax-highlighted when possible
-        if (options.check || options.write) {
+        if (options.check || options.write || options.dump) {
           stderr.prefixed.error(`${fileNameToDisplay}: ${error}`);
         } else if (options.list) {
           stderr.error(fileNameToDisplay);
