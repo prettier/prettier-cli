@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import JSONC from "tiny-jsonc";
+import url from "node:url";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath, getModulePath } from "./utils.js";
@@ -15,17 +15,12 @@ const Loaders = {
     return loader(filePath);
   },
   js: async (filePath: string): Promise<unknown> => {
-    const module = await import(filePath);
+    const module = await import(url.pathToFileURL(filePath).href);
     return module.default || module.exports || module.prettier || module;
   },
   json: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
     const config = JSON.parse(fileContent);
-    return config;
-  },
-  jsonc: async (filePath: string): Promise<unknown> => {
-    const fileContent = fs.readFileSync(filePath, "utf8");
-    const config = JSONC.parse(fileContent);
     return config;
   },
   json5: async (filePath: string): Promise<unknown> => {
@@ -70,7 +65,6 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   ".prettierrc.yml": Loaders.yaml,
   ".prettierrc.yaml": Loaders.yaml,
   ".prettierrc.json": Loaders.json,
-  ".prettierrc.jsonc": Loaders.jsonc,
   ".prettierrc.json5": Loaders.json5,
   ".prettierrc.toml": Loaders.toml,
   ".prettierrc.js": Loaders.js,
@@ -86,7 +80,6 @@ const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   yml: Loaders.yaml,
   yaml: Loaders.yaml,
   json: Loaders.json,
-  jsonc: Loaders.jsonc,
   json5: Loaders.json5,
   toml: Loaders.toml,
   js: Loaders.js,

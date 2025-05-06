@@ -20,7 +20,7 @@ type FormatOptions = {
   insertPragma?: boolean;
   jsxSingleQuote?: boolean;
   objectWrap?: "preserve" | "collapse";
-  parser?: "flow" | "babel" | "babel-flow" | "babel-ts" | "typescript" | "acorn" | "espree" | "meriyah" | "css" | "less" | "scss" | "json" | "json5" | "json-stringify" | "graphql" | "markdown" | "mdx" | "vue" | "yaml" | "glimmer" | "html" | "angular" | "lwc"; // prettier-ignore
+  parser?: "flow" | "babel" | "babel-flow" | "babel-ts" | "typescript" | "acorn" | "espree" | "meriyah" | "css" | "less" | "scss" | "json" | "jsonc" | "json5" | "json-stringify" | "graphql" | "markdown" | "mdx" | "vue" | "yaml" | "glimmer" | "html" | "angular" | "lwc"; // prettier-ignore
   plugins?: string[];
   printWidth?: number;
   proseWrap?: "always" | "never" | "preserve";
