@@ -94,22 +94,20 @@ const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   mjs: Loaders.js,
 };
 
-const getPrettierConfig = (folderPath: string, fileName: string, ignoreKnown?: boolean): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
+const getPrettierConfig = (folderPath: string, fileName: string): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
-  if (!ignoreKnown && !Known.hasFilePath(filePath)) return;
+  if (!Known.hasFilePath(filePath)) return;
   const loader = File2Loader[fileName] || File2Loader["default"];
   const normalize = (config: unknown) => (isObject(config) ? { ...config, ...normalizePrettierOptions(config, folderPath) } : undefined);
   return loader(filePath).then(normalize).catch(noop);
 };
 
-const getPrettierConfigs = memoize(
-  async (folderPath: string, filesNames: string[], ignoreKnown: boolean = false): Promise<PrettierConfigWithOverrides[] | undefined> => {
-    const configsRaw = await Promise.all(filesNames.map((fileName) => getPrettierConfig(folderPath, fileName, ignoreKnown)));
-    const configs = configsRaw.filter(isTruthy);
-    if (!configs.length) return;
-    return configs;
-  },
-);
+const getPrettierConfigs = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[] | undefined> => {
+  const configsRaw = await Promise.all(filesNames.map((fileName) => getPrettierConfig(folderPath, fileName)));
+  const configs = configsRaw.filter(isTruthy);
+  if (!configs.length) return;
+  return configs;
+});
 
 const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[]): Promise<Partial<Record<string, PrettierConfig[]>>> => {
   const configs = await Promise.all(foldersPaths.map((folderPath) => getPrettierConfigs(folderPath, filesNames)));
@@ -117,17 +115,17 @@ const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[
   return map;
 };
 
-const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: string[], ignoreKnown: boolean = false): Promise<PrettierConfigWithOverrides[]> => {
-  const config = (await getPrettierConfigs(folderPath, filesNames, ignoreKnown))?.[0];
+const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[]> => {
+  const config = (await getPrettierConfigs(folderPath, filesNames))?.[0];
   const folderPathUp = path.dirname(folderPath);
-  const configsUp = folderPath !== folderPathUp ? await getPrettierConfigsUp(folderPathUp, filesNames, ignoreKnown) : [];
+  const configsUp = folderPath !== folderPathUp ? await getPrettierConfigsUp(folderPathUp, filesNames) : [];
   const configs = config ? [...configsUp, config] : configsUp;
   return configs;
 });
 
-const getPrettierConfigResolved = async (filePath: string, filesNames: string[], ignoreKnown?: boolean): Promise<PrettierConfig> => {
+const getPrettierConfigResolved = async (filePath: string, filesNames: string[]): Promise<PrettierConfig> => {
   const folderPath = path.dirname(filePath);
-  const configs = await getPrettierConfigsUp(folderPath, filesNames, ignoreKnown);
+  const configs = await getPrettierConfigsUp(folderPath, filesNames);
   let resolved: PrettierConfig = {};
 
   for (let ci = 0, cl = configs.length; ci < cl; ci++) {
