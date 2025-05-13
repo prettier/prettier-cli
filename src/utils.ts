@@ -123,6 +123,10 @@ function getModulePath(name: string, rootPath: string): string {
   return modulePath;
 }
 
+function identity<T>(value: T): T {
+  return value;
+}
+
 const getPlugin = memoize((name: string): Promise<PrettierPlugin> => {
   const pluginPath = getPluginPath(name);
   const plugin = getModule<PrettierPlugin>(pluginPath);
@@ -661,6 +665,16 @@ function normalizePrettierOptions(options: unknown, folderPath: string): Prettie
   return config;
 }
 
+const normalizePathSeparatorsToPosix = (() => {
+  if (path.sep === "\\") {
+    return (filePath: string): string => {
+      return filePath.replaceAll("\\", "/");
+    };
+  } else {
+    return identity;
+  }
+})();
+
 function omit<T extends object, K extends keyof T>(object: T, keys: K[]): Omit<T, K> {
   const clone = { ...object };
 
@@ -733,11 +747,6 @@ function zipObjectUnless<T extends Key, U>(keys: T[], values: U[], unless: (valu
   return map;
 }
 
-/**
- * Replace `\` with `/` on Windows
- */
-const normalizeToPosix = path.sep === "\\" ? (filepath: string): string => filepath.replaceAll("\\", "/") : (filepath: string): string => filepath;
-
 export {
   castArray,
   fastJoinedPath,
@@ -781,7 +790,7 @@ export {
   normalizeFormatOptions,
   normalizePluginOptions,
   normalizePrettierOptions,
-  normalizeToPosix,
+  normalizePathSeparatorsToPosix,
   omit,
   once,
   pluralize,
