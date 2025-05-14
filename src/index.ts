@@ -27,7 +27,7 @@ import {
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  if (options.globs.length || !isString(await getStdin())) {
+  if (options.globs.length || (!isString(await getStdin()) && !("stdinFilepath" in options))) {
     return runGlobs(options, pluginsDefaultOptions, pluginsCustomOptions);
   } else {
     return runStdin(options, pluginsDefaultOptions, pluginsCustomOptions);
