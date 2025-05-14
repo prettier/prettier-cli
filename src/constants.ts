@@ -21,6 +21,7 @@ const DEFAULT_PARSERS = [
   "scss",
   "json",
   "json5",
+  "jsonc",
   "json-stringify",
   "graphql",
   "markdown",

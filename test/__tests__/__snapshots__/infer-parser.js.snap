@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`--check with unknown path and no parser multiple files (stdout) 1`] = `"Checking formatting..."`;
+
+exports[`--check with unknown path and no parser specific file is ignored (stderr) 1`] = `""`;
+
+exports[`--check with unknown path and no parser specific file is ignored (stdout) 1`] = `
+"Checking formatting...
+All matched files use Prettier code style!"
+`;
+
+exports[`--list-different with unknown path and no parser multiple files (stderr) 1`] = `"FOO"`;
+
+exports[`--list-different with unknown path and no parser specific file should be ignored (stderr) 1`] = `""`;
+
+exports[`--write with unknown path and no parser multiple files (stdout) 1`] = `"foo.js"`;
+
+exports[`--write with unknown path and no parser multiple files (write) 1`] = `
+[
+  {
+    "content": "foo();
+",
+    "filename": "foo.js",
+  },
+]
+`;
+
+exports[`--write with unknown path and no parser specific file should be ignored (stderr) 1`] = `""`;
+
+exports[`Known/Unknown (stdout) 1`] = `"known.js"`;
+
+exports[`stdin no path and no parser --check logs error but exits with 1 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "stdin"."`;
+
+exports[`stdin no path and no parser --list-different logs error but exits with 1 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "stdin"."`;
+
+exports[`stdin no path and no parser logs error and exits with 2 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "stdin"."`;
+
+exports[`stdin with unknown path and no parser --check logs error but exits with 1 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "foo"."`;
+
+exports[`stdin with unknown path and no parser --list-different logs error but exits with 1 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "foo"."`;
+
+exports[`stdin with unknown path and no parser logs error and exits with 2 (stderr) 1`] = `"[error] UndefinedParserError: No parser could be inferred for file "foo"."`;
+
+exports[`unknown path and no parser multiple files are ignored (stderr) 1`] = `"[error] FOO: UndefinedParserError: No parser could be inferred for file "$CWD/FOO"."`;
+
+exports[`unknown path and no parser multiple files are ignored (stdout) 1`] = `"foo();"`;
+
+exports[`unknown path and no parser specific file is ignored (stderr) 1`] = `""`;
