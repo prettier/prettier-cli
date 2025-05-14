@@ -106,6 +106,12 @@ function getNormalizedOutput(output, options) {
   // the cwd is replaced with $CWD for snapshotting purposes
   const { cwd } = options;
   output = output.replaceAll(cwd, "$CWD");
+  // We do this because snapshots on windows will have backslashes, and on
+  // linux will have forward slashes. Since we don't care right now about
+  // slashes, we can replace them.
+  // If we ever need to assert that something contained a backslash, remove
+  // this and make it configurable or do it only for paths
+  output = output.replaceAll("\\", "/");
   return output;
 }
 
