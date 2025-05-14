@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Line breaking after filepath with errors (stderr) 1`] = `
+"[error] invalid-1.js: SyntaxError: Unexpected token (1:8)
+[error] > 1 | foo (+-) bar
+[error]     |        ^
+[error]   2 |
+[error] invalid-2.js: SyntaxError: Unexpected token (1:8)
+[error] > 1 | foo (+-) bar
+[error]     |        ^
+[error]   2 |
+[error] invalid-2.unknown: UndefinedParserError: No parser could be inferred for file "$CWD/invalid-2.unknown"."
+`;
+
+exports[`Line breaking after filepath with errors (stderr) 2`] = `
+"invalid-1.js
+invalid-2.js
+invalid-2.unknown"
+`;
+
+exports[`Line breaking after filepath with errors (stderr) 3`] = `
+"[error] invalid-1.js: SyntaxError: Unexpected token (1:8)
+[error] > 1 | foo (+-) bar
+[error]     |        ^
+[error]   2 |
+[error] invalid-2.js: SyntaxError: Unexpected token (1:8)
+[error] > 1 | foo (+-) bar
+[error]     |        ^
+[error]   2 |
+[error] invalid-2.unknown: UndefinedParserError: No parser could be inferred for file "$CWD/invalid-2.unknown"."
+`;
+
+exports[`Line breaking after filepath with errors (stderr) 4`] = `
+"[error] invalid-1.js: SyntaxError: Unexpected token (1:8)
+[error] > 1 | foo (+-) bar
+[error]     |        ^
+[error]   2 |
+[error] invalid-2.js: SyntaxError: Unexpected token (1:8)
+[error] > 1 | foo (+-) bar
+[error]     |        ^
+[error]   2 |
+[error] invalid-2.unknown: UndefinedParserError: No parser could be inferred for file "$CWD/invalid-2.unknown"."
+`;
+
+exports[`Line breaking after filepath with errors (stdout) 1`] = `"function foo() {}"`;
+
+exports[`Line breaking after filepath with errors (stdout) 2`] = `""`;
+
+exports[`Line breaking after filepath with errors (stdout) 3`] = `"Checking formatting..."`;
+
+exports[`Line breaking after filepath with errors (stdout) 4`] = `""`;
+
+exports[`Line breaking after filepath with errors (write) 1`] = `[]`;
+
+exports[`Line breaking after filepath with errors (write) 2`] = `[]`;
+
+exports[`Line breaking after filepath with errors (write) 3`] = `[]`;
+
+exports[`Line breaking after filepath with errors (write) 4`] = `[]`;
