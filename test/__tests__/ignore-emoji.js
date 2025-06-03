@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("ignores file name contains emoji", () => {
   runCli("ignore-emoji", [

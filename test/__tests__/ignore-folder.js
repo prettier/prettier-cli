@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("ignores files in ignored folders", () => {
   runCli("ignore-folder", [

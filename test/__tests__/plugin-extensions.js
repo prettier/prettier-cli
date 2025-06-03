@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("uses 'extensions' from languages to determine parser", () => {
   runCli("plugin-extensions", [

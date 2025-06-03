@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("boolean flags do not swallow the next argument", () => {
   runCli("arg-parsing", [

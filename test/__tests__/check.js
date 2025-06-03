@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("checks stdin with --check", () => {
   runCli("with-shebang", [
