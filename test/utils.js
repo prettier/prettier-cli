@@ -49,7 +49,7 @@ async function getArchive(folderPath) {
       for (const fileName of changed) {
         const fileNext = packNext[fileName];
         diff.push({
-          filename: fileName,
+          filename: getNormalizedPath(fileName),
           content: Base64.decodeStr(fileNext.contents),
         });
       }
@@ -112,6 +112,10 @@ function getNormalizedOutput(output, options) {
   // this and make it configurable or do it only for paths
   output = output.replaceAll("\\", "/");
   return output;
+}
+
+function getNormalizedPath(filePath) {
+  return filePath.replaceAll("\\", "/");
 }
 
 async function runCommand(dir, args, options) {
