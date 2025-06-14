@@ -55,7 +55,7 @@
     "tiny-readdir-glob": "^1.23.2",
     "tiny-spinner": "^2.0.5",
     "worktank": "^3.0.2",
-    "zeptomatch": "^2.0.1",
+    "zeptomatch": "^2.0.2",
     "zeptomatch-escape": "^1.0.1",
     "zeptomatch-is-static": "^1.0.1"
   },
