@@ -122,8 +122,9 @@ async function runCommand(dir, args, options) {
   const fixtures = dir ? await getIsolatedFixtures(dir) : undefined;
   const archive = fixtures ? await getArchive(fixtures.path) : undefined;
   const cwd = fixtures ? fixtures.path : TESTS_PATH;
+  const argsForTesting = ["--no-parallel"];
   const argsWithReplacements = args.map((arg) => arg.replaceAll("$CWD", cwd));
-  const result = exec("node", [BIN_PATH, ...argsWithReplacements], { cwd, stdio: "pipe" });
+  const result = exec("node", [BIN_PATH, ...argsForTesting, ...argsWithReplacements], { cwd, stdio: "pipe" });
 
   if (options.input) {
     result.process.stdin.write(options.input);
