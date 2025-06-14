@@ -111,9 +111,9 @@ function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolea
 }
 
 async function getModule<T = unknown>(modulePath: string): Promise<T> {
-    const moduleExports = await import(url.pathToFileURL(modulePath).href);
-    const module = moduleExports.default || moduleExports.exports || moduleExports;
-    return module;
+  const moduleExports = await import(url.pathToFileURL(modulePath).href);
+  const module = moduleExports.default || moduleExports.exports || moduleExports;
+  return module;
 }
 
 function getModulePath(name: string, rootPath: string): string {
@@ -419,13 +419,6 @@ function normalizeContextOptions(options: unknown): ContextOptions {
   if (!isObject(options)) exit("Invalid options object");
 
   const contextOptions: ContextOptions = {};
-
-  if ("configPrecedence" in options) {
-    const value = options.configPrecedence;
-    if (isString(value) && (value === "cli-override" || value === "file-override")) {
-      contextOptions.configPrecedence = value;
-    }
-  }
 
   if ("cursorOffset" in options) {
     const value = Number(options.cursorOffset);

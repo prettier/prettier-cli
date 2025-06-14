@@ -38,12 +38,11 @@ async function format(
   formatOptions = await resolve(formatOptions);
   const pluginsBuiltin = await getPluginsBuiltin();
   const plugins = await getPluginsOrExit(formatOptions.plugins || []);
-  const pluginsOverride = contextOptions.configPrecedence !== "file-override";
 
   const options = {
     ...pluginsDefaultOptions,
-    ...(pluginsOverride ? formatOptions : pluginsCustomOptions),
-    ...(pluginsOverride ? pluginsCustomOptions : formatOptions),
+    ...formatOptions,
+    ...pluginsCustomOptions,
     ...contextOptions,
     filepath: filePath,
     plugins: [...pluginsBuiltin, ...plugins],

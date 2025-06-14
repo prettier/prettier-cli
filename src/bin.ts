@@ -118,10 +118,6 @@ const makeBin = (): Bin => {
       .option("--config-path <path>", "Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)", {
         section: "Config",
       })
-      .option("--config-precedence <cli-override|file-override>", 'Define in which order config files and CLI options should be evaluated.\nDefaults to "cli-override"', {
-        section: "Config",
-        enum: ["cli-override", "file-override"],
-      })
       .option("--no-editorconfig", "Don't take .editorconfig into account when parsing configuration", {
         section: "Config",
         default: true,
@@ -304,8 +300,8 @@ const makeWarnedPluggableBin = async (): Promise<Bin> => {
     exit('The "--find-config-path" is not currently supported, please open an issue on GitHub if you need it');
   }
 
-  if (args["config-precedence"] === "prefer-file") {
-    exit('The "prefer-file" value for "--config-precedence" is not currently supported, please open an issue on GitHub if you need it');
+  if (args["config-precedence"]) {
+    exit('The "config-precedence" option is not currently supported, please open an issue on GitHub if you need it');
   }
 
   if (args["file-info"]) {

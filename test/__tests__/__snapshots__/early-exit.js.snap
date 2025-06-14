@@ -83,9 +83,6 @@ exports[`show usage with --help shows help text 1`] = `
     
     --no-config               Do not look for a configuration file
     --config-path <path>      Path to a Prettier configuration file (.prettierrc, package.json, prettier.config.js)
-    --config-precedence <cli-override|file-override>
-                              Define in which order config files and CLI options should be evaluated.
-                              Defaults to "cli-override"
     --no-editorconfig         Don't take .editorconfig into account when parsing configuration
     --no-ignore               Do not look for an ignore file
     --ignore-path <path...>   Path to a file with patterns describing files to ignore
