@@ -7,7 +7,6 @@ import process from "node:process";
 import Base64 from "radix64-encoding";
 import zeptoid from "zeptoid";
 
-import { expect, test } from "@jest/globals";
 import serializerRaw from "jest-snapshot-serializer-raw";
 import serializerAnsi from "jest-snapshot-serializer-ansi";
 

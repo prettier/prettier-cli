@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("flush all line-suffix content", () => {
   runCli("plugin-flush-line-suffix", [

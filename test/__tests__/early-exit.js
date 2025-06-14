@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 import { PRETTIER_VERSION } from "../../dist/constants.js";
 
 describe("show version with --version", () => {

@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("no error on unmatched pattern", () => {
   runCli("error-on-unmatched-pattern", [
