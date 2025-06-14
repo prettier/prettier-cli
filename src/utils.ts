@@ -228,11 +228,16 @@ const getStdin = once(async (): Promise<string | undefined> => {
   }
 });
 
-async function getTargetsPaths(
-  rootPath: string,
-  globs: string[],
-  withNodeModules: boolean,
-): Promise<[string[], string[], Record<string, string[]>, string[], string[], string[]]> {
+export interface TargetsPathsResult {
+  filesPaths: string[];
+  filesNames: string[];
+  filesNamesToPaths: Record<string, string[]>;
+  filesExplicitPaths: string[];
+  filesFoundPaths: string[];
+  foldersFoundPaths: string[];
+}
+
+async function getTargetsPaths(rootPath: string, globs: string[], withNodeModules: boolean): Promise<TargetsPathsResult> {
   const targetFiles: string[] = [];
   const targetFilesNames: string[] = [];
   const targetFilesNamesToPaths: Record<string, string[]> = {};
@@ -279,7 +284,14 @@ async function getTargetsPaths(
   const filesExplicitPaths = targetFiles;
   const filesFoundPaths = globResult.filesFound;
   const foldersFoundPaths = [rootPath, ...globResult.directoriesFound];
-  return [filesPaths, filesNames, filesNamesToPaths, filesExplicitPaths, filesFoundPaths, foldersFoundPaths];
+  return {
+    filesPaths,
+    filesNames,
+    filesNamesToPaths,
+    filesExplicitPaths,
+    filesFoundPaths,
+    foldersFoundPaths,
+  };
 }
 
 function isArray(value: unknown): value is unknown[] {
