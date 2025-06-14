@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("Line breaking after filepath with errors", () => {
   runCli("print-code", [

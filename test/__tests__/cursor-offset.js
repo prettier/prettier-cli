@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("write cursorOffset to stderr with --cursor-offset <int>", () => {
   runCli("", [

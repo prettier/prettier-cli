@@ -1,4 +1,4 @@
-import { runCli } from "../utils";
+import { runCli } from "../utils.js";
 
 describe("exits with non-zero code when input has a syntax error", () => {
   runCli("with-shebang", [
