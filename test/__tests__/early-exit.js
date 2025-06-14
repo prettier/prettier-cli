@@ -1,5 +1,5 @@
+import { version as PRETTIER_VERSION } from "prettier";
 import { runCli } from "../utils";
-import { PRETTIER_VERSION } from "../../dist/constants.js";
 
 describe("show version with --version", () => {
   runCli("with-shebang", [
