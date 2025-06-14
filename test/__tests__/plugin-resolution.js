@@ -13,9 +13,7 @@ describe("loads --plugin by its relative path", () => {
   });
 });
 
-// TODO (43081j): we don't currently support loading relative paths without
-// the leading `./`
-describe.skip("loads --plugin by its relative path without leading ./", () => {
+describe("loads --plugin by its relative path without leading ./", () => {
   runCli("plugins", [
     "automatic/file.txt",
     "--parser=bar",
@@ -41,9 +39,7 @@ describe("loads --plugin by package name", () => {
   });
 });
 
-// TODO (43081j): we don't currently support loading relative paths without
-// the leading `./`
-describe.skip("loads --plugin by filename without leading ./, should resolve to file, not package", () => {
+describe("loads --plugin by filename without leading ./, should resolve to file, not package", () => {
   runCli("plugins/automatic", [
     "file.txt",
     "--parser=baz",

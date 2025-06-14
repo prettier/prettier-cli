@@ -111,9 +111,9 @@ function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolea
 }
 
 async function getModule<T = unknown>(modulePath: string): Promise<T> {
-  const moduleExports = await import(url.pathToFileURL(modulePath).href);
-  const module = moduleExports.default || moduleExports.exports || moduleExports;
-  return module;
+    const moduleExports = await import(url.pathToFileURL(modulePath).href);
+    const module = moduleExports.default || moduleExports.exports || moduleExports;
+    return module;
 }
 
 function getModulePath(name: string, rootPath: string): string {
@@ -143,8 +143,11 @@ async function getPluginOrExit(name: string): Promise<PrettierPlugin> {
 
 function getPluginPath(name: string): string {
   const rootPath = path.join(process.cwd(), "index.js");
-  const pluginPath = getModulePath(name, rootPath);
-  return pluginPath;
+  try {
+    return getModulePath(`./${name}`, rootPath);
+  } catch {
+    return getModulePath(name, rootPath);
+  }
 }
 
 function getPluginVersion(name: string): string | null {
