@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "atomically";
 import process from "node:process";
-import * as prettier from "prettier/standalone";
-import { getPluginsOrExit, getPluginsBuiltin, resolve } from "./utils.js";
+import * as prettier from "prettier";
+import { getPluginsOrExit, resolve } from "./utils.js";
 import type { ContextOptions, LazyFormatOptions, PluginsOptions } from "./types.js";
 
 async function check(
@@ -36,7 +36,6 @@ async function format(
   pluginsCustomOptions: PluginsOptions,
 ): Promise<string> {
   formatOptions = await resolve(formatOptions);
-  const pluginsBuiltin = await getPluginsBuiltin();
   const plugins = await getPluginsOrExit(formatOptions.plugins || []);
 
   const options = {
@@ -45,7 +44,7 @@ async function format(
     ...pluginsCustomOptions,
     ...contextOptions,
     filepath: filePath,
-    plugins: [...pluginsBuiltin, ...plugins],
+    plugins,
   };
 
   const result = await prettier.formatWithCursor(fileContent, options as any); //FIXME: Prettier's own types are incorrect here

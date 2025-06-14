@@ -171,10 +171,6 @@ async function getPluginsOrExit(names: string[]): Promise<PrettierPlugin[]> {
   return await Promise.all(names.map((name) => getPluginOrExit(name)));
 }
 
-const getPluginsBuiltin = once(async (): Promise<PrettierPlugin[]> => {
-  return [(await import("./prettier_plugins_builtin.js")).default as PrettierPlugin];
-});
-
 function getPluginsPaths(names: string[]): string[] {
   const pluginsPaths = names.map(getPluginPath);
   return pluginsPaths;
@@ -767,7 +763,6 @@ export {
   getPluginPath,
   getPluginVersion,
   getPlugins,
-  getPluginsBuiltin,
   getPluginsOrExit,
   getPluginsPaths,
   getPluginsVersions,
