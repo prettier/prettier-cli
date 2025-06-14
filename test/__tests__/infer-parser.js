@@ -3,7 +3,7 @@ import { color } from "specialist";
 
 describe("stdin no path and no parser", () => {
   describe("logs error and exits with 2", () => {
-    runCli("infer-parser/", [], {
+    runCli("infer-parser", [], {
       input: "foo"
     }).test({
       status: 1,
@@ -15,7 +15,7 @@ describe("stdin no path and no parser", () => {
   // TODO (43081j): in prettier, this tests that it exits with 0 for
   // whatever reason. should we do the same?
   describe("--check logs error but exits with 1", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--check"
     ], {
       input: "foo",
@@ -29,7 +29,7 @@ describe("stdin no path and no parser", () => {
   // TODO (43081j): in prettier, this tests that it exits with 0 for
   // whatever reason. should we do the same?
   describe("--list-different logs error but exits with 1", () => {
-    runCli("infer-parser/", ["--list-different"], {
+    runCli("infer-parser", ["--list-different"], {
       input: "foo",
     }).test({
       status: 1,
@@ -41,7 +41,7 @@ describe("stdin no path and no parser", () => {
 
 describe("stdin with unknown path and no parser", () => {
   describe("logs error and exits with 2", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--stdin-filepath",
       "foo"
     ], {
@@ -56,7 +56,7 @@ describe("stdin with unknown path and no parser", () => {
   // TODO (43081j): in prettier, this tests that it exits with 0 for
   // whatever reason. should we do the same?
   describe("--check logs error but exits with 1", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--check",
       "--stdin-filepath",
       "foo"
@@ -72,7 +72,7 @@ describe("stdin with unknown path and no parser", () => {
   // TODO (43081j): in prettier, this tests that it exits with 0 for
   // whatever reason. should we do the same?
   describe("--list-different logs error but exits with 1", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--list-different",
       "--stdin-filepath",
       "foo"
@@ -88,7 +88,7 @@ describe("stdin with unknown path and no parser", () => {
 
 describe("unknown path and no parser", () => {
   describe("specific file is ignored", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--end-of-line",
       "lf",
       "FOO"
@@ -100,7 +100,7 @@ describe("unknown path and no parser", () => {
   });
 
   describe("multiple files are ignored", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--end-of-line",
       "lf",
       "*"
@@ -113,7 +113,7 @@ describe("unknown path and no parser", () => {
 
 describe("--check with unknown path and no parser", () => {
   describe("specific file is ignored", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--check",
       "FOO"
     ]).test({
@@ -123,7 +123,7 @@ describe("--check with unknown path and no parser", () => {
   });
 
   describe("multiple files", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--check",
       "*"
     ]).test({
@@ -138,7 +138,7 @@ describe("--check with unknown path and no parser", () => {
 
 describe("--list-different with unknown path and no parser", () => {
   describe("specific file should be ignored", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--list-different",
       "FOO"
     ]).test({
@@ -149,7 +149,7 @@ describe("--list-different with unknown path and no parser", () => {
   });
 
   describe("multiple files", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--list-different",
       "*"
     ]).test({
@@ -162,7 +162,7 @@ describe("--list-different with unknown path and no parser", () => {
 
 describe("--write with unknown path and no parser", () => {
   describe("specific file should be ignored", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--write",
       "FOO"
     ]).test({
@@ -173,7 +173,7 @@ describe("--write with unknown path and no parser", () => {
   });
 
   describe("multiple files", () => {
-    runCli("infer-parser/", [
+    runCli("infer-parser", [
       "--write",
       "*"
     ]).test({

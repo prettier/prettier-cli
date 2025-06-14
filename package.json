@@ -40,7 +40,7 @@
     "find-up-json": "^2.0.5",
     "function-once": "^3.0.1",
     "import-meta-resolve": "^4.1.0",
-    "is-binary-path": "^3.0.0",
+    "is-binary-path": "^2.0.0",
     "js-yaml": "^4.1.0",
     "json-sorted-stringify": "^1.0.1",
     "json5": "^2.2.3",
@@ -54,7 +54,7 @@
     "tiny-readdir": "^2.7.4",
     "tiny-readdir-glob": "^1.23.2",
     "tiny-spinner": "^2.0.5",
-    "worktank": "^2.7.3",
+    "worktank": "^3.0.2",
     "zeptomatch": "^2.0.1",
     "zeptomatch-escape": "^1.0.1",
     "zeptomatch-is-static": "^1.0.1"
