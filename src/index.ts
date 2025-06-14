@@ -27,7 +27,7 @@ import {
 import type { FormatOptions, Options, PluginsOptions } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
-  if (options.globs.length || !isString(await getStdin())) {
+  if (options.globs.length || (!isString(await getStdin()) && !("stdinFilepath" in options))) {
     return runGlobs(options, pluginsDefaultOptions, pluginsCustomOptions);
   } else {
     return runStdin(options, pluginsDefaultOptions, pluginsCustomOptions);
@@ -39,11 +39,43 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
   const stdout = new Logger(options.logLevel, "stdout");
   const prettier = await import("./prettier_serial.js");
 
+  const rootPath = process.cwd();
+  const projectPath = getProjectPath(rootPath);
+
   const fileName = options.stdinFilepath || "stdin";
   const fileContent = (await getStdin()) || "";
 
+  const [_filesPaths, filesNames, filesNamesToPaths, _filesExplicitPaths, filesFoundPaths, foldersFoundPaths] = await getTargetsPaths(rootPath, [fileName], false); // prettier-ignore
+  const [_foldersPathsTargets, foldersExtraPaths] = getExpandedFoldersPaths(foldersFoundPaths, projectPath);
+  const filesExtraPaths = await getFoldersChildrenPaths([rootPath, ...foldersExtraPaths]);
+  const filesExtraNames = filesExtraPaths.map((filePath) => path.basename(filePath));
+
+  Known.addFilesPaths(filesFoundPaths);
+  Known.addFilesPaths(filesExtraPaths);
+
+  Known.addFilesNames(filesNames);
+  Known.addFilesNames(filesExtraNames);
+
+  const ignoreNames = options.ignore ? [".gitignore", ".prettierignore"] : [];
+  const isIgnored = await getIgnoreResolved(path.join(rootPath, fileName), ignoreNames);
+  if (isIgnored) {
+    stdout.always(trimFinalNewline(fileContent));
+    process.exitCode = 0;
+    return;
+  }
+
+  const editorConfigNames = options.editorConfig ? [".editorconfig"].filter(Known.hasFileName) : [];
+  const editorConfig = options.editorConfig
+    ? getEditorConfigFormatOptions(await getEditorConfigResolved(path.join(rootPath, fileName), editorConfigNames))
+    : {};
+
+  const prettierConfigNames = options.config ? without(Object.keys(File2Loader), ["default"]).filter(Known.hasFileName) : [];
+  const prettierConfig = options.config ? await getPrettierConfigResolved(path.join(rootPath, fileName), prettierConfigNames) : {};
+
+  const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
+
   try {
-    const formatted = await prettier.format(fileName, fileContent, options.formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
+    const formatted = await prettier.format(fileName, fileContent, formatOptions, options.contextOptions, pluginsDefaultOptions, pluginsCustomOptions);
     if (options.check || options.list) {
       if (formatted !== fileContent) {
         stdout.warn("(stdin)");
