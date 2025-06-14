@@ -27,7 +27,7 @@
     "compile": "tsc --outDir dist",
     "compile:watch": "tsc --outDir dist --watch",
     "format": "npm run compile && node dist/bin.js --write src test",
-    "prepublishOnly": "npm run compile",
+    "prepublishOnly": "npm run clean && npm run compile",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --rootDir test/__tests__ --testTimeout 60000",
     "typecheck": "tsc --noEmit"
   },
