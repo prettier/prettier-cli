@@ -11,7 +11,7 @@ import { getFixturesPath, runCli } from "../utils";
 });
 
 const getUnformattedFiles = async (args) => {
-  const { stdout } = await runCli("ignore-path/ignore-path-test/", [
+  const { stdout } = await runCli("ignore-path/ignore-path-test", [
     "**/*.js",
     "-l",
     ...args,

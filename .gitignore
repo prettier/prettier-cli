@@ -12,3 +12,4 @@ Thumbs.db
 
 /dist
 /node_modules
+/test/__fixtures__/.temp-*

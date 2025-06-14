@@ -277,8 +277,15 @@ async function getTargetsPaths(
   }
 
   const filesExplicitPaths = targetFiles;
-  const filesFoundPaths = globResult.filesFound;
-  const foldersFoundPaths = [rootPath, ...globResult.directoriesFound];
+
+  const globFilesFoundPaths = globResult.filesFound;
+  const directoryFilesFoundPaths = directoriesResultsFiles.flat();
+  const filesFoundPaths = [...globFilesFoundPaths, ...directoryFilesFoundPaths];
+
+  const globFoldersFoundPaths = globResult.directoriesFound;
+  const directoryFoldersFoundPaths = directoriesResults.flatMap((result) => result.directories);
+  const foldersFoundPaths = [rootPath, ...globFoldersFoundPaths, ...directoryFoldersFoundPaths];
+
   return [filesPaths, filesNames, filesNamesToPaths, filesExplicitPaths, filesFoundPaths, foldersFoundPaths];
 }
 

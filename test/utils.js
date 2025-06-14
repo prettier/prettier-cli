@@ -2,7 +2,6 @@ import once from "function-once";
 import * as Archive from "json-archive";
 import exec from "nanoexec";
 import fs from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import Base64 from "radix64-encoding";
@@ -79,7 +78,7 @@ function getFixturesPath(dir) {
 async function getIsolatedFixtures(dir) {
   const [rootPart, ...subParts] = dir.split("/");
   const fixturesPath = getFixturesPath(rootPart);
-  const tempPath = await getTempPath(`prettier-${rootPart}`);
+  const tempPath = getFixturesPath(`.temp-${rootPart}-${zeptoid()}`);
   const tempGitPath = path.join(tempPath, ".git");
   const isolatedPath = path.join(tempPath, ...subParts);
 
@@ -113,12 +112,6 @@ function getNormalizedOutput(output, options) {
   // this and make it configurable or do it only for paths
   output = output.replaceAll("\\", "/");
   return output;
-}
-
-async function getTempPath(prefix) {
-  const rootPath = await fs.realpath(os.tmpdir());
-  const tempPath = path.join(rootPath, `${prefix}-${zeptoid()}`);
-  return tempPath;
 }
 
 async function runCommand(dir, args, options) {
