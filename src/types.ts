@@ -82,6 +82,8 @@ type Prettier = typeof import("./prettier_serial.js");
 
 type PrettierConfig = FormatOptions;
 
+type PrettierConfigResolver = (filePath: string) => PrettierConfig;
+
 type PrettierConfigWithOverrides = PrettierConfig & {
   overrides?: {
     filesPositive: string[];
@@ -108,6 +110,7 @@ export type {
   PluginsOptions,
   Prettier,
   PrettierConfig,
+  PrettierConfigResolver,
   PrettierConfigWithOverrides,
   PrettierPlugin,
   PromiseMaybe,
