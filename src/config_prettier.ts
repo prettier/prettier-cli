@@ -5,7 +5,7 @@ import zeptomatch from "zeptomatch";
 import Known from "./known.js";
 import { fastJoinedPath, fastRelativeChildPath, getModulePath } from "./utils.js";
 import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
-import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
+import type { PrettierConfig, PrettierConfigResolver, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
 const Loaders = {
   auto: (filePath: string): Promise<unknown> => {
@@ -87,12 +87,17 @@ const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   mjs: Loaders.js,
 };
 
+const normalizeConfig = (config: unknown, folderPath: string): PrettierConfigWithOverrides | undefined => {
+  return isObject(config) ? { ...config, ...normalizePrettierOptions(config, folderPath) } : undefined;
+};
+
 const getPrettierConfig = (folderPath: string, fileName: string): PromiseMaybe<PrettierConfigWithOverrides | undefined> => {
   const filePath = fastJoinedPath(folderPath, fileName);
   if (!Known.hasFilePath(filePath)) return;
   const loader = File2Loader[fileName] || File2Loader["default"];
-  const normalize = (config: unknown) => (isObject(config) ? { ...config, ...normalizePrettierOptions(config, folderPath) } : undefined);
-  return loader(filePath).then(normalize).catch(noop);
+  return loader(filePath)
+    .then((config: unknown) => normalizeConfig(config, folderPath))
+    .catch(noop);
 };
 
 const getPrettierConfigs = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[] | undefined> => {
@@ -108,6 +113,41 @@ const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[
   return map;
 };
 
+const getPrettierConfigResolver = (configs: PrettierConfigWithOverrides[]): PrettierConfigResolver => {
+  return (filePath: string): PrettierConfig => {
+    let resolved: PrettierConfig = {};
+
+    for (let ci = 0, cl = configs.length; ci < cl; ci++) {
+      const config = configs[ci];
+      const formatOptions = omit(config, ["overrides"]);
+      resolved = ci ? { ...resolved, ...formatOptions } : formatOptions;
+
+      const overrides = config.overrides;
+      if (overrides) {
+        for (let oi = 0, ol = overrides.length; oi < ol; oi++) {
+          const override = overrides[oi];
+          const filePathRelative = fastRelativeChildPath(override.folder, filePath);
+          if (!filePathRelative) continue;
+          if (!zeptomatch(override.filesPositive, filePathRelative)) continue;
+          if (zeptomatch(override.filesNegative, filePathRelative)) continue;
+          resolved = { ...resolved, ...override.options };
+        }
+      }
+    }
+
+    return resolved;
+  };
+};
+
+const getPrettierConfigBys = (foldersPaths: string[], filesContents: unknown[]): PrettierConfigResolver | undefined => {
+  if (!foldersPaths.length) return;
+  const configsRaw = foldersPaths.map((folderPath, index) => normalizeConfig(filesContents[index], folderPath));
+  const configs = configsRaw.filter(isTruthy);
+
+  if (!configs.length) return;
+  return getPrettierConfigResolver(configs);
+};
+
 const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[]> => {
   const config = (await getPrettierConfigs(folderPath, filesNames))?.[0];
   const folderPathUp = path.dirname(folderPath);
@@ -119,27 +159,9 @@ const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: stri
 const getPrettierConfigResolved = async (filePath: string, filesNames: string[]): Promise<PrettierConfig> => {
   const folderPath = path.dirname(filePath);
   const configs = await getPrettierConfigsUp(folderPath, filesNames);
-  let resolved: PrettierConfig = {};
 
-  for (let ci = 0, cl = configs.length; ci < cl; ci++) {
-    const config = configs[ci];
-    const formatOptions = omit(config, ["overrides"]);
-    resolved = ci ? { ...resolved, ...formatOptions } : formatOptions;
-
-    const overrides = config.overrides;
-    if (overrides) {
-      for (let oi = 0, ol = overrides.length; oi < ol; oi++) {
-        const override = overrides[oi];
-        const filePathRelative = fastRelativeChildPath(override.folder, filePath);
-        if (!filePathRelative) continue;
-        if (!zeptomatch(override.filesPositive, filePathRelative)) continue;
-        if (zeptomatch(override.filesNegative, filePathRelative)) continue;
-        resolved = { ...resolved, ...override.options };
-      }
-    }
-  }
-
-  return resolved;
+  const resolver = getPrettierConfigResolver(configs);
+  return resolver(filePath);
 };
 
-export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
+export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigBys, getPrettierConfigsUp, getPrettierConfigResolved };
