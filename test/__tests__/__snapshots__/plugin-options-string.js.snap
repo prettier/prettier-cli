@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`show external options with \`--help\` 1`] = `
 "    --parser <flow,babel,babel-flow,babel-ts,typescript,acorn,espree,meriyah,css,less,scss,json,json5,jsonc,json-stringify,graphql,markdown,mdx,vue,yaml,glimmer,html,angular,lwc,foo-parser>
