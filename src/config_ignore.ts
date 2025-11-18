@@ -2,7 +2,7 @@ import fastIgnore from "fast-ignore";
 import fs from "node:fs/promises";
 import path from "node:path";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath, isString, isUndefined, memoize, noop, someOf, zipObjectUnless } from "./utils.js";
+import { fastJoinedPath, fastRelativePath, isString, isUndefined, memoize, noop, someOf, zipObjectUnless } from "./utils.js";
 import type { Ignore, PromiseMaybe } from "./types.js";
 
 const getIgnoreContent = (folderPath: string, fileName: string): PromiseMaybe<string | undefined> => {
@@ -27,7 +27,7 @@ const getIgnoresContentMap = async (foldersPaths: string[], filesNames: string[]
 const getIgnoreBy = (folderPath: string, filesContents: string[]): Ignore => {
   const ignore = fastIgnore(filesContents);
   return (filePath: string): boolean => {
-    const fileRelativePath = fastRelativeChildPath(folderPath, filePath);
+    const fileRelativePath = fastRelativePath(folderPath, filePath);
     return !!fileRelativePath && ignore(fileRelativePath);
   };
 };
