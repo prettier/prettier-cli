@@ -656,7 +656,7 @@ function normalizePrettierOptions(options: unknown, folderPath: string): Prettie
       const filesPositive = castArray(overrideRaw.files);
       const filesNegative = "filesNegative" in overrideRaw && (isString(overrideRaw.filesNegative) || (isArray(overrideRaw.filesNegative) && overrideRaw.filesNegative.every(isString))) ? castArray(overrideRaw.filesNegative) : []; // prettier-ignore
       const folder = folderPath;
-      const options = normalizeFormatOptions(overrideRaw.options);
+      const options = { ...overrideRaw.options, ...normalizeFormatOptions(overrideRaw.options) };
       overrides.push({ filesPositive, filesNegative, folder, options });
     }
   }
