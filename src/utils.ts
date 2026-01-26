@@ -183,6 +183,14 @@ function getPluginsVersions(names: string[]): (string | null)[] {
 
 function getProjectPath(rootPath: string): string {
   function isProjectPath(folderPath: string): boolean {
+    const gitPath = path.join(folderPath, ".git");
+    if (fs.existsSync(gitPath)) return true;
+    const hgPath = path.join(folderPath, ".hg");
+    if (fs.existsSync(hgPath)) return true;
+    const svnPath = path.join(folderPath, ".svn");
+    if (fs.existsSync(svnPath)) return true;
+    const slPath = path.join(folderPath, ".sl");
+    if (fs.existsSync(slPath)) return true;
     const nodePath = path.join(folderPath, "node_modules");
     if (fs.existsSync(nodePath)) return true;
     const pkgPath = path.join(folderPath, "package.json");
