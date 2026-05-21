@@ -6,7 +6,7 @@ import process from "node:process";
 import Cache from "./cache.js";
 import { getEditorConfigsMap, getEditorConfigResolved, getEditorConfigFormatOptions } from "./config_editorconfig.js";
 import { getIgnoresContentMap, getIgnoreBys, getIgnoreResolved } from "./config_ignore.js";
-import { Loaders, File2Loader, getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
+import { Loaders, File2Loader, getPrettierConfigsMap, getPrettierConfigBys, getPrettierConfigResolved } from "./config_prettier.js";
 import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
@@ -109,7 +109,8 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const prettierManualFilesPaths = prettierManualFilesNames.map((fileName) => path.resolve(fileName));
   const prettierManualFilesContents = await Promise.all(prettierManualFilesPaths.map((filePath) => fs.readFile(filePath, "utf8")));
   const prettierManualConfigs = await Promise.all(prettierManualFilesPaths.map(Loaders.auto));
-  const prettierManualConfig = prettierManualConfigs.length ? Object.assign({}, ...prettierManualConfigs) : undefined;
+  const prettierManualFoldersPaths = prettierManualFilesPaths.map(path.dirname);
+  const prettierManualConfig = getPrettierConfigBys(prettierManualFoldersPaths, prettierManualConfigs);
 
   const cliContextConfig = options.contextOptions;
   const cliFormatConfig = options.formatOptions;
@@ -130,7 +131,11 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
       if (!isForceIncluded && isExcluded) return;
       const getFormatOptions = async (): Promise<FormatOptions> => {
         const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
-        const prettierConfig = prettierManualConfig || (options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {});
+        const prettierConfig = prettierManualConfig
+          ? prettierManualConfig(filePath)
+          : options.config
+            ? await getPrettierConfigResolved(filePath, prettierConfigNames)
+            : {};
         const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
         return formatOptions;
       };
