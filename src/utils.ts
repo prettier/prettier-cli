@@ -191,6 +191,10 @@ function getProjectPath(rootPath: string): string {
     if (fs.existsSync(svnPath)) return true;
     const slPath = path.join(folderPath, ".sl");
     if (fs.existsSync(slPath)) return true;
+    const nodePath = path.join(folderPath, "node_modules");
+    if (fs.existsSync(nodePath)) return true;
+    const pkgPath = path.join(folderPath, "package.json");
+    if (fs.existsSync(pkgPath)) return true;
     return false;
   }
 
