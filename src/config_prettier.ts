@@ -46,7 +46,7 @@ const Loaders = {
   },
   toml: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
-    const {parse} = await import("smol-toml");
+    const { parse } = await import("smol-toml");
     return parse(fileContent);
   },
   yaml: async (filePath: string): Promise<unknown> => {
