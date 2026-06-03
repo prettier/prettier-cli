@@ -56,6 +56,10 @@ function getCachePath(rootPath: string): string {
   return cachePath;
 }
 
+function getCacheRootPath(rootPath: string): string | undefined {
+  return findDirectoryUpwards(rootPath, (folderPath) => fs.existsSync(path.join(folderPath, "node_modules")));
+}
+
 function getDirectoryPaths(rootPath: string, withNodeModules: boolean) {
   const ignoreGlob = `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`;
   const ignoreRe = zeptomatch.compile(ignoreGlob);
@@ -181,6 +185,17 @@ function getPluginsVersions(names: string[]): (string | null)[] {
   return pluginsVersions;
 }
 
+function findDirectoryUpwards(rootPath: string, isMatch: (folderPath: string) => boolean): string | undefined {
+  let currentPath = rootPath;
+
+  while (true) {
+    if (isMatch(currentPath)) return currentPath;
+    const currentPathNext = path.dirname(currentPath);
+    if (currentPath === currentPathNext) return;
+    currentPath = currentPathNext;
+  }
+}
+
 function getProjectPath(rootPath: string): string {
   function isProjectPath(folderPath: string): boolean {
     const gitPath = path.join(folderPath, ".git");
@@ -194,20 +209,7 @@ function getProjectPath(rootPath: string): string {
     return false;
   }
 
-  let currentPath = rootPath;
-
-  while (true) {
-    if (isProjectPath(currentPath)) {
-      return currentPath;
-    } else {
-      const currentPathNext = path.dirname(currentPath);
-      if (currentPath === currentPathNext) {
-        return rootPath;
-      } else {
-        currentPath = currentPathNext;
-      }
-    }
-  }
+  return findDirectoryUpwards(rootPath, isProjectPath) ?? rootPath;
 }
 
 function getStats(targetPath: string): fs.Stats | undefined {
@@ -753,6 +755,7 @@ export {
   fastRelativeChildPath,
   findLastIndex,
   getCachePath,
+  getCacheRootPath,
   getFolderChildrenPaths,
   getFoldersChildrenPaths,
   getExpandedFoldersPaths,
