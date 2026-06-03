@@ -16,7 +16,7 @@ import zeptomatch from "zeptomatch";
 import zeptomatchEscape from "zeptomatch-escape";
 import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
-import type { PluginsOptions, PromiseMaybe } from "./types.js";
+import type { PluginsOptions } from "./types.js";
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
@@ -442,93 +442,56 @@ function normalizeContextOptions(options: unknown): ContextOptions {
   return contextOptions;
 }
 
+const formatOptionsValidators: Record<string, (value: unknown) => unknown> = {
+  experimentalOperatorPosition: (value) => (value === "start" || value === "end" ? value : undefined),
+  experimentalTernaries: (value) => (isBoolean(value) ? value : undefined),
+  arrowParens: (value) => (value === "avoid" || value === "always" ? value : undefined),
+  bracketSameLine: (value) => (isBoolean(value) ? value : undefined),
+  bracketSpacing: (value) => (isBoolean(value) ? value : undefined),
+  embeddedLanguageFormatting: (value) => (value === "auto" || value === "off" ? value : undefined),
+  endOfLine: (value) => (value === "lf" || value === "crlf" || value === "cr" || value === "auto" ? value : undefined),
+  htmlWhitespaceSensitivity: (value) => (value === "css" || value === "strict" || value === "ignore" ? value : undefined),
+  insertPragma: (value) => (isBoolean(value) ? value : undefined),
+  jsxSingleQuote: (value) => (isBoolean(value) ? value : undefined),
+  objectWrap: (value) => (value === "preserve" || value === "collapse" ? value : undefined),
+  // New parsers that we don't know about can be added by plugins
+  parser: (value) => (isString(value) ? value : undefined),
+  printWidth: (value) => {
+    const number = Number(value);
+    return isInteger(number) && number >= 0 ? number : undefined;
+  },
+  proseWrap: (value) => (value === "always" || value === "never" || value === "preserve" ? value : undefined),
+  quoteProps: (value) => (value === "as-needed" || value === "consistent" || value === "preserve" ? value : undefined),
+  requirePragma: (value) => (isBoolean(value) ? value : undefined),
+  semi: (value) => (isBoolean(value) ? value : undefined),
+  singleAttributePerLine: (value) => (isBoolean(value) ? value : undefined),
+  singleQuote: (value) => (isBoolean(value) ? value : undefined),
+  tabWidth: (value) => {
+    const number = Number(value);
+    return isInteger(number) && number >= 0 ? number : undefined;
+  },
+  trailingComma: (value) => (value === "all" || value === "es5" || value === "none" ? value : undefined),
+  useTabs: (value) => (isBoolean(value) ? value : undefined),
+  vueIndentScriptAndStyle: (value) => (isBoolean(value) ? value : undefined),
+};
+
 function normalizeFormatOptions(options: unknown): FormatOptions {
   if (!isObject(options)) exit("Invalid options object");
 
   const formatOptions: FormatOptions = {};
 
-  if ("experimentalOperatorPosition" in options) {
-    const value = options.experimentalOperatorPosition;
-    if (value === "start" || value === "end") {
-      formatOptions.experimentalOperatorPosition = value;
-    }
-  }
+  for (const [key, value] of Object.entries(options)) {
+    // Handled separately below, since "plugin" and "plugins" both map to "plugins"
+    if (key === "plugin" || key === "plugins") continue;
 
-  if ("experimentalTernaries" in options) {
-    const value = options.experimentalTernaries;
-    if (isBoolean(value)) {
-      formatOptions.experimentalTernaries = value;
-    }
-  }
-
-  if ("arrowParens" in options) {
-    const value = options.arrowParens;
-    if (value === "avoid" || value === "always") {
-      formatOptions.arrowParens = value;
-    }
-  }
-
-  if ("bracketSameLine" in options) {
-    const value = options.bracketSameLine;
-    if (isBoolean(value)) {
-      formatOptions.bracketSameLine = value;
-    }
-  }
-
-  if ("bracketSpacing" in options) {
-    const value = options.bracketSpacing;
-    if (isBoolean(value)) {
-      formatOptions.bracketSpacing = value;
-    }
-  }
-
-  if ("embeddedLanguageFormatting" in options) {
-    const value = options.embeddedLanguageFormatting;
-    if (value === "auto" || value === "off") {
-      formatOptions.embeddedLanguageFormatting = value;
-    }
-  }
-
-  if ("endOfLine" in options) {
-    const value = options.endOfLine;
-    if (value === "lf" || value === "crlf" || value === "cr" || value === "auto") {
-      formatOptions.endOfLine = value;
-    }
-  }
-
-  if ("htmlWhitespaceSensitivity" in options) {
-    const value = options.htmlWhitespaceSensitivity;
-    if (value === "css" || value === "strict" || value === "ignore") {
-      formatOptions.htmlWhitespaceSensitivity = value;
-    }
-  }
-
-  if ("insertPragma" in options) {
-    const value = options.insertPragma;
-    if (isBoolean(value)) {
-      formatOptions.insertPragma = value;
-    }
-  }
-
-  if ("jsxSingleQuote" in options) {
-    const value = options.jsxSingleQuote;
-    if (isBoolean(value)) {
-      formatOptions.jsxSingleQuote = value;
-    }
-  }
-
-  if ("objectWrap" in options) {
-    const value = options.objectWrap;
-    if (value === "preserve" || value === "collapse") {
-      formatOptions.objectWrap = value;
-    }
-  }
-
-  if ("parser" in options) {
-    const value = options.parser;
-    if (isString(value)) {
-      // New parsers that we don't about can be added by plugins
-      formatOptions.parser = value as FormatOptions["parser"];
+    const validator = formatOptionsValidators[key];
+    if (validator) {
+      const normalized = validator(value);
+      if (!isUndefined(normalized)) {
+        formatOptions[key] = normalized;
+      }
+    } else {
+      formatOptions[key] = value;
     }
   }
 
@@ -541,83 +504,6 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
     } else if (!isUndefined(value)) {
       //TODO: Figure out what to do here, probably just bailing out of parallelization?
       exit("Non-string plugin specifiers are not supported yet");
-    }
-  }
-
-  if ("printWidth" in options) {
-    const value = Number(options.printWidth);
-    if (isInteger(value) && value >= 0) {
-      formatOptions.printWidth = value;
-    }
-  }
-
-  if ("proseWrap" in options) {
-    const value = options.proseWrap;
-    if (value === "always" || value === "never" || value === "preserve") {
-      formatOptions.proseWrap = value;
-    }
-  }
-
-  if ("quoteProps" in options) {
-    const value = options.quoteProps;
-    if (value === "as-needed" || value === "consistent" || value === "preserve") {
-      formatOptions.quoteProps = value;
-    }
-  }
-
-  if ("requirePragma" in options) {
-    const value = options.requirePragma;
-    if (isBoolean(value)) {
-      formatOptions.requirePragma = value;
-    }
-  }
-
-  if ("semi" in options) {
-    const value = options.semi;
-    if (isBoolean(value)) {
-      formatOptions.semi = value;
-    }
-  }
-
-  if ("singleAttributePerLine" in options) {
-    const value = options.singleAttributePerLine;
-    if (isBoolean(value)) {
-      formatOptions.singleAttributePerLine = value;
-    }
-  }
-
-  if ("singleQuote" in options) {
-    const value = options.singleQuote;
-    if (isBoolean(value)) {
-      formatOptions.singleQuote = value;
-    }
-  }
-
-  if ("tabWidth" in options) {
-    const value = Number(options.tabWidth);
-    if (isInteger(value) && value >= 0) {
-      formatOptions.tabWidth = value;
-    }
-  }
-
-  if ("trailingComma" in options) {
-    const value = options.trailingComma;
-    if (value === "all" || value === "es5" || value === "none") {
-      formatOptions.trailingComma = value;
-    }
-  }
-
-  if ("useTabs" in options) {
-    const value = options.useTabs;
-    if (isBoolean(value)) {
-      formatOptions.useTabs = value;
-    }
-  }
-
-  if ("vueIndentScriptAndStyle" in options) {
-    const value = options.vueIndentScriptAndStyle;
-    if (isBoolean(value)) {
-      formatOptions.vueIndentScriptAndStyle = value;
     }
   }
 
