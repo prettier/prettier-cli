@@ -11,7 +11,16 @@ import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
 import { makePrettier } from "./prettier.js";
-import { castArray, getExpandedFoldersPaths, getFoldersChildrenPaths, getPluginsVersions, getProjectPath, getStdin, getTargetsPaths } from "./utils.js";
+import {
+  castArray,
+  getCacheRootPath,
+  getExpandedFoldersPaths,
+  getFoldersChildrenPaths,
+  getPluginsVersions,
+  getProjectPath,
+  getStdin,
+  getTargetsPaths,
+} from "./utils.js";
 import {
   fastRelativePath,
   isNull,
@@ -116,7 +125,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cacheVersion = stringify({ prettierVersion, cliVersion, pluginsNames, pluginsVersions, editorConfigs, ignoreContents, prettierConfigs, ignoreManualFilesPaths, ignoreManualFilesContents, prettierManualFilesPaths, prettierManualFilesContents, cliContextConfig, cliFormatConfig, pluginsDefaultOptions, pluginsCustomOptions }); // prettier-ignore
 
   const shouldCache = options.cache && !options.dump && !pluginsVersionsMissing.length && isUndefined(cliContextConfig.cursorOffset);
-  const cache = shouldCache ? new Cache(cacheVersion, projectPath, options, stdout) : undefined;
+  const cache = shouldCache ? new Cache(cacheVersion, projectPath, getCacheRootPath(rootPath), options, stdout) : undefined;
   const prettier = await makePrettier(options, cache);
 
   //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem

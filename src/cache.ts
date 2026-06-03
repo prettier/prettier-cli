@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fastRelativePath, getCachePath, isArray, isBoolean, isObject, isString, isUndefined, sha1hex, sha1base64 } from "./utils.js";
 import type Logger from "./logger.js";
@@ -31,11 +32,12 @@ class Cache {
   private logger: Logger;
   private dirty: boolean;
 
-  constructor(version: string, rootPath: string, options: Options, logger: Logger) {
+  constructor(version: string, rootPath: string, cacheRootPath: string | undefined, options: Options, logger: Logger) {
     this.version = sha1hex(version);
     this.logger = logger;
     this.rootPath = rootPath;
-    this.storePath = options.cacheLocation || path.join(getCachePath(rootPath), `${sha1hex(rootPath)}.json`);
+    const cachePath = cacheRootPath ? getCachePath(cacheRootPath) : path.join(os.tmpdir(), "prettier", ".prettier-caches");
+    this.storePath = options.cacheLocation || path.join(cachePath, `${sha1hex(rootPath)}.json`);
     this.store = this.read();
     this.dirty = false;
   }
