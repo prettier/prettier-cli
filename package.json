@@ -29,7 +29,8 @@
     "format": "npm run compile && node dist/bin.js --write src test",
     "prepublishOnly": "npm run clean && npm run compile",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --rootDir test/__tests__ --testTimeout 60000",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "release-it"
   },
   "peerDependencies": {
     "prettier": "^3.1.0 || ^4.0.0-alpha"
@@ -48,6 +49,7 @@
     "lomemo": "^1.0.1",
     "pioppo": "^1.2.1",
     "promise-resolve-timeout": "^2.0.1",
+    "release-it": "^20.2.0",
     "smol-toml": "^1.6.1",
     "specialist": "^1.4.5",
     "tiny-editorconfig": "^1.0.2",
