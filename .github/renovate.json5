@@ -10,5 +10,6 @@
       groupName: "devDependencies",
       matchDepTypes: ["devDependencies"],
     },
-  ]
+  ],
+  ignoreDeps: ["node"],
 }
