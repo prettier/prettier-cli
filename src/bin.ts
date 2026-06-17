@@ -5,16 +5,17 @@ import { bin, color, exit, parseArgv } from "specialist";
 import { PRETTIER_VERSION, DEFAULT_PARSERS } from "./constants.js";
 import { getPluginOrExit, isBoolean, isNumber, isIntegerInRange, isString } from "./utils.js";
 import { normalizeOptions, normalizeFormatOptions, normalizePluginOptions } from "./utils.js";
-import type { Bin, PluginsOptions, PrettierPlugin } from "./types.js";
+import type { Bin, PluginsOptions } from "./types.js";
 
 const makeBin = (): Bin => {
-  return (
-    bin("prettier", "An opinionated code formatter")
+  const binstance = bin("prettier", "An opinionated code formatter")
       /* OPTIONS */
-      .autoExit(true)
-      .autoUpdateNotifier(false)
-      .colors(true)
-      .package("prettier", PRETTIER_VERSION)
+      .config({
+        autoExit: true,
+        colors: true,
+        package: "prettier",
+        version: PRETTIER_VERSION,
+      })
       /* USAGES */
       .usage(`${color.cyan("prettier")} ${color.yellow("[file/dir/glob...]")} ${color.green("[options]")}`)
       .usage(`${color.cyan("prettier")} ${color.yellow('"src/**/*.js"')} ${color.green("--check")}`)
@@ -188,15 +189,17 @@ const makeBin = (): Bin => {
         section: "Other",
       })
       /* DEFAULT COMMAND */
-      .argument("[file/dir/glob...]", "Files, directories or globs to format")
-      .action(async (options, files) => {
-        const { run } = await import("./index.js");
-        const baseOptions = await normalizeOptions(options, files);
-        const pluginsDefaultOptions = {};
-        const pluginsCustomOptions = {};
-        return run(baseOptions, pluginsDefaultOptions, pluginsCustomOptions);
-      })
-  );
+      .argument("[file/dir/glob...]", "Files, directories or globs to format");
+
+    binstance.action(async (options, files) => {
+      const { run } = await import("./index.js");
+      const baseOptions = await normalizeOptions(options, files);
+      const pluginsDefaultOptions = {};
+      const pluginsCustomOptions = {};
+      return run(baseOptions, pluginsDefaultOptions, pluginsCustomOptions);
+    });
+
+    return binstance;
 };
 
 const makePluggableBin = async (): Promise<Bin> => {
@@ -274,7 +277,7 @@ const makePluggableBin = async (): Promise<Bin> => {
     });
   }
 
-  bin = bin.action(async (options, files) => {
+  bin.action(async (options, files) => {
     const { run } = await import("./index.js");
     const baseOptions = await normalizeOptions(options, files);
     const pluginsCustomOptions = normalizePluginOptions(options, optionsNames);
