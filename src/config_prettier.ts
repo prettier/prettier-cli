@@ -16,7 +16,7 @@ const Loaders = {
   },
   js: async (filePath: string): Promise<unknown> => {
     const module = await import(url.pathToFileURL(filePath).href);
-    return module.default || module.exports || module.prettier || module;
+    return module.default;
   },
   json: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
