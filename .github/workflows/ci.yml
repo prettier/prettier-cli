@@ -33,3 +33,23 @@ jobs:
 
       - name: Test
         run: npm run test
+
+
+  preview:
+    if: github.repository == 'prettier/prettier-cli'
+    name: Preview release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run compile
+
+      - name: Preview
+        run: npx pkg-pr-new publish --compact --packageManager=yarn
