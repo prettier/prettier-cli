@@ -68,11 +68,17 @@ const File2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
   ".prettierrc.json5": Loaders.json5,
   ".prettierrc.toml": Loaders.toml,
   ".prettierrc.js": Loaders.js,
+  ".prettierrc.ts": Loaders.js,
   ".prettierrc.cjs": Loaders.js,
+  ".prettierrc.cts": Loaders.js,
   ".prettierrc.mjs": Loaders.js,
+  ".prettierrc.mts": Loaders.js,
   "prettier.config.js": Loaders.js,
+  "prettier.config.ts": Loaders.js,
   "prettier.config.cjs": Loaders.js,
+  "prettier.config.cts": Loaders.js,
   "prettier.config.mjs": Loaders.js,
+  "prettier.config.mts": Loaders.js,
 };
 
 const Ext2Loader: Record<string, (filePath: string) => Promise<unknown>> = {
