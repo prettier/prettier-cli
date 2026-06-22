@@ -52,9 +52,7 @@ const Loaders = {
   yaml: async (filePath: string): Promise<unknown> => {
     const { load, JSON_SCHEMA } = await import("js-yaml");
     const fileContent = fs.readFileSync(filePath, "utf8");
-    return load(fileContent, {
-      schema: JSON_SCHEMA,
-    });
+    return load(fileContent, { schema: JSON_SCHEMA });
   },
 };
 

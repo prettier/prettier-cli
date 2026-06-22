@@ -62,7 +62,6 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.10.1",
     "cross-env": "^10.1.0",
     "jest": "^30.4.2",
