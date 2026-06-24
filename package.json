@@ -53,7 +53,7 @@
     "specialist": "^2.0.0",
     "tiny-editorconfig": "^1.0.2",
     "tiny-readdir": "^2.7.4",
-    "tiny-readdir-glob": "^1.23.2",
+    "tiny-readdir-glob": "^2.0.0",
     "tiny-spinner": "^2.0.5",
     "worktank": "^3.0.2",
     "zeptomatch": "^2.1.0",
