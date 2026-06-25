@@ -30,7 +30,8 @@
     "prepublishOnly": "npm run clean && npm run compile",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --rootDir test/__tests__ --testTimeout 60000",
     "typecheck": "tsc --noEmit",
-    "release": "release-it"
+    "release": "release-it",
+    "postinstall": "patch-package"
   },
   "peerDependencies": {
     "prettier": "^3.1.0 || ^4.0.0-alpha"
@@ -47,6 +48,7 @@
     "json5": "^2.2.3",
     "kasi": "^2.0.1",
     "lomemo": "^1.0.1",
+    "patch-package": "^8.0.1",
     "pioppo": "^1.2.1",
     "promise-resolve-timeout": "^2.0.1",
     "smol-toml": "^1.6.1",
@@ -73,7 +75,7 @@
     "radix64-encoding": "^2.0.2",
     "release-it": "^20.2.0",
     "tiny-dirname": "^1.0.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "zeptoid": "^1.0.2"
   }
 }

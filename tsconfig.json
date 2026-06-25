@@ -8,15 +8,14 @@
     "alwaysStrict": true,
     "declaration": true,
     "disableSizeLimit": true,
-    "esModuleInterop": false,
     "forceConsistentCasingInFileNames": true,
     "inlineSourceMap": false,
     "inlineSources": false,
     "isolatedModules": true,
     "jsx": "react",
     "lib": ["esnext"],
-    "module": "es2020",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "newLine": "lf",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
@@ -42,6 +41,8 @@
     "useUnknownInCatchVariables": true,
     "verbatimModuleSyntax": true,
     "noImplicitAny": false,
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
+    "rootDir": "./src",
+    "types": ["node"]
   }
 }
