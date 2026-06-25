@@ -52,7 +52,7 @@
     "smol-toml": "^1.6.1",
     "specialist": "^2.0.0",
     "tiny-editorconfig": "^1.0.2",
-    "tiny-readdir": "^2.7.4",
+    "tiny-readdir": "^3.1.1",
     "tiny-readdir-glob": "^1.23.2",
     "tiny-spinner": "^2.0.5",
     "worktank": "^3.0.2",
