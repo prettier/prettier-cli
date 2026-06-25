@@ -51,7 +51,7 @@
     "patch-package": "^8.0.1",
     "pioppo": "^1.2.1",
     "promise-resolve-timeout": "^2.0.1",
-    "smol-toml": "^1.6.1",
+    "smol-toml": "^1.7.0",
     "specialist": "^2.0.0",
     "tiny-editorconfig": "^1.0.2",
     "tiny-readdir": "^2.7.4",
