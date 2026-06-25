@@ -1,0 +1,9 @@
+diff --git a/node_modules/lomemo/dist/index.d.ts b/node_modules/lomemo/dist/index.d.ts
+index 837661f..429d6ab 100644
+--- a/node_modules/lomemo/dist/index.d.ts
++++ b/node_modules/lomemo/dist/index.d.ts
+@@ -6,3 +6,4 @@ declare const memoize: {
+     Cache: MapConstructor;
+ };
+ export default memoize;
++export {FN}
