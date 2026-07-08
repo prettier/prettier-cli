@@ -112,13 +112,14 @@ const getPrettierConfigsMap = async (foldersPaths: string[], filesNames: string[
   return map;
 };
 
-const getPrettierConfigsUp = memoize(async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[]> => {
+const getPrettierConfigsUpImpl = async (folderPath: string, filesNames: string[]): Promise<PrettierConfigWithOverrides[]> => {
   const config = (await getPrettierConfigs(folderPath, filesNames))?.[0];
   const folderPathUp = path.dirname(folderPath);
   const configsUp = folderPath !== folderPathUp ? await getPrettierConfigsUp(folderPathUp, filesNames) : [];
   const configs = config ? [...configsUp, config] : configsUp;
   return configs;
-});
+};
+const getPrettierConfigsUp: typeof getPrettierConfigsUpImpl = memoize(getPrettierConfigsUpImpl);
 
 const getPrettierConfigResolved = async (filePath: string, filesNames: string[]): Promise<PrettierConfig> => {
   const folderPath = path.dirname(filePath);

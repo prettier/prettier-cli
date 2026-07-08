@@ -131,11 +131,12 @@ function identity<T>(value: T): T {
   return value;
 }
 
-const getPlugin = memoize((name: string): Promise<PrettierPlugin> => {
+const getPluginImpl = (name: string): Promise<PrettierPlugin> => {
   const pluginPath = getPluginPath(name);
   const plugin = getModule<PrettierPlugin>(pluginPath);
   return plugin;
-});
+};
+const getPlugin: typeof getPluginImpl = memoize(getPluginImpl);
 
 async function getPluginOrExit(name: string): Promise<PrettierPlugin> {
   try {
