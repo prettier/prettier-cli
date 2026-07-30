@@ -11,7 +11,6 @@ import { Loaders, File2Loader, getPrettierConfigsMap, getPrettierConfigResolved 
 import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
-import { mapSettledWithConcurrency } from "./map_settled_with_concurrency.js";
 import { makePrettier } from "./prettier.js";
 import {
   castArray,
@@ -23,6 +22,7 @@ import {
   getProjectPath,
   getStdin,
   getTargetsPaths,
+  mapSettledWithConcurrency,
 } from "./utils.js";
 import {
   fastRelativePath,

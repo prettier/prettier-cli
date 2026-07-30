@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { mapSettledWithConcurrency } from "../../dist/map_settled_with_concurrency.js";
+import { mapSettledWithConcurrency } from "../../dist/utils.js";
 
 test("bounds concurrency and preserves settled-result order", async () => {
   let active = 0;
