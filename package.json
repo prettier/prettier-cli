@@ -37,6 +37,7 @@
     "prettier": "^3.1.0 || ^4.0.0-alpha"
   },
   "dependencies": {
+    "@bybrave/json5": "^3.1.0",
     "atomically": "^2.1.1",
     "fast-ignore": "^2.0.0",
     "find-up-json": "^2.0.5",
@@ -45,7 +46,6 @@
     "is-binary-path": "^3.0.0",
     "js-yaml": "^5.2.3",
     "json-sorted-stringify": "^1.0.2",
-    "json5": "^2.2.3",
     "kasi": "^2.0.1",
     "lomemo": "^1.0.1",
     "patch-package": "^8.0.1",
