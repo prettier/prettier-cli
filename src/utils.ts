@@ -659,7 +659,7 @@ async function mapSettledWithConcurrency<T, R>(
     }
   }
 
-  const runnersCount = Math.min(values.length, Math.max(1, Math.floor(concurrency)));
+  const runnersCount = Math.min(values.length, concurrency);
   await Promise.all(Array.from({ length: runnersCount }, runNext));
 
   return results;
