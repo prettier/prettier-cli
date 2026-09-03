@@ -181,8 +181,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, getCacheRootPath(rootPath), options, stdout) : undefined;
   const prettier = await makePrettier(options, cache);
 
-  const cpuCount = os.availableParallelism?.() ?? os.cpus().length;
-  const concurrency = options.parallel ? options.parallelWorkers || Math.max(1, cpuCount - 1) : 1;
+  const concurrency = options.parallel ? (options.parallelWorkers ?? Math.max(1, (os.availableParallelism?.() ?? os.cpus().length) - 1)) : 1;
   const filesResults = await mapSettledWithConcurrency(filesPathsTargets, concurrency, async (filePath) => {
     const isIgnored = () => (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
     const isCacheable = () => cache?.has(filePath, isIgnored);
