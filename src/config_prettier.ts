@@ -25,9 +25,8 @@ const Loaders = {
   },
   json5: async (filePath: string): Promise<unknown> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
-    const JSON5 = (await import("json5")).default;
-    const config = JSON5.parse(fileContent);
-    return config;
+    const { parse } = await import("@bybrave/json5");
+    return parse(fileContent);
   },
   package: async (filePath: string): Promise<unknown> => {
     const fileBuffer = fs.readFileSync(filePath);
