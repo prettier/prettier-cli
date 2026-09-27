@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import isBinaryPath from "is-binary-path";
 import stringify from "json-sorted-stringify";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import Cache from "./cache.js";
@@ -21,6 +22,7 @@ import {
   getProjectPath,
   getStdin,
   getTargetsPaths,
+  mapSettledWithConcurrency,
 } from "./utils.js";
 import {
   fastRelativePath,
@@ -179,34 +181,32 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const cache = shouldCache ? new Cache(cacheVersion, projectPath, getCacheRootPath(rootPath), options, stdout) : undefined;
   const prettier = await makePrettier(options, cache);
 
-  //TODO: Maybe do work in chunks here, as keeping too many formatted files in memory can be a problem
-  const filesResults = await Promise.allSettled(
-    filesPathsTargets.map(async (filePath) => {
-      const isIgnored = () => (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
-      const isCacheable = () => cache?.has(filePath, isIgnored);
-      const isExplicitlyIncluded = () => filesExplicitPathsSet.has(filePath);
-      const isForceIncluded = options.dump && isExplicitlyIncluded();
-      const isExcluded = cache ? !(await isCacheable()) : await isIgnored();
-      if (!isForceIncluded && isExcluded) return;
-      const getFormatOptions = async (): Promise<FormatOptions> => {
-        const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
-        const prettierConfig = prettierManualConfig || (options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {});
-        const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
-        return formatOptions;
-      };
-      try {
-        if (options.check || options.list) {
-          return await prettier.checkWithPath(filePath, getFormatOptions, cliContextConfig, pluginsDefaultOptions, pluginsCustomOptions);
-        } else if (options.write) {
-          return await prettier.writeWithPath(filePath, getFormatOptions, cliContextConfig, pluginsDefaultOptions, pluginsCustomOptions);
-        } else {
-          return await prettier.formatWithPath(filePath, getFormatOptions, cliContextConfig, pluginsDefaultOptions, pluginsCustomOptions);
-        }
-      } finally {
-        spinner?.update(fastRelativePath(rootPath, filePath));
+  const concurrency = options.parallel ? (options.parallelWorkers ?? Math.max(1, (os.availableParallelism?.() ?? os.cpus().length) - 1)) : 1;
+  const filesResults = await mapSettledWithConcurrency(filesPathsTargets, concurrency, async (filePath) => {
+    const isIgnored = () => (ignoreManual ? ignoreManual(filePath) : getIgnoreResolved(filePath, ignoreNames));
+    const isCacheable = () => cache?.has(filePath, isIgnored);
+    const isExplicitlyIncluded = () => filesExplicitPathsSet.has(filePath);
+    const isForceIncluded = options.dump && isExplicitlyIncluded();
+    const isExcluded = cache ? !(await isCacheable()) : await isIgnored();
+    if (!isForceIncluded && isExcluded) return;
+    const getFormatOptions = async (): Promise<FormatOptions> => {
+      const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
+      const prettierConfig = prettierManualConfig || (options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {});
+      const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
+      return formatOptions;
+    };
+    try {
+      if (options.check || options.list) {
+        return await prettier.checkWithPath(filePath, getFormatOptions, cliContextConfig, pluginsDefaultOptions, pluginsCustomOptions);
+      } else if (options.write) {
+        return await prettier.writeWithPath(filePath, getFormatOptions, cliContextConfig, pluginsDefaultOptions, pluginsCustomOptions);
+      } else {
+        return await prettier.formatWithPath(filePath, getFormatOptions, cliContextConfig, pluginsDefaultOptions, pluginsCustomOptions);
       }
-    }),
-  );
+    } finally {
+      spinner?.update(fastRelativePath(rootPath, filePath));
+    }
+  });
 
   spinner?.stop("Checking formatting...");
 
