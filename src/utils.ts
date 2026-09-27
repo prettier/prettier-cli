@@ -110,22 +110,20 @@ async function getFoldersChildrenPaths(foldersPaths: string[]): Promise<string[]
 }
 
 const defaultIgnoreGlob = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db,node_modules}";
-const defaultIgnoreGlobWithNodeModules = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db}";
+const defaultIgnoreGlobIncludingNodeModules = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db}";
 
 async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
-  const ignoreGlob = withNodeModules ? defaultIgnoreGlobWithNodeModules : defaultIgnoreGlob;
-  // we compile this so we can reuse it for `onDirents` and `ignore`
+  const ignoreGlob = withNodeModules ? defaultIgnoreGlobIncludingNodeModules : defaultIgnoreGlob;
   const ignoreRe = zeptomatch.compile(ignoreGlob);
   const ignore = (targetPath: string): boolean => {
     return ignoreRe.test(path.relative(rootPath, targetPath));
   };
 
   // These are the files and directories that were found during glob traversal.
-  // They haven't yet been filtered by the `ignore` function so may not
+  // They haven't yet been filtered by the user globs so may not
   // equal the result files.
   const filesFound: string[] = [];
-  const filesFoundNames = new Set<string>();
-  const filesFoundNamesToPaths: Record<string, string[]> = {};
+  const filesFoundNamesToPaths: Record<string, string[]> = Object.create(null);
   const directoriesFound: string[] = [];
 
   const onDirents = (dirents: Dirent[]): undefined => {
@@ -137,7 +135,6 @@ async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: 
       if (ignore(direntPath)) continue;
       if (dirent.isFile()) {
         filesFound.push(direntPath);
-        filesFoundNames.add(direntName);
         if (!Object.hasOwn(filesFoundNamesToPaths, direntName)) {
           filesFoundNamesToPaths[direntName] = [];
         }
@@ -149,16 +146,17 @@ async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: 
   };
 
   // Globs are matched against paths relative to the root, which are never prefixed with "./"
+  // TODO (jg): handle '../' in globs
   const globsNormalized = globs.map((glob) => glob.replace(/^(!*)(?:\.\/)+/, "$1"));
 
   const result = await readdirGlob(globsNormalized, {
     cwd: rootPath,
     followSymlinks: false,
-    ignore,
+    ignore: ignoreGlob,
     onDirents,
   });
 
-  return { ...result, filesFound, filesFoundNames, filesFoundNamesToPaths, directoriesFound };
+  return { files: result.files, filesFound, filesFoundNamesToPaths, directoriesFound };
 }
 
 async function getModule<T = unknown>(modulePath: string): Promise<T> {
@@ -295,7 +293,9 @@ async function getTargetsPaths(
       const fileName = path.basename(filePath);
       targetFiles.push(filePath);
       targetFilesNames.push(fileName);
-      targetFilesNamesToPaths.propertyIsEnumerable(fileName) || (targetFilesNamesToPaths[fileName] = []);
+      if (!Object.hasOwn(targetFilesNamesToPaths, fileName)) {
+        targetFilesNamesToPaths[fileName] = [];
+      }
       targetFilesNamesToPaths[fileName].push(filePath);
     } else if (fileStats?.isDirectory()) {
       targetDirectories.push(filePath);
@@ -306,7 +306,7 @@ async function getTargetsPaths(
 
   const globResult = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
   const globResultFiles = globResult.files;
-  const globResultFilesFoundNames = [...globResult.filesFoundNames];
+  const globResultFilesFoundNames = Object.keys(globResult.filesFoundNamesToPaths);
 
   const directoriesResults = await Promise.all(targetDirectories.map((targetPath) => getDirectoryPaths(targetPath, withNodeModules)));
   const directoriesResultsFiles = directoriesResults.map((result) => result.files);
