@@ -11,12 +11,15 @@ import url from "node:url";
 import resolveTimeout from "promise-resolve-timeout";
 import { exit } from "specialist";
 import readdir from "tiny-readdir";
+import type { Dirent } from "tiny-readdir";
 import readdirGlob from "tiny-readdir-glob";
 import zeptomatch from "zeptomatch";
 import zeptomatchEscape from "zeptomatch-escape";
 import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
 import type { PluginsOptions } from "./types.js";
+
+type DirentWithParentPath = Dirent & { parentPath: string };
 
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
@@ -106,12 +109,54 @@ async function getFoldersChildrenPaths(foldersPaths: string[]): Promise<string[]
   return childrenPaths;
 }
 
-function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
-  return readdirGlob(globs, {
+const defaultIgnoreGlob = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db,node_modules}";
+const defaultIgnoreGlobIncludingNodeModules = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db}";
+
+async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
+  const ignoreGlob = withNodeModules ? defaultIgnoreGlobIncludingNodeModules : defaultIgnoreGlob;
+  const ignoreRe = zeptomatch.compile(ignoreGlob);
+  const ignore = (targetPath: string): boolean => {
+    return ignoreRe.test(path.relative(rootPath, targetPath));
+  };
+
+  // These are the files and directories that were found during glob traversal.
+  // They haven't yet been filtered by the user globs so may not
+  // equal the result files.
+  const filesFound: string[] = [];
+  const filesFoundNamesToPaths: Record<string, string[]> = Object.create(null);
+  const directoriesFound: string[] = [];
+
+  const onDirents = (dirents: Dirent[]): undefined => {
+    for (const dirent of dirents) {
+      const direntName = dirent.name;
+      // TODO (jg): remove this cast once tiny-readdir knows about
+      // the `parentPath` property on Dirent objects
+      const direntPath = fastJoinedPath((dirent as DirentWithParentPath).parentPath, direntName);
+      if (ignore(direntPath)) continue;
+      if (dirent.isFile()) {
+        filesFound.push(direntPath);
+        if (!Object.hasOwn(filesFoundNamesToPaths, direntName)) {
+          filesFoundNamesToPaths[direntName] = [];
+        }
+        filesFoundNamesToPaths[direntName].push(direntPath);
+      } else if (dirent.isDirectory()) {
+        directoriesFound.push(direntPath);
+      }
+    }
+  };
+
+  // Globs are matched against paths relative to the root, which are never prefixed with "./"
+  // TODO (jg): handle '../' in globs
+  const globsNormalized = globs.map((glob) => glob.replace(/^(!*)(?:\.\/)+/, "$1"));
+
+  const result = await readdirGlob(globsNormalized, {
     cwd: rootPath,
     followSymlinks: false,
-    ignore: `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`,
+    ignore: ignoreGlob,
+    onDirents,
   });
+
+  return { files: result.files, filesFound, filesFoundNamesToPaths, directoriesFound };
 }
 
 async function getModule<T = unknown>(modulePath: string): Promise<T> {
@@ -248,7 +293,9 @@ async function getTargetsPaths(
       const fileName = path.basename(filePath);
       targetFiles.push(filePath);
       targetFilesNames.push(fileName);
-      targetFilesNamesToPaths.propertyIsEnumerable(fileName) || (targetFilesNamesToPaths[fileName] = []);
+      if (!Object.hasOwn(targetFilesNamesToPaths, fileName)) {
+        targetFilesNamesToPaths[fileName] = [];
+      }
       targetFilesNamesToPaths[fileName].push(filePath);
     } else if (fileStats?.isDirectory()) {
       targetDirectories.push(filePath);
@@ -259,11 +306,11 @@ async function getTargetsPaths(
 
   const globResult = await getGlobPaths(rootPath, targetGlobs, withNodeModules);
   const globResultFiles = globResult.files;
-  const globResultFilesFoundNames = [...globResult.filesFoundNames];
+  const globResultFilesFoundNames = Object.keys(globResult.filesFoundNamesToPaths);
 
   const directoriesResults = await Promise.all(targetDirectories.map((targetPath) => getDirectoryPaths(targetPath, withNodeModules)));
   const directoriesResultsFiles = directoriesResults.map((result) => result.files);
-  const directoriesResultsFilesFoundNames = directoriesResults.map((result) => [...result.filesNames]);
+  const directoriesResultsFilesFoundNames = directoriesResults.map((result) => uniq(result.files.map((filePath) => path.basename(filePath))));
 
   const foundFiles = uniqChunks(globResultFiles, ...directoriesResultsFiles);
   const foundFilesNames = uniqChunks(globResultFilesFoundNames, ...directoriesResultsFilesFoundNames);
