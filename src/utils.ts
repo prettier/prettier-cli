@@ -109,8 +109,11 @@ async function getFoldersChildrenPaths(foldersPaths: string[]): Promise<string[]
   return childrenPaths;
 }
 
+const defaultIgnoreGlob = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db}";
+const defaultIgnoreGlobWithModules = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db,node_modules}";
+
 async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
-  const ignoreGlob = `**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db${withNodeModules ? "" : ",node_modules"}}`;
+  const ignoreGlob = withNodeModules ? defaultIgnoreGlobWithModules : defaultIgnoreGlob;
   // we compile this so we can reuse it for `onDirents` and `ignore`
   const ignoreRe = zeptomatch.compile(ignoreGlob);
   const ignore = (targetPath: string): boolean => {
