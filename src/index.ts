@@ -7,7 +7,7 @@ import process from "node:process";
 import Cache from "./cache.js";
 import { getEditorConfigsMap, getEditorConfigResolved, getEditorConfigFormatOptions } from "./config_editorconfig.js";
 import { getIgnoresContentMap, getIgnoreBys, getIgnoreResolved } from "./config_ignore.js";
-import { Loaders, File2Loader, getPrettierConfigsMap, getPrettierConfigResolved } from "./config_prettier.js";
+import { Loaders, File2Loader, getPrettierConfigsMap, getPrettierConfigResolved, resolvePrettierConfigs } from "./config_prettier.js";
 import { PRETTIER_VERSION, CLI_VERSION } from "./constants.js";
 import Known from "./known.js";
 import Logger from "./logger.js";
@@ -31,12 +31,13 @@ import {
   isUndefined,
   negate,
   normalizePathSeparatorsToPosix,
+  normalizePrettierOptions,
   pluralize,
   trimFinalNewline,
   uniq,
   without,
 } from "./utils.js";
-import type { FormatOptions, Options, PluginsOptions } from "./types.js";
+import type { FormatOptions, Options, PluginsOptions, PrettierConfigWithOverrides } from "./types.js";
 
 async function run(options: Options, pluginsDefaultOptions: PluginsOptions, pluginsCustomOptions: PluginsOptions): Promise<void> {
   if (options.globs.length || !isString(await getStdin())) {
@@ -53,7 +54,7 @@ async function getConfigNames(
   prettierConfigNames: string[];
   editorConfigNames: string[];
   ignoreNames: string[];
-  prettierManualConfig?: Record<string, unknown>;
+  prettierManualConfigs?: PrettierConfigWithOverrides[];
   prettierManualFilesPaths: string[];
 }> {
   const useEditorConfig = overrides?.editorConfig ?? options.editorConfig;
@@ -64,14 +65,16 @@ async function getConfigNames(
   const prettierConfigNames = useConfig ? without(Object.keys(File2Loader), ["default"]).filter(Known.hasFileName) : [];
   const prettierManualFilesNames = options.configPath || [];
   const prettierManualFilesPaths = prettierManualFilesNames.map((fileName) => path.resolve(fileName));
-  const prettierManualConfigs = await Promise.all(prettierManualFilesPaths.map(Loaders.auto));
-  const prettierManualConfig = prettierManualConfigs.length ? Object.assign({}, ...prettierManualConfigs) : undefined;
+  const prettierManualConfigsRaw = await Promise.all(prettierManualFilesPaths.map(Loaders.auto));
+  const prettierManualConfigs = prettierManualConfigsRaw.length
+    ? prettierManualConfigsRaw.map((config) => normalizePrettierOptions(config, process.cwd()))
+    : undefined;
 
   return {
     prettierConfigNames,
     editorConfigNames,
     ignoreNames,
-    prettierManualConfig,
+    prettierManualConfigs,
     prettierManualFilesPaths,
   };
 }
@@ -96,7 +99,7 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
     Known.addFilesNames(filesNames);
   }
 
-  const { prettierConfigNames, editorConfigNames, prettierManualConfig } = await getConfigNames(options, { ignore: false });
+  const { prettierConfigNames, editorConfigNames, prettierManualConfigs } = await getConfigNames(options, { ignore: false });
 
   const getFormatOptions = async (): Promise<FormatOptions> => {
     if (!options.stdinFilepath) {
@@ -105,7 +108,11 @@ async function runStdin(options: Options, pluginsDefaultOptions: PluginsOptions,
 
     const filePath = path.resolve(options.stdinFilepath);
     const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
-    const prettierConfig = prettierManualConfig || (options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {});
+    const prettierConfig = prettierManualConfigs
+      ? resolvePrettierConfigs(prettierManualConfigs, filePath)
+      : options.config
+        ? await getPrettierConfigResolved(filePath, prettierConfigNames)
+        : {};
     const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
     return formatOptions;
   };
@@ -154,7 +161,7 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
   const pluginsVersions = getPluginsVersions(pluginsNames);
   const pluginsVersionsMissing = pluginsVersions.filter(isNull);
 
-  const { prettierConfigNames, editorConfigNames, ignoreNames, prettierManualConfig, prettierManualFilesPaths } = await getConfigNames(options);
+  const { prettierConfigNames, editorConfigNames, ignoreNames, prettierManualConfigs, prettierManualFilesPaths } = await getConfigNames(options);
 
   const fileNames2parentPaths = (names: string[]) => names.flatMap((name) => filesNamesToPaths[name]?.map(path.dirname) || []);
   const editorConfigPaths = uniq([...fileNames2parentPaths(editorConfigNames), rootPath, ...foldersExtraPaths]);
@@ -195,7 +202,11 @@ async function runGlobs(options: Options, pluginsDefaultOptions: PluginsOptions,
     if (!isForceIncluded && isExcluded) return;
     const getFormatOptions = async (): Promise<FormatOptions> => {
       const editorConfig = options.editorConfig ? getEditorConfigFormatOptions(await getEditorConfigResolved(filePath, editorConfigNames)) : {};
-      const prettierConfig = prettierManualConfig || (options.config ? await getPrettierConfigResolved(filePath, prettierConfigNames) : {});
+      const prettierConfig = prettierManualConfigs
+        ? resolvePrettierConfigs(prettierManualConfigs, filePath)
+        : options.config
+          ? await getPrettierConfigResolved(filePath, prettierConfigNames)
+          : {};
       const formatOptions = { ...editorConfig, ...prettierConfig, ...options.formatOptions };
       return formatOptions;
     };

@@ -124,6 +124,10 @@ const getPrettierConfigsUp: typeof getPrettierConfigsUpImpl = memoize(getPrettie
 const getPrettierConfigResolved = async (filePath: string, filesNames: string[]): Promise<PrettierConfig> => {
   const folderPath = path.dirname(filePath);
   const configs = await getPrettierConfigsUp(folderPath, filesNames);
+  return resolvePrettierConfigs(configs, filePath);
+};
+
+const resolvePrettierConfigs = (configs: PrettierConfigWithOverrides[], filePath: string): PrettierConfig => {
   let resolved: PrettierConfig = {};
 
   for (let ci = 0, cl = configs.length; ci < cl; ci++) {
@@ -147,4 +151,4 @@ const getPrettierConfigResolved = async (filePath: string, filesNames: string[])
   return resolved;
 };
 
-export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
+export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved, resolvePrettierConfigs };
