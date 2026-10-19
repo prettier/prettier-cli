@@ -531,6 +531,9 @@ function normalizeFormatOptions(options: unknown): FormatOptions {
   for (const [key, value] of Object.entries(options)) {
     // Handled separately below, since "plugin" and "plugins" both map to "plugins"
     if (key === "plugin" || key === "plugins") continue;
+    // Positional arguments (the targeted files/globs) and the "--" separator are not format
+    // options: including them would make the cache version depend on which files were targeted
+    if (key === "_" || key === "--") continue;
 
     const validator = formatOptionsValidators[key];
     if (validator) {
