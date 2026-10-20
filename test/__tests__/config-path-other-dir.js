@@ -1,13 +1,26 @@
 import { runCli } from "../utils";
 
-describe("--config-path in another dir resolves override globs from the cwd", () => {
+describe("--config-path in another dir resolves override globs relative to the config file", () => {
+  runCli("config-path-other-dir", [
+    "--config-path",
+    "config/prettier.json",
+    "config/src/foo.js",
+  ]).test({
+    status: 0,
+    stdout: `const x = "foo"`,
+    stderr: "",
+    write: [],
+  });
+});
+
+describe("--config-path in another dir does not resolve override globs relative to the cwd", () => {
   runCli("config-path-other-dir", [
     "--config-path",
     "config/prettier.json",
     "src/foo.js",
   ]).test({
     status: 0,
-    stdout: `const x = "foo"`,
+    stdout: `const x = "foo";`,
     stderr: "",
     write: [],
   });

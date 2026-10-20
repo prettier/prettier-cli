@@ -67,7 +67,7 @@ async function getConfigNames(
   const prettierManualFilesPaths = prettierManualFilesNames.map((fileName) => path.resolve(fileName));
   const prettierManualConfigsRaw = await Promise.all(prettierManualFilesPaths.map(Loaders.auto));
   const prettierManualConfigs = prettierManualConfigsRaw.length
-    ? prettierManualConfigsRaw.map((config) => normalizePrettierOptions(config, process.cwd()))
+    ? prettierManualConfigsRaw.map((config, i) => normalizePrettierOptions(config, path.dirname(prettierManualFilesPaths[i])))
     : undefined;
 
   return {
