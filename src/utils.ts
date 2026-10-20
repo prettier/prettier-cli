@@ -581,22 +581,24 @@ function normalizePrettierOptions(options: unknown, folderPath: string): Prettie
 
   const config: PrettierConfigWithOverrides = normalizeFormatOptions(options);
 
-  if ("overrides" in options && isArray(options.overrides)) {
-    const overridesRaw = options.overrides;
-    for (let i = 0, l = overridesRaw.length; i < l; i++) {
-      const overrideRaw = overridesRaw[i];
-      if (!isObject(overrideRaw)) continue;
-      if (!("files" in overrideRaw)) continue;
-      if (!isString(overrideRaw.files) && (!isArray(overrideRaw.files) || !overrideRaw.files.every(isString))) continue;
-      if (isArray(overrideRaw.files) && !overrideRaw.files.length) continue;
-      if (!("options" in overrideRaw)) continue;
-      if (!isObject(overrideRaw.options)) continue;
-      const overrides = (config.overrides ||= []);
-      const filesPositive = castArray(overrideRaw.files);
-      const filesNegative = "filesNegative" in overrideRaw && (isString(overrideRaw.filesNegative) || (isArray(overrideRaw.filesNegative) && overrideRaw.filesNegative.every(isString))) ? castArray(overrideRaw.filesNegative) : []; // prettier-ignore
-      const folder = folderPath;
-      const options = normalizeFormatOptions(overrideRaw.options);
-      overrides.push({ filesPositive, filesNegative, folder, options });
+  if ("overrides" in options) {
+    const overrides: NonNullable<PrettierConfigWithOverrides["overrides"]> = (config.overrides = []);
+    if (isArray(options.overrides)) {
+      const overridesRaw = options.overrides;
+      for (let i = 0, l = overridesRaw.length; i < l; i++) {
+        const overrideRaw = overridesRaw[i];
+        if (!isObject(overrideRaw)) continue;
+        if (!("files" in overrideRaw)) continue;
+        if (!isString(overrideRaw.files) && (!isArray(overrideRaw.files) || !overrideRaw.files.every(isString))) continue;
+        if (isArray(overrideRaw.files) && !overrideRaw.files.length) continue;
+        if (!("options" in overrideRaw)) continue;
+        if (!isObject(overrideRaw.options)) continue;
+        const filesPositive = castArray(overrideRaw.files);
+        const filesNegative = "filesNegative" in overrideRaw && (isString(overrideRaw.filesNegative) || (isArray(overrideRaw.filesNegative) && overrideRaw.filesNegative.every(isString))) ? castArray(overrideRaw.filesNegative) : []; // prettier-ignore
+        const folder = folderPath;
+        const options = normalizeFormatOptions(overrideRaw.options);
+        overrides.push({ filesPositive, filesNegative, folder, options });
+      }
     }
   }
 

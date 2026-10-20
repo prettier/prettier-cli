@@ -1,0 +1,17 @@
+{
+  "semi": true,
+  "overrides": [
+    {
+      "files": "src/*.js",
+      "options": {
+        "semi": false
+      }
+    },
+    {
+      "files": "../lib/*.js",
+      "options": {
+        "semi": false
+      }
+    }
+  ]
+}

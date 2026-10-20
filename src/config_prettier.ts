@@ -3,7 +3,7 @@ import path from "node:path";
 import url from "node:url";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath, getModulePath } from "./utils.js";
+import { fastJoinedPath, fastRelativeChildPath, getModulePath, normalizePathSeparatorsToPosix } from "./utils.js";
 import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
@@ -124,6 +124,10 @@ const getPrettierConfigsUp: typeof getPrettierConfigsUpImpl = memoize(getPrettie
 const getPrettierConfigResolved = async (filePath: string, filesNames: string[]): Promise<PrettierConfig> => {
   const folderPath = path.dirname(filePath);
   const configs = await getPrettierConfigsUp(folderPath, filesNames);
+  return resolvePrettierConfigs(configs, filePath);
+};
+
+const resolvePrettierConfigs = (configs: PrettierConfigWithOverrides[], filePath: string): PrettierConfig => {
   let resolved: PrettierConfig = {};
 
   for (let ci = 0, cl = configs.length; ci < cl; ci++) {
@@ -135,8 +139,8 @@ const getPrettierConfigResolved = async (filePath: string, filesNames: string[])
     if (overrides) {
       for (let oi = 0, ol = overrides.length; oi < ol; oi++) {
         const override = overrides[oi];
-        const filePathRelative = fastRelativeChildPath(override.folder, filePath);
-        if (!filePathRelative) continue;
+        const filePathRelative =
+          fastRelativeChildPath(override.folder, filePath) ?? normalizePathSeparatorsToPosix(path.relative(override.folder, filePath));
         if (!zeptomatch(override.filesPositive, filePathRelative)) continue;
         if (zeptomatch(override.filesNegative, filePathRelative)) continue;
         resolved = { ...resolved, ...override.options };
@@ -147,4 +151,4 @@ const getPrettierConfigResolved = async (filePath: string, filesNames: string[])
   return resolved;
 };
 
-export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved };
+export { Loaders, File2Loader, Ext2Loader, getPrettierConfig, getPrettierConfigsMap, getPrettierConfigsUp, getPrettierConfigResolved, resolvePrettierConfigs };
