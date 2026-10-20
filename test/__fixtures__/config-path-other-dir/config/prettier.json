@@ -6,6 +6,12 @@
       "options": {
         "semi": false
       }
+    },
+    {
+      "files": "../lib/*.js",
+      "options": {
+        "semi": false
+      }
     }
   ]
 }

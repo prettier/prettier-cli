@@ -3,7 +3,7 @@ import path from "node:path";
 import url from "node:url";
 import zeptomatch from "zeptomatch";
 import Known from "./known.js";
-import { fastJoinedPath, fastRelativeChildPath, getModulePath } from "./utils.js";
+import { fastJoinedPath, fastRelativeChildPath, getModulePath, normalizePathSeparatorsToPosix } from "./utils.js";
 import { isObject, isString, isTruthy, isUndefined, memoize, noop, normalizePrettierOptions, omit, zipObjectUnless } from "./utils.js";
 import type { PrettierConfig, PrettierConfigWithOverrides, PromiseMaybe } from "./types.js";
 
@@ -139,8 +139,8 @@ const resolvePrettierConfigs = (configs: PrettierConfigWithOverrides[], filePath
     if (overrides) {
       for (let oi = 0, ol = overrides.length; oi < ol; oi++) {
         const override = overrides[oi];
-        const filePathRelative = fastRelativeChildPath(override.folder, filePath);
-        if (!filePathRelative) continue;
+        const filePathRelative =
+          fastRelativeChildPath(override.folder, filePath) ?? normalizePathSeparatorsToPosix(path.relative(override.folder, filePath));
         if (!zeptomatch(override.filesPositive, filePathRelative)) continue;
         if (zeptomatch(override.filesNegative, filePathRelative)) continue;
         resolved = { ...resolved, ...override.options };
