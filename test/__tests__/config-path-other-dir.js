@@ -3,8 +3,8 @@ import { runCli } from "../utils";
 describe("--config-path in another dir resolves override globs relative to the config file", () => {
   runCli("config-path-other-dir", [
     "--config-path",
-    "config/prettier.json",
-    "config/src/foo.js",
+    "config-dir/prettier.json",
+    "config-dir/src/foo.js",
   ]).test({
     status: 0,
     stdout: `const x = "foo"`,
@@ -16,7 +16,7 @@ describe("--config-path in another dir resolves override globs relative to the c
 describe("--config-path in another dir does not resolve override globs relative to the cwd", () => {
   runCli("config-path-other-dir", [
     "--config-path",
-    "config/prettier.json",
+    "config-dir/prettier.json",
     "src/foo.js",
   ]).test({
     status: 0,
@@ -29,7 +29,7 @@ describe("--config-path in another dir does not resolve override globs relative 
 describe("--config-path in another dir resolves override globs pointing outside the config dir", () => {
   runCli("config-path-other-dir", [
     "--config-path",
-    "config/prettier.json",
+    "config-dir/prettier.json",
     "lib/foo.js",
   ]).test({
     status: 0,
