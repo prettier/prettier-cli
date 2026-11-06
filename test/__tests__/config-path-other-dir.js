@@ -30,7 +30,7 @@ describe("--config-path in another dir resolves override globs pointing outside 
   runCli("config-path-other-dir", [
     "--config-path",
     "config-dir/prettier.json",
-    "lib/foo.js",
+    "b-dir/foo.js",
   ]).test({
     status: 0,
     stdout: `const x = "foo"`,

@@ -8,7 +8,7 @@
       }
     },
     {
-      "files": "../lib/*.js",
+      "files": "../b-dir/*.js",
       "options": {
         "semi": false
       }
