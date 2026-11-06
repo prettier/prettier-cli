@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build
+        run: npm run compile
+
       - name: Cleanup package.json
         run: npm pkg delete scripts devDependencies
 
