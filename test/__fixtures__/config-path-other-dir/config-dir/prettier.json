@@ -1,0 +1,17 @@
+{
+  "semi": true,
+  "overrides": [
+    {
+      "files": "a-dir/*.js",
+      "options": {
+        "semi": false
+      }
+    },
+    {
+      "files": "../b-dir/*.js",
+      "options": {
+        "semi": false
+      }
+    }
+  ]
+}
