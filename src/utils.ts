@@ -19,8 +19,6 @@ import zeptomatchIsStatic from "zeptomatch-is-static";
 import type { ContextOptions, FormatOptions, FunctionMaybe, Key, LogLevel, Options, PrettierConfigWithOverrides, PrettierPlugin } from "./types.js";
 import type { PluginsOptions } from "./types.js";
 
-type DirentWithParentPath = Dirent & { parentPath: string };
-
 function castArray<T>(value: T | T[]): T[] {
   return isArray(value) ? value : [value];
 }
@@ -113,6 +111,10 @@ const defaultIgnoreGlob = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db,node_module
 const defaultIgnoreGlobIncludingNodeModules = "**/{.git,.sl,.svn,.hg,.DS_Store,Thumbs.db}";
 
 async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: boolean) {
+  if (!globs.length) {
+    return { files: [], filesFound: [], filesFoundNamesToPaths: Object.create(null) as Record<string, string[]>, directoriesFound: [] };
+  }
+
   const ignoreGlob = withNodeModules ? defaultIgnoreGlobIncludingNodeModules : defaultIgnoreGlob;
   const ignoreRe = zeptomatch.compile(ignoreGlob);
   const ignore = (targetPath: string): boolean => {
@@ -126,12 +128,10 @@ async function getGlobPaths(rootPath: string, globs: string[], withNodeModules: 
   const filesFoundNamesToPaths: Record<string, string[]> = Object.create(null);
   const directoriesFound: string[] = [];
 
-  const onDirents = (dirents: Dirent[]): undefined => {
+  const onDirents = (dirents: Dirent[], parentPath: string): undefined => {
     for (const dirent of dirents) {
       const direntName = dirent.name;
-      // TODO (jg): remove this cast once tiny-readdir knows about
-      // the `parentPath` property on Dirent objects
-      const direntPath = fastJoinedPath((dirent as DirentWithParentPath).parentPath, direntName);
+      const direntPath = fastJoinedPath(parentPath, direntName);
       if (ignore(direntPath)) continue;
       if (dirent.isFile()) {
         filesFound.push(direntPath);
