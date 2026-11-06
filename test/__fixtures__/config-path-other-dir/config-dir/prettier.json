@@ -2,7 +2,7 @@
   "semi": true,
   "overrides": [
     {
-      "files": "src/*.js",
+      "files": "a-dir/*.js",
       "options": {
         "semi": false
       }

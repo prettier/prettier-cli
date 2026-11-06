@@ -4,7 +4,7 @@ describe("--config-path in another dir resolves override globs relative to the c
   runCli("config-path-other-dir", [
     "--config-path",
     "config-dir/prettier.json",
-    "config-dir/src/foo.js",
+    "config-dir/a-dir/foo.js",
   ]).test({
     status: 0,
     stdout: `const x = "foo"`,
@@ -17,7 +17,7 @@ describe("--config-path in another dir does not resolve override globs relative 
   runCli("config-path-other-dir", [
     "--config-path",
     "config-dir/prettier.json",
-    "src/foo.js",
+    "a-dir/foo.js",
   ]).test({
     status: 0,
     stdout: `const x = "foo";`,
