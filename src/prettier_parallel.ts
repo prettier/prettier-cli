@@ -1,21 +1,10 @@
 import os from "node:os";
-import process from "node:process";
-import WorkTank from "worktank";
 import { resolve } from "./utils.js";
 import type { Options, Prettier } from "./types.js";
+import WorkerPool from "./worker_pool.js";
 
 function makeParallel(options: Options): Prettier {
-  const pool = new WorkTank<Prettier>({
-    pool: {
-      name: "prettier",
-      size: options.parallelWorkers || Math.max(1, os.cpus().length - 1),
-    },
-    worker: {
-      autoInstantiate: true,
-      env: process.env,
-      methods: new URL("./prettier_serial.js", import.meta.url),
-    },
-  });
+  const pool = new WorkerPool(new URL("./prettier_worker.js", import.meta.url), options.parallelWorkers || Math.max(1, os.cpus().length - 1));
 
   return {
     async check(filePath, fileContent, formatOptions, contextOptions, pluginsDefaultOptions, pluginsCustomOptions) {

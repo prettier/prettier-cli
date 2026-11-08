@@ -139,8 +139,7 @@ const resolvePrettierConfigs = (configs: PrettierConfigWithOverrides[], filePath
     if (overrides) {
       for (let oi = 0, ol = overrides.length; oi < ol; oi++) {
         const override = overrides[oi];
-        const filePathRelative =
-          fastRelativeChildPath(override.folder, filePath) ?? normalizePathSeparatorsToPosix(path.relative(override.folder, filePath));
+        const filePathRelative = fastRelativeChildPath(override.folder, filePath) ?? normalizePathSeparatorsToPosix(path.relative(override.folder, filePath));
         if (!zeptomatch(override.filesPositive, filePathRelative)) continue;
         if (zeptomatch(override.filesNegative, filePathRelative)) continue;
         resolved = { ...resolved, ...override.options };
