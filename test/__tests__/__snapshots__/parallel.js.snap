@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`parallel mode keeps the error name, so ignore-unknown still works (stdout) 1`] = `
+"javascript.js
+override.as-js-file"
+`;

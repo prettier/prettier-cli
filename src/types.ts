@@ -95,6 +95,24 @@ type PrettierPlugin = import("prettier").Plugin;
 
 type PromiseMaybe<T> = T | Promise<T>;
 
+type SerializedError = {
+  name: string;
+  message: string;
+  stack?: string;
+};
+
+type PrettierAsyncTask<
+  T extends keyof Prettier = keyof Prettier,
+  U extends Parameters<Prettier[T]> = Parameters<Prettier[T]>,
+  R extends Awaited<ReturnType<Prettier[T]>> = Awaited<ReturnType<Prettier[T]>>,
+> = {
+  method: T;
+  args: U;
+  deferred?: Promise<R>;
+  resolve?: (value: R) => void;
+  reject?: (reason: unknown) => void;
+};
+
 export type {
   Bin,
   ContextOptions,
@@ -111,4 +129,6 @@ export type {
   PrettierConfigWithOverrides,
   PrettierPlugin,
   PromiseMaybe,
+  PrettierAsyncTask,
+  SerializedError,
 };

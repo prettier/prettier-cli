@@ -124,7 +124,11 @@ async function runCommand(dir, args, options) {
   const cwd = fixtures ? fixtures.path : TESTS_PATH;
   const argsForTesting = options.parallel ? [] : ["--no-parallel"];
   const argsWithReplacements = args.map((arg) => arg.replaceAll("$CWD", cwd));
-  const result = exec("node", [BIN_PATH, ...argsForTesting, ...argsWithReplacements], { cwd, stdio: "pipe" });
+  const result = exec("node", [BIN_PATH, ...argsForTesting, ...argsWithReplacements], {
+    cwd,
+    stdio: "pipe",
+    env: options.env ? { ...process.env, ...options.env } : process.env,
+  });
 
   if (options.input) {
     result.process.stdin.write(options.input);
